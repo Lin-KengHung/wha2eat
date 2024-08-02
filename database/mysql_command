@@ -12,18 +12,19 @@ CREATE TABLE restaurants (
     dineIn BOOLEAN,  
     delivery BOOLEAN,  
     reservable BOOLEAN,  
-    type VARCHAR(255),  
+    type VARCHAR(255),
+    businessStatus BOOLEAN,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );
 
 CREATE TABLE opening_hours (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    place_id VARCHAR(255),
-    day_of_week VARCHAR(10),
-    time_slot INT,
-    open_time TIME,
-    close_time TIME,
-    FOREIGN KEY (place_id) REFERENCES Restaurants(place_id)
+    place_id VARCHAR(255) NOT NULL,
+    day_of_week TINYINT(1) NOT NULL,
+    open_time TIME NOT NULL,
+    close_time TIME NOT NULL,
+    FOREIGN KEY (place_id) REFERENCES Restaurants(place_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );
 
 CREATE TABLE users (
