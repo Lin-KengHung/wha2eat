@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>今天吃什麼</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chewy&family=Noto+Sans+TC:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/header.css" />
+    <link rel="stylesheet" href="/static/css/index.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="title">
+          <img src="/static/image/wha2eat.svg" alt="logo" />
+          <h2>wha2eat</h2>
+        </div>
+        <input type="text" placeholder="搜尋餐廳" class="search" />
+        <button class="user">登入</button>
+      </nav>
+    </header>
+    <main>
+      <section class="restaurant">
+        <div class="restaurant-card">
+          <div class="restaurant-photo">
+            <img
+              src="/static/image/btn_leftArrow.png"
+              alt="左"
+              class="left-arrow arrow"
+            />
+
+            <img
+              src="/static/image/logo.png"
+              alt="Restaurant Image"
+              class="restaurant-img"
+            />
+
+            <img
+              src="/static/image/btn_rightArrow.png"
+              alt="右"
+              class="right-arrow arrow"
+            />
+          </div>
+          <div class="restaurant-title">
+            <h2 class="restaurant-name">餐廳名稱</h2>
+            <img
+              src="/static/image/down_arrow.svg"
+              alt="詳細資訊"
+              class="restaurant-detail_btn"
+            />
+          </div>
+          <div class="restaurant-info">
+            <div class="restaurant-tags_group">
+              <p class="restaurant-tag restaurant-open">營業中</p>
+              <p class="restaurant-tag restaurant-close">休息中</p>
+              <p class="restaurant-tag restaurant-type">中式料理</p>
+              <p class="restaurant-tag restaurant-rating">Google評分</p>
+            </div>
+            <div class="restaurant-detail_info">
+              <hr class="seperate" />
+              <div class="address-group">
+                <img
+                  src="/static/image/address.svg"
+                  alt="地址"
+                  class="address-icon"
+                />
+                <p class="address">台南市北區開元路90巷3號</p>
+              </div>
+              <div class="services-group">
+                <div class="service takeout">
+                  <img
+                    src="/static/image/tick.svg"
+                    alt=""
+                    class="takeout-tick"
+                  />
+                  <img
+                    src="/static/image/error.svg"
+                    alt=""
+                    class="takeout-error"
+                  />
+                  <p class="service-text">外帶</p>
+                </div>
+                <div class="service dineIn">
+                  <img
+                    src="/static/image/tick.svg"
+                    alt=""
+                    class="dineIn-tick"
+                  />
+                  <img
+                    src="/static/image/error.svg"
+                    alt=""
+                    class="dineIn-error"
+                  />
+                  <p class="service-text">內用</p>
+                </div>
+                <div class="service delivery">
+                  <img
+                    src="/static/image/tick.svg"
+                    alt=""
+                    class="delivery-tick"
+                  />
+                  <img
+                    src="/static/image/error.svg"
+                    alt=""
+                    class="delivery-error"
+                  />
+                  <p class="delivery-text">外送</p>
+                </div>
+                <div class="service reservable">
+                  <img
+                    src="/static/image/tick.svg"
+                    alt=""
+                    class="reservable-tick"
+                  />
+                  <img
+                    src="/static/image/error.svg"
+                    alt=""
+                    class="reservable-error"
+                  />
+                  <p class="reservable-text">預定</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="comments_group">
+        <div class="comment">
+          <img
+            src="/static/image/logo.png"
+            alt="評論圖片"
+            class="comment-img"
+          />
+          <div class="comment-content">
+            <div class="comment-user_info">
+              <p class="comment-user">小明</p>
+              <p class="comment-user_score">（平均打分： 4.5 ）</p>
+            </div>
+            <div class="comment-star">
+              <img
+                src="/static/image/star-solid.svg"
+                alt="實星"
+                class="star star-solid"
+              />
+              <img
+                src="/static/image/star-solid.svg"
+                alt="實星"
+                class="star star-solid"
+              />
+              <img
+                src="/static/image/star-solid.svg"
+                alt="實星"
+                class="star star-solid"
+              />
+              <img
+                src="/static/image/star-solid.svg"
+                alt="實星"
+                class="star star-solid"
+              />
+              <img
+                src="/static/image/star-regular.svg"
+                alt="空星"
+                class="star star-regular"
+              />
+            </div>
+            <h3 class="comment-text">
+              這是一間很好吃的餐廳，我推到不行，因為是最後一位客人，老闆還多招待一份甜點，愛了愛了
+            </h3>
+          </div>
+        </div>
+        <div class="comment">
+          <img
+            src="/static/image/logo.png"
+            alt="評論圖片"
+            class="comment-img"
+          />
+          <div class="comment-content">
+            <div class="comment-user_info">
+              <p class="comment-user">小華</p>
+              <p class="comment-user_score">（平均打分： 3.5 ）</p>
+            </div>
+            <div class="comment-star">
+              <img
+                src="/static/image/star-solid.svg"
+                alt="實星"
+                class="star star-solid"
+              />
+              <img
+                src="/static/image/star-solid.svg"
+                alt="實星"
+                class="star star-solid"
+              />
+              <img
+                src="/static/image/star-solid.svg"
+                alt="實星"
+                class="star star-solid"
+              />
+              <img
+                src="/static/image/star-regular.svg"
+                alt="空星"
+                class="star star-regular"
+              />
+              <img
+                src="/static/image/star-regular.svg"
+                alt="空星"
+                class="star star-regular"
+              />
+            </div>
+            <h3 class="comment-text">還可以，就那樣</h3>
+          </div>
+        </div>
+      </section>
+      <section class="action">
+        <div class="action-btn dislike">
+          <img src="/static/image/heart-break.svg" alt="不喜歡" />
+        </div>
+
+        <div class="action-btn consider">
+          <img src="/static/image/thinking-face.svg" alt="考慮" />
+        </div>
+        <div class="action-btn like">
+          <img src="/static/image/thumbs-up.svg" alt="喜歡" />
+        </div>
+      </section>
+      <section class="button-area"></section>
+    </main>
+    <script>
+      let n = 0;
+      let photo_n = 0;
+      async function get_restaurant_card() {
+        const response = await fetch("/api/card", { method: "GET" });
+        const data = await response.json();
+        console.log(data);
+        render_restaurant_card(data[n % 30]);
+        document
+          .querySelector(".dislike-btn")
+          .addEventListener("click", (e) => {
+            n = n + 30 - 1;
+            render_restaurant_card(data[n % 30]);
+          });
+        document.querySelector(".like-btn").addEventListener("click", (e) => {
+          n += 1;
+          render_restaurant_card(data[n % 30]);
+        });
+      }
+
+      function render_restaurant_card(data) {
+        document.querySelector(".restaurant-name").innerHTML = data.name;
+        document.querySelector(".restaurant-type").innerHTML = data.type;
+        document.querySelector(".restaurant-rating").innerHTML =
+          data.google_rating;
+        document.querySelector(".restaurant-rating_count").innerHTML =
+          data.google_rating_count;
+        document.querySelector(".restaurant-img").src = data.urls[0 % 4];
+      }
+
+      get_restaurant_card();
+    </script>
+  </body>
+</html>
