@@ -14,3 +14,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/", include_in_schema=False)
 async def index(request: Request):
 	return FileResponse("./static/index.html", media_type="text/html")
+
+@app.get("/user", include_in_schema=False)
+async def index(request: Request):
+	return FileResponse("./static/user.html", media_type="text/html")

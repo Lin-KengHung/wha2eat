@@ -36,3 +36,11 @@ CREATE TABLE users (
     age TINYINT UNSIGNED, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    place_id VARCHAR(255) NOT NULL,
+    url TEXT NOT NULL COMMENT "image url",
+    FOREIGN KEY (place_id) REFERENCES Restaurants(place_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+);

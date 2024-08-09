@@ -18,6 +18,7 @@
     />
     <link rel="stylesheet" href="/static/css/header.css" />
     <link rel="stylesheet" href="/static/css/index.css" />
+    <script defer src="/static/js/index.js"></script>
   </head>
   <body>
     <header>
@@ -115,7 +116,7 @@
                     alt=""
                     class="delivery-error"
                   />
-                  <p class="delivery-text">外送</p>
+                  <p class="service-text">外送</p>
                 </div>
                 <div class="service reservable">
                   <img
@@ -128,7 +129,7 @@
                     alt=""
                     class="reservable-error"
                   />
-                  <p class="reservable-text">預定</p>
+                  <p class="service-text">預定</p>
                 </div>
               </div>
             </div>
@@ -235,37 +236,5 @@
       </section>
       <section class="button-area"></section>
     </main>
-    <script>
-      let n = 0;
-      let photo_n = 0;
-      async function get_restaurant_card() {
-        const response = await fetch("/api/card", { method: "GET" });
-        const data = await response.json();
-        console.log(data);
-        render_restaurant_card(data[n % 30]);
-        document
-          .querySelector(".dislike-btn")
-          .addEventListener("click", (e) => {
-            n = n + 30 - 1;
-            render_restaurant_card(data[n % 30]);
-          });
-        document.querySelector(".like-btn").addEventListener("click", (e) => {
-          n += 1;
-          render_restaurant_card(data[n % 30]);
-        });
-      }
-
-      function render_restaurant_card(data) {
-        document.querySelector(".restaurant-name").innerHTML = data.name;
-        document.querySelector(".restaurant-type").innerHTML = data.type;
-        document.querySelector(".restaurant-rating").innerHTML =
-          data.google_rating;
-        document.querySelector(".restaurant-rating_count").innerHTML =
-          data.google_rating_count;
-        document.querySelector(".restaurant-img").src = data.urls[0 % 4];
-      }
-
-      get_restaurant_card();
-    </script>
   </body>
 </html>
