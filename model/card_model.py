@@ -19,8 +19,6 @@ class Restaurant(BaseModel):
     delivery : Optional[bool]
     reservable : Optional[bool]
 
-
-
 class RestaurantOut(BaseModel):
     data : List[Restaurant]
 

@@ -2,6 +2,7 @@ let cardN = 0;
 let photoN = 0;
 let recentData = [];
 let showDetail = false;
+let loginState = false;
 
 async function get_restaurant_card() {
   const response = await fetch("/api/suggest_cards", { method: "GET" });
@@ -103,6 +104,33 @@ function render_arrow() {
 
 // 初始化
 async function init() {
+  // 取得登入狀態
+  if (localStorage.getItem("user_token")) {
+    try {
+      let response = await fetch("/api/user/auth", {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("user_token"),
+        },
+      });
+      let data = await response.json();
+      //特殊修改token或是過期的情況
+      console.log(data);
+      if (data.error) {
+        localStorage.removeItem("user_token");
+        location.reload();
+      }
+    } catch (error) {
+      console.error("沒抓到/api/user/auth的資料", error);
+    }
+    document.querySelector(".profile_icon").style.display = "block";
+    document.querySelector(".user_status").style.display = "none";
+    loginState = true;
+  } else {
+    document.querySelector(".profile_icon").style.display = "none";
+    document.querySelector(".user_status").style.display = "block";
+  }
+  // 餐廳
   let getData = await get_restaurant_card();
   if (getData === true) {
     render_restaurant_card(recentData[cardN]);
@@ -121,7 +149,6 @@ init();
 // 喜歡
 document.querySelector(".like").addEventListener("click", (e) => {
   change_restaurant_card();
-  console.log("喜歡");
 });
 // 不喜歡
 document.querySelector(".dislike").addEventListener("click", (e) => {
@@ -151,7 +178,6 @@ const detailInfo = document.querySelector(".restaurant-detail_info");
 document
   .querySelector(".restaurant-detail_btn")
   .addEventListener("click", (e) => {
-    console.log("test");
     if (showDetail) {
       detailInfo.style.display = "none";
       showDetail = false;

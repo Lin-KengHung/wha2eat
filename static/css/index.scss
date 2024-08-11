@@ -70,10 +70,12 @@ main {
           display: flex;
           align-items: center;
           justify-self: start;
+          flex-wrap: wrap;
           .restaurant-tag {
             font-weight: 500;
             padding: 10px;
             margin-left: 0.5rem;
+            margin-top: 0.5rem;
             border: 2px solid #080808;
             border-radius: 30px;
           }
@@ -116,10 +118,12 @@ main {
           align-items: center;
           justify-content: start;
           margin-top: 10px;
+          flex-wrap: wrap;
           .service {
             display: flex;
             align-items: center;
             padding: 0 10px 0 10px;
+            margin-top: 0.5rem;
             img {
               width: 30px;
               height: 30px;

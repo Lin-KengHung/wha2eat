@@ -69,11 +69,13 @@ main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group {
   display: flex;
   align-items: center;
   justify-self: start;
+  flex-wrap: wrap;
 }
 main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-tag {
   font-weight: 500;
   padding: 10px;
   margin-left: 0.5rem;
+  margin-top: 0.5rem;
   border: 2px solid #080808;
   border-radius: 30px;
 }
@@ -114,11 +116,13 @@ main .restaurant .restaurant-card .restaurant-detail_info .services-group {
   align-items: center;
   justify-content: start;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 main .restaurant .restaurant-card .restaurant-detail_info .services-group .service {
   display: flex;
   align-items: center;
   padding: 0 10px 0 10px;
+  margin-top: 0.5rem;
 }
 main .restaurant .restaurant-card .restaurant-detail_info .services-group .service img {
   width: 30px;

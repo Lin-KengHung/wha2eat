@@ -17,29 +17,47 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/static/css/header.css" />
-    <link rel="stylesheet" href="/static/css/user.css" />
+    <link rel="stylesheet" href="/static/css/member.css" />
+    <script defer src="/static/js/member.js"></script>
   </head>
   <body>
     <header>
       <nav>
         <div class="title">
-          <img src="/static/image/wha2eat.svg" alt="logo" />
+          <img src="/static/image/wha2eat.svg" alt="logo" class="logo_icon" />
           <h2>wha2eat</h2>
         </div>
         <input type="text" placeholder="搜尋餐廳" class="search" />
-        <button class="user">登入</button>
+        <button class="user_status">登入</button>
+        <img src="/static/image/profile.svg" alt="" class="profile_icon" />
+        <button class="logout">登出</button>
       </nav>
     </header>
     <main>
       <section class="user">
         <div class="user-photo">
-          <img src="/static/image/logo.png" alt="大頭貼" />
+          <img
+            src="/static/image/logo.png"
+            alt="大頭貼"
+            class="user-photo-url"
+          />
         </div>
         <div class="user-info">
           <div class="user-name">Alfyn</div>
-          <div class="user-rating">我的平均打分：4.6</div>
-          <div class="user-pocket-count">我的口袋餐廳：17</div>
-          <div class="user-checkIn-count">我的評論紀錄：5</div>
+          <div class="user-info-group">
+            <span>我的平均打分：</span>
+            <div class="user-rating">4.6</div>
+          </div>
+
+          <div class="user-info-group">
+            <span>我的口袋餐廳：</span>
+            <div class="user-pocket-count">17</div>
+          </div>
+
+          <div class="user-info-group">
+            <span>我的評論紀錄：</span>
+            <div class="user-checkIn-count">5</div>
+          </div>
         </div>
       </section>
       <section class="pocket">
