@@ -14,3 +14,4 @@ router = APIRouter(
 async def get_restaurant_card():
      result = CardModel.get_restaurants_info()
      return result
+

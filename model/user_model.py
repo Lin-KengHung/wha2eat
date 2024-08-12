@@ -80,7 +80,13 @@ class UserModel:
         return Token(token=token)
 
     def get_user_profile(id: int):
-        sql = "SELECT u.username, u.avg_rating, u.profile_picture, (SELECT COUNT(*) FROM pockets WHERE user_id = u.id) AS pockets_count, (SELECT COUNT(*) FROM comments WHERE user_id = u.id) AS comments_count FROM users u WHERE u.id = %s;"
+        sql = """
+        SELECT u.username, u.avg_rating, u.profile_picture, 
+        (SELECT COUNT(*) FROM pockets WHERE user_id = u.id AND attitude = 'like') AS pockets_count, 
+        (SELECT COUNT(*) FROM comments WHERE user_id = u.id) AS comments_count 
+        FROM users u 
+        WHERE u.id = %s ;
+        """
         val = (id,)
         current_user = Database.read_one(sql, val)
         return UserProfile(id=id, name=current_user["username"], photo=current_user["profile_picture"], avg_rating=current_user["avg_rating"], pocket_No=current_user["pockets_count"], comment_No=current_user["comments_count"])

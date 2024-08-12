@@ -1,6 +1,7 @@
 let cardN = 0;
 let photoN = 0;
 let recentData = [];
+let user_id;
 let showDetail = false;
 let loginState = false;
 
@@ -115,7 +116,7 @@ async function init() {
       });
       let data = await response.json();
       //特殊修改token或是過期的情況
-      console.log(data);
+      user_id = data.id;
       if (data.error) {
         localStorage.removeItem("user_token");
         location.reload();
@@ -144,21 +145,78 @@ async function init() {
 }
 
 init();
-
-// 換餐廳
+// 換餐廳與加入口袋
 // 喜歡
-document.querySelector(".like").addEventListener("click", (e) => {
+document.querySelector(".like").addEventListener("click", async (e) => {
+  if (loginState) {
+    const data = {
+      user_id: user_id,
+      restaurant_id: recentData[cardN].id,
+      attitude: "like",
+    };
+    const response = await fetch("/api/pocket", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("user_token"),
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (result.error) {
+      alert("有錯快跟我講");
+    }
+  }
+
   change_restaurant_card();
 });
 // 不喜歡
-document.querySelector(".dislike").addEventListener("click", (e) => {
+document.querySelector(".dislike").addEventListener("click", async (e) => {
+  if (loginState) {
+    const data = {
+      user_id: user_id,
+      restaurant_id: recentData[cardN].id,
+      attitude: "dislike",
+    };
+    const response = await fetch("/api/pocket", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("user_token"),
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (result.error) {
+      alert("有錯快跟我講");
+    }
+  }
+
   change_restaurant_card();
-  console.log("不喜歡");
 });
 // 考慮
-document.querySelector(".consider").addEventListener("click", (e) => {
+document.querySelector(".consider").addEventListener("click", async (e) => {
+  if (loginState) {
+    const data = {
+      user_id: user_id,
+      restaurant_id: recentData[cardN].id,
+      attitude: "consider",
+    };
+    const response = await fetch("/api/pocket", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("user_token"),
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (result.error) {
+      alert("有錯快跟我講");
+    }
+  }
+
   change_restaurant_card();
-  console.log("考慮");
 });
 
 // 換圖片

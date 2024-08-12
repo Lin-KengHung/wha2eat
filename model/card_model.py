@@ -61,7 +61,7 @@ class CardModel:
                 opening_hours 
             GROUP BY 
                 place_id) AS o 
-            ON r.place_id = o.place_id 
+        ON r.place_id = o.place_id 
         LEFT JOIN 
             (SELECT
                 place_id, 
@@ -70,7 +70,7 @@ class CardModel:
                 images
             GROUP BY 
                 place_id) AS i 
-            ON r.place_id = i.place_id;
+        ON r.place_id = i.place_id;
         """)
         result = Database.read_all(sql)
         

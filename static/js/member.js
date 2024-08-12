@@ -35,6 +35,18 @@ async function init() {
       console.error("沒抓到/api/user/auth的資料", error);
     }
   }
+  // 渲染口袋
+  console.log("test");
+  const response = await fetch("/api/pocket?page=0", {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("user_token"),
+    },
+  });
+
+  const data = await response.json();
+
+  console.log(data);
 }
 init();
 
@@ -47,3 +59,5 @@ function renderProfile(name, photoURL, avg_rating, pocketCount, commentCount) {
   document.querySelector(".user-pocket-count").innerHTML = pocketCount;
   document.querySelector(".user-checkIn-count").innerHTML = commentCount;
 }
+
+const restaurantBox = function renderPocket(data) {};
