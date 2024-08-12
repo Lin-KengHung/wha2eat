@@ -84,10 +84,9 @@ main .pocket .pocket-restaurants .restaurant-box-group {
   overflow-x: scroll;
   scroll-behavior: smooth;
 }
-main .pocket .pocket-restaurants .restaurant-box-group::-webkit-scrollbar {
-  display: none;
-}
 main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box {
+  width: 220px;
+  margin-left: 10px;
   padding: 10px;
   border-radius: 10px;
   position: relative;
@@ -104,6 +103,9 @@ main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaura
 }
 main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaurant-info .restaurant-name {
   font-size: 1.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaurant-info .delete-btn {
   width: 15px;
@@ -130,7 +132,6 @@ main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaura
   background-color: rgba(255, 0, 0, 0.8);
   color: white;
   font-size: 0.8rem;
-  display: none;
 }
 main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box:hover {
   background-color: rgba(128, 128, 128, 0.5);

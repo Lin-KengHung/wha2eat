@@ -82,9 +82,11 @@ main {
         overflow-x: scroll;
         scroll-behavior: smooth;
         &::-webkit-scrollbar {
-          display: none;
+          // display: none;
         }
         .restaurant-box {
+          width: 220px;
+          margin-left: 10px;
           padding: 10px;
           border-radius: 10px;
           position: relative;
@@ -100,6 +102,9 @@ main {
 
             .restaurant-name {
               font-size: 1.2rem;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
             .delete-btn {
               width: 15px;
@@ -117,7 +122,6 @@ main {
             background-color: rgba(green, 0.8);
             color: white;
             font-size: 0.8rem;
-            // display: none;
           }
           .restaurant-close {
             position: absolute;
@@ -128,7 +132,6 @@ main {
             background-color: rgba(red, 0.8);
             color: white;
             font-size: 0.8rem;
-            display: none;
           }
           &:hover {
             background-color: rgba(gray, 0.5);
