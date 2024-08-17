@@ -22,3 +22,11 @@ async def put_card_to_pocket(match:Match, payload=Depends(security)):
 async def get_favor_restaurant(page:int, payload=Depends(security)):
     result = PocketModel.get_my_pocket(id=payload["id"], page=page)
     return result
+
+@router.delete("/pocket", summary="刪除使用者喜歡的餐廳", tags=["Pocket"])
+async def delete_favor_restaurant(restaurant_id:int, payload=Depends(security)):
+    result = PocketModel.delete_favor_restaurant(restaurant_id=restaurant_id, user_id=payload["id"])
+    if result:
+        return Success(ok=True)
+    else:
+        return Error(error=True, message="刪除失敗")

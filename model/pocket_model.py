@@ -13,7 +13,7 @@ class Match(BaseModel):
 class FavorRestaurants(BaseModel):
     id: int
     name: str
-    img: str
+    img: Optional[str] = None
     open : Optional[bool]
 
 
@@ -43,14 +43,14 @@ class PocketModel:
     def get_my_pocket(id, page, day_of_week=datetime.today().weekday() + 1):
 
         offset = page * 10
-        sql = f"""
+        sql = """
         SELECT 
             p.restaurant_id, 
             r.name, 
             i.url, 
             o.opening_hours
         FROM 
-            (SELECT * FROM pockets WHERE user_id = {id} AND attitude = "like" ORDER BY update_at DESC LIMIT {offset}, 11) AS p 
+            (SELECT * FROM pockets WHERE user_id = %s AND attitude = "like" ORDER BY update_at DESC LIMIT %s, 11) AS p 
         
         LEFT JOIN 
             restaurants AS r ON p.restaurant_id = r.id 
@@ -75,30 +75,29 @@ class PocketModel:
                 place_id, 
                 JSON_ARRAYAGG(
                     JSON_OBJECT(
-                        'open_time', TIME_FORMAT(open_time, '%H:%i:%s'), 
-                        'close_time', TIME_FORMAT(close_time, '%H:%i:%s')
+                        'open_time', TIME_FORMAT(open_time, '%H:%\i:%\s'), 
+                        'close_time', TIME_FORMAT(close_time, '%H:%\i:%\s')
                     )
                 ) AS opening_hours 
             FROM 
                 opening_hours 
             WHERE 
-                day_of_week = {day_of_week}
+                day_of_week = %s
             GROUP BY 
                 place_id) AS o ON r.place_id = o.place_id
         ORDER BY p.update_at DESC;
         """
-
-        result = Database.read_all(sql)
-
+        val = (id, offset, day_of_week)
+        result = Database.read_all(sql, val)
         # 判斷 next_page
         if len(result) < 11:
             next_page = None
         else:
             next_page = page+1
 
-
+        length = len(result) -1 if next_page is not None else len(result)
         restaurant_group = []
-        for i in range(len(result)-1):
+        for i in range(length):
             # 確認營業狀況
             open = None;
             if result[i]["opening_hours"] is not None:
@@ -118,4 +117,14 @@ class PocketModel:
                     open=open, 
                 )
             )
+        
         return RestaurantsGroup(data=restaurant_group, next_page=next_page)
+    
+    def delete_favor_restaurant(restaurant_id, user_id):
+        sql = 'DELETE FROM pockets WHERE user_id = %s and restaurant_id = %s and attitude = "like";'
+        val = (user_id, restaurant_id)
+        result = Database.delete(sql, val)
+        if result > 0:
+            return True
+        else:
+            return False

@@ -28,6 +28,7 @@ main {
           width: 100%;
           height: 450px;
           object-fit: cover;
+          background-color: rgba(255, 124, 9, 0.5);
         }
         .arrow {
           position: absolute;
@@ -40,9 +41,11 @@ main {
         }
 
         .left-arrow {
+          display: none;
           left: 5px;
         }
         .right-arrow {
+          display: none;
           right: 5px;
         }
       }
@@ -55,6 +58,10 @@ main {
           text-align: left;
           font-size: 2rem;
           padding: 0 10px 0 10px;
+          cursor: pointer;
+          &:hover {
+            text-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+          }
         }
         .restaurant-detail_btn {
           margin-right: 20px;
@@ -82,10 +89,12 @@ main {
           .restaurant-open {
             background-color: rgba(green, 0.8);
             color: white;
+            display: none;
           }
           .restaurant-close {
             background-color: rgba(red, 0.8);
             color: white;
+            display: none;
           }
         }
       }
@@ -110,6 +119,7 @@ main {
           }
           .address {
             margin-left: 10px;
+            text-align: left;
           }
         }
         .services-group {
@@ -136,6 +146,22 @@ main {
       }
     }
   }
+  .no-comment {
+    width: 100%;
+    max-width: 620px;
+    margin: 25px 0;
+    padding: 0 10px;
+    .without-comment {
+      background-color: rgba(128, 128, 128, 0.405);
+      border-radius: 10px;
+      font-weight: 500;
+      width: 100%;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
   .comments_group {
     display: flex;
     flex-direction: column;
@@ -152,10 +178,17 @@ main {
       align-items: center;
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
       margin-top: 15px;
-      img {
-        border-radius: 10px 0 0 10px;
-        width: 200px;
+
+      .img-container {
+        width: 150px;
         height: 150px;
+        img {
+          width: 100%;
+          min-width: 150px;
+          height: 100%;
+          border-radius: 10px 0 0 10px;
+          object-fit: cover;
+        }
       }
       .comment-content {
         padding: 15px;
@@ -163,8 +196,17 @@ main {
         height: 150px;
         .comment-user_info {
           display: flex;
+          flex-wrap: wrap;
           .comment-user {
             font-weight: 600;
+            max-width: 150px;
+            // border: 2px solid black;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          .comment-user_score {
+            min-width: 146px;
           }
         }
         .star {
@@ -173,10 +215,19 @@ main {
           height: 20px;
         }
         .comment-text {
+          height: 50px;
+          line-height: 25px;
           font-size: 1rem;
           font-weight: 500;
+
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
       }
+
       &:hover {
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         transition: 0.5s ease;

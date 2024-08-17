@@ -1,6 +1,6 @@
 from fastapi import *
 from fastapi.responses import FileResponse, JSONResponse
-from router import card, user, pocket
+from router import card, user, pocket, comment
 from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from model.user_model import CustomizeRaise
@@ -12,6 +12,7 @@ app = FastAPI()
 app.include_router(card.router)
 app.include_router(user.router)
 app.include_router(pocket.router)
+app.include_router(comment.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.exception_handler(CustomizeRaise)
@@ -31,3 +32,7 @@ async def index(request: Request):
 @app.get("/member", include_in_schema=False)
 async def index(request: Request):
 	return FileResponse("./static/member.html", media_type="text/html")
+
+@app.get("/restaurant/{id}", include_in_schema=False)
+async def index(request: Request):
+	return FileResponse("./static/restaurants.html", media_type="text/html")

@@ -1,8 +1,14 @@
 import requests
 import json
 import time
+import os
+from dotenv import load_dotenv
 
-API_KEY = 'your api key' 
+
+load_dotenv()
+
+
+API_KEY = os.getenv("API_KEY")
 
 # 打 place photo API 的邏輯
 def get_place_photo_url(photo_name, api_key, retries=3, delay=1):
@@ -48,12 +54,12 @@ def process_places_data(places_data, api_key):
     return results
 
 # 讀檔案，將資料儲存到json檔案
-with open('NCKU_4km_unique_detail_0730.json', 'r', encoding='utf-8') as f:
+with open('小樹屋2km_unique_detail_0815.json', 'r', encoding='utf-8') as f:
     places_data = json.load(f)
 
 processed_data = process_places_data(places_data, API_KEY)
 
-with open('NCKU_4km_photo_0801', 'w', encoding='utf-8') as f:
+with open('小樹屋2km_photo_0815', 'w', encoding='utf-8') as f:
     json.dump(processed_data, f, ensure_ascii=False, indent=2)
 
-print("Processed data has been saved to 'places_with_photos.json'.")
+print("Processed data has been saved.")

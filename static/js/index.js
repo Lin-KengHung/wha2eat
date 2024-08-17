@@ -1,17 +1,53 @@
 let cardN = 0;
 let photoN = 0;
 let recentData = [];
+let commentData = [];
 let user_id;
 let showDetail = false;
 let loginState = false;
 
+// 獲得餐廳資訊
 async function get_restaurant_card() {
-  const response = await fetch("/api/suggest_cards", { method: "GET" });
-  const data = await response.json();
-  recentData = recentData.concat(data.data);
+  const response = await fetch("/api/cards/suggest", { method: "GET" });
+  const data_list = await response.json();
+
+  // 圖片preload
+  for (let i = 0; i < data_list.data.length; i++) {
+    if (data_list.data[i].imgs !== null) {
+      let preloadImg = [];
+      for (let j = 0; j < data_list.data[i].imgs.length; j++) {
+        const img = new Image();
+        img.src = data_list.data[i].imgs[j];
+        preloadImg.push(img);
+      }
+      data_list.data[i].imgs = preloadImg;
+    }
+  }
+  recentData = recentData.concat(data_list.data);
   return true;
 }
 
+// 獲得留言資訊
+async function getComment(restaurant_id) {
+  const url = "/api/comment/restaurant?restaurant_id=" + restaurant_id;
+  const response = await fetch(url, {
+    method: "GET",
+  });
+
+  const comments = await response.json();
+  document.querySelector(".comments_group").innerHTML = "";
+  if (comments == false) {
+    document.querySelector(".no-comment").style.display = "block";
+    render_comment(null);
+  } else {
+    document.querySelector(".no-comment").style.display = "none";
+    for (let i = 0; i < comments.length; i++) {
+      render_comment(comments[i]);
+    }
+  }
+}
+
+// 頁面上更換餐廳
 function change_restaurant_card() {
   cardN += 1;
   photoN = 0;
@@ -25,10 +61,13 @@ function change_restaurant_card() {
   if (cardN == recentData.length - 3) {
     get_restaurant_card();
   }
+  getComment(recentData[cardN].id);
 }
 
 function render_restaurant_card(data) {
-  document.querySelector(".restaurant-name").innerHTML = data.name;
+  const restaurantName = document.querySelector(".restaurant-name");
+  restaurantName.innerHTML = data.name;
+  restaurantName.id = data.id;
   document.querySelector(".restaurant-type").innerHTML = data.restaurant_type;
   document.querySelector(".address").innerHTML = data.address;
   document.querySelector(".restaurant-rating").innerHTML =
@@ -76,9 +115,67 @@ function render_restaurant_card(data) {
 function render_photo(url = null) {
   if (url !== null) {
     document.querySelector(".restaurant-img").src =
-      recentData[cardN].imgs[photoN];
+      recentData[cardN].imgs[photoN].src;
   } else {
     document.querySelector(".restaurant-img").src = "/static/image/logo.png";
+  }
+}
+function render_comment(comment) {
+  if (comment === null) {
+    return;
+  } else {
+    // 確認圖片
+    let imgSrc;
+    if (comment.url !== null) {
+      imgSrc = comment.url;
+    } else {
+      imgSrc = "/static/image/logo.png";
+    }
+    // 確認星星
+    let starGroup = "";
+    const solidStar = `
+ <img
+     src="/static/image/star-solid.svg"
+     alt="實星"
+     class="star star-solid"
+ />`;
+    const regularStar = `
+ <img
+     src="/static/image/star-regular.svg"
+     alt="空星"
+     class="star star-regular"
+ />`;
+    for (let i = 1; i < 6; i++) {
+      if (i <= comment.rating) {
+        starGroup += solidStar;
+      } else {
+        starGroup += regularStar;
+      }
+    }
+    const comment_box = `        
+       <div class="comment">
+         <div class="img-container">
+           <img
+             src=${imgSrc}
+             alt="評論圖片"
+             class="comment-img"
+           />
+         </div>
+
+         <div class="comment-content">
+           <div class="comment-user_info">
+             <p class="comment-user">${comment.username}</p>
+             <p class="comment-user_score">（平均打分： ${comment.avg_rating} ）</p>
+           </div>
+           <div class="comment-star">
+             ${starGroup}
+           </div>
+           <h3 class="comment-text">${comment.context}</h3>
+         </div>
+       </div>`;
+    document
+      .querySelector(".comments_group")
+      .insertAdjacentHTML("beforeend", comment_box);
   }
 }
 
@@ -133,7 +230,9 @@ async function init() {
   }
   // 餐廳
   let getData = await get_restaurant_card();
+
   if (getData === true) {
+    getComment(recentData[cardN].id);
     render_restaurant_card(recentData[cardN]);
     if (recentData[cardN].imgs == null) {
       render_photo(null);
@@ -243,4 +342,12 @@ document
       detailInfo.style.display = "flex";
       showDetail = true;
     }
+  });
+
+// 導向到餐廳頁面
+const restaurant = document.querySelector(".restaurant-name");
+document
+  .querySelector(".restaurant-name")
+  .addEventListener("click", async (e) => {
+    location.href = "/restaurant/" + restaurant.id;
   });

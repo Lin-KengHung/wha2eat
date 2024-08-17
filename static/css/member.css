@@ -1,3 +1,4 @@
+@charset "UTF-8";
 main {
   display: flex;
   flex-direction: column;
@@ -15,7 +16,11 @@ main .user .user-photo {
   border-radius: 20px;
   width: 150px;
   height: 150px;
+  background-color: rgba(128, 128, 128, 0.3);
+}
+main .user .user-photo:hover {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  transition: 0.2s ease;
 }
 main .user .user-photo img {
   width: 100%;
@@ -55,6 +60,13 @@ main .pocket .pocket-title .title {
   padding: 10px;
   font-size: 1.5rem;
 }
+main .pocket .no-pocket {
+  height: 50px;
+  margin-top: 10px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
 main .pocket .pocket-restaurants {
   margin-top: 10px;
   display: flex;
@@ -84,6 +96,9 @@ main .pocket .pocket-restaurants .restaurant-box-group {
   overflow-x: scroll;
   scroll-behavior: smooth;
 }
+main .pocket .pocket-restaurants .restaurant-box-group::-webkit-scrollbar {
+  display: none;
+}
 main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box {
   width: 220px;
   margin-left: 10px;
@@ -95,6 +110,8 @@ main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaura
   width: 200px;
   height: 150px;
   border-radius: 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaurant-info {
   display: flex;
@@ -107,7 +124,7 @@ main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaura
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaurant-info .delete-btn {
+main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaurant-info .pocket-delete {
   width: 15px;
   height: 15px;
   margin-right: 5px;
@@ -142,9 +159,10 @@ main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box:hover .re
   font-size: 1.3rem;
   font-weight: 500;
 }
-main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box:hover .delete-btn {
+main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box:hover .pocket-delete {
   display: block;
   cursor: pointer;
+  z-index: 2;
 }
 main .record {
   width: 100%;
@@ -167,6 +185,13 @@ main .record .record-title .title {
   padding: 10px;
   font-size: 1.5rem;
 }
+main .record .no-comment {
+  height: 50px;
+  margin-top: 10px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
 main .record .comments-group .comment {
   background-color: white;
   border-radius: 10px;
@@ -176,11 +201,21 @@ main .record .comments-group .comment {
   align-items: center;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   margin-top: 15px;
+  position: relative;
 }
-main .record .comments-group .comment img {
-  border-radius: 10px 0 0 10px;
-  width: 200px;
+main .record .comments-group .comment .comment-img-container {
+  width: 150px;
   height: 150px;
+}
+main .record .comments-group .comment .comment-img-container img.comment-img {
+  border-radius: 10px 0 0 10px;
+  width: 100%;
+  min-width: 150px;
+  max-width: 150px;
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 main .record .comments-group .comment .comment-content {
   padding: 15px;
@@ -189,16 +224,48 @@ main .record .comments-group .comment .comment-content {
 }
 main .record .comments-group .comment .comment-content .comment-restaurant {
   display: flex;
+  flex-wrap: wrap;
 }
 main .record .comments-group .comment .comment-content .comment-restaurant .comment-restaurant_name {
   font-weight: 500;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+main .record .comments-group .comment .comment-content .comment-restaurant .comment-time {
+  min-width: 120px;
 }
 main .record .comments-group .comment .comment-content .star {
   margin-top: 5px;
   width: 20px;
   height: 20px;
 }
+main .record .comments-group .comment .comment-content .comment-text {
+  height: 50px;
+  line-height: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* 顯示的最大行數，根據需要設置 */
+  text-overflow: ellipsis;
+  overflow: hidden; /* 隱藏超出容器高度的內容 */
+}
+main .record .comments-group .comment .comment-delete {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  display: none;
+  cursor: pointer;
+}
 main .record .comments-group .comment:hover {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   transition: 0.3s ease;
+}
+main .record .comments-group .comment:hover .comment-delete {
+  display: block;
 }/*# sourceMappingURL=member.css.map */

@@ -39,3 +39,4 @@ async def get_user(payload =  Depends(security)):
 async def get_user(payload =  Depends(security)):
     user_profile = UserModel.get_user_profile(payload["id"])
     return user_profile
+

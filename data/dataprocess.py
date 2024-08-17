@@ -1,7 +1,7 @@
 import json
 
 # 读取原始 JSON 数据文件
-with open('NCKU_4km_rawdata_detail_0730.json', 'r', encoding='utf-8') as f:
+with open('小樹屋半徑2km_rawdata_0815.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 # 初始化一个空的字典来存储唯一的地方
@@ -27,11 +27,11 @@ total_restaurants = len(unique_places)
 print(f"Total unique restaurants: {total_restaurants}")
 
 # 保存去重后的 JSON 数据文件
-with open('NCKU_4km_unique_detail_0730.json', 'w', encoding='utf-8') as f:
+with open('小樹屋2km_unique_detail_0815.json', 'w', encoding='utf-8') as f:
     json.dump(unique_places, f, ensure_ascii=False, indent=2)
 
 # 保存餐厅名称到文本文件
-with open('restaurant_names_0730.txt', 'w', encoding='utf-8') as f:
+with open('小樹屋餐廳名稱_0815.txt', 'w', encoding='utf-8') as f:
     for name in restaurant_names:
         f.write(name + '\n')
 

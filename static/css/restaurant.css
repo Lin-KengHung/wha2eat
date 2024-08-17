@@ -1,0 +1,308 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main .restaurant {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0 10px 0;
+  padding: 0 10px 0 10px;
+  width: 100%;
+}
+main .restaurant .restaurant-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+main .restaurant .restaurant-card .restaurant-photo {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+main .restaurant .restaurant-card .restaurant-photo .restaurant-img {
+  border-radius: 10px 10px 0 0;
+  width: 100%;
+  height: 450px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+main .restaurant .restaurant-card .restaurant-photo .arrow {
+  position: absolute;
+  border: none;
+  border-radius: 50%;
+  display: none;
+}
+main .restaurant .restaurant-card .restaurant-photo .arrow:hover {
+  cursor: pointer;
+}
+main .restaurant .restaurant-card .restaurant-photo .left-arrow {
+  left: 5px;
+}
+main .restaurant .restaurant-card .restaurant-photo .right-arrow {
+  right: 5px;
+}
+main .restaurant .restaurant-card .restaurant-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 10px 0;
+}
+main .restaurant .restaurant-card .restaurant-title .restaurant-name {
+  text-align: left;
+  font-size: 2rem;
+  padding: 0 10px 0 10px;
+}
+main .restaurant .restaurant-card .restaurant-title .back {
+  margin-right: 20px;
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+}
+main .restaurant .restaurant-card .restaurant-info {
+  margin: 10px 0 20px 0;
+}
+main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  flex-wrap: wrap;
+}
+main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-tag {
+  font-weight: 500;
+  padding: 10px;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
+  border: 2px solid #080808;
+  border-radius: 30px;
+}
+main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-open {
+  background-color: rgba(0, 128, 0, 0.8);
+  color: white;
+  display: none;
+}
+main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-close {
+  background-color: rgba(255, 0, 0, 0.8);
+  color: white;
+  display: none;
+}
+main .restaurant .restaurant-card .restaurant-detail_info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main .restaurant .restaurant-card .restaurant-detail_info .seperate {
+  margin: 20px 0 20px 0;
+  width: 95%;
+}
+main .restaurant .restaurant-card .restaurant-detail_info .address-group {
+  width: 100%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+main .restaurant .restaurant-card .restaurant-detail_info .address-group .address-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+main .restaurant .restaurant-card .restaurant-detail_info .address-group .address {
+  margin-left: 10px;
+  text-align: left;
+}
+main .restaurant .restaurant-card .restaurant-detail_info .services-group {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+main .restaurant .restaurant-card .restaurant-detail_info .services-group .service {
+  display: flex;
+  align-items: center;
+  padding: 0 10px 0 10px;
+  margin-top: 0.5rem;
+  display: none;
+}
+main .restaurant .restaurant-card .restaurant-detail_info .services-group .service img {
+  width: 30px;
+  height: 30px;
+}
+main .restaurant .restaurant-card .restaurant-detail_info .services-group .service .service-text {
+  margin-left: 5px;
+}
+main .comments_group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0 10px 0;
+  padding: 0 10px 0 10px;
+  width: 100%;
+}
+main .comments_group .add-comment {
+  background-color: white;
+  border-radius: 10px;
+  width: 100%;
+  height: 150px;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
+  margin-bottom: 25px;
+  position: relative;
+}
+main .comments_group .add-comment .img-container {
+  min-width: 150px;
+  height: 150px;
+  background-color: rgba(128, 128, 128, 0.333);
+  border-radius: 10px 0 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+main .comments_group .add-comment .img-container img.uploadIcon {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px 0 0 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+main .comments_group .add-comment .img-container img.preview {
+  width: 100%;
+  min-width: 150px;
+  max-width: 150px;
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: none;
+}
+main .comments_group .add-comment .img-container .img-upload-btn {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+main .comments_group .add-comment .comment-container {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  width: 100%;
+  height: 150px;
+}
+main .comments_group .add-comment .comment-container .note {
+  font-weight: 500;
+}
+main .comments_group .add-comment .comment-container .rating {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-top: 5px;
+}
+main .comments_group .add-comment .comment-container .rating input.rating_range {
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+}
+main .comments_group .add-comment .comment-container .rating .star-group {
+  position: absolute;
+}
+main .comments_group .add-comment .comment-container .rating .star-group .star {
+  margin: 5px 5px 0 0;
+  width: 20px;
+  height: 20px;
+}
+main .comments_group .add-comment .comment-container .comment-content {
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 5px;
+  resize: none;
+}
+main .comments_group .add-comment .comment-submit {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 50px;
+  line-height: 24px;
+  border-radius: 10px;
+  background-color: rgba(128, 128, 128, 0.5);
+  color: white;
+  border: none;
+  z-index: 5;
+  cursor: pointer;
+}
+main .comments_group .add-comment:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: 0.5s ease;
+}
+main .comments_group .comment {
+  background-color: white;
+  border-radius: 10px;
+  width: 100%;
+  height: 150px;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
+}
+main .comments_group .comment .img-container {
+  width: 150px;
+  height: 150px;
+}
+main .comments_group .comment .img-container img {
+  width: 100%;
+  min-width: 150px;
+  max-width: 150px;
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+main .comments_group .comment .comment-content {
+  padding: 15px;
+  width: 100%;
+  height: 150px;
+}
+main .comments_group .comment .comment-content .comment-user_info {
+  display: flex;
+  flex-wrap: wrap;
+}
+main .comments_group .comment .comment-content .comment-user_info .comment-user {
+  font-weight: 600;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+main .comments_group .comment .comment-content .comment-user_info .comment-user_score {
+  min-width: 146px;
+}
+main .comments_group .comment .comment-content .star {
+  margin-top: 5px;
+  width: 20px;
+  height: 20px;
+}
+main .comments_group .comment .comment-content .comment-text {
+  height: 50px;
+  line-height: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+main .comments_group .comment:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: 0.5s ease;
+}/*# sourceMappingURL=restaurant.css.map */

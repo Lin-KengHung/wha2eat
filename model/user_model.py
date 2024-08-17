@@ -20,7 +20,7 @@ class User(BaseModel):
     id: int
     name: str
 class UserProfile(User):
-    photo: str
+    photo: Optional[str] = None
     avg_rating: Optional[float] = None
     pocket_No: int
     comment_No: int 
@@ -90,6 +90,23 @@ class UserModel:
         val = (id,)
         current_user = Database.read_one(sql, val)
         return UserProfile(id=id, name=current_user["username"], photo=current_user["profile_picture"], avg_rating=current_user["avg_rating"], pocket_No=current_user["pockets_count"], comment_No=current_user["comments_count"])
+
+    def update_avg_rating(id:int):
+        sql = """
+        UPDATE users
+        SET avg_rating = (
+            SELECT AVG(rating)
+            FROM comments
+            WHERE user_id = %s
+        )
+        WHERE id = %s;
+        """
+        val = (id, id)
+        result = Database.update(sql, val)
+        if (result > 0):
+            return True
+        else:
+            return False
 
 # ---------- JWT ----------
 SECRET_KEY = os.getenv("SECRET")

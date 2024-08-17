@@ -44,6 +44,16 @@ class Database:
         connect.close()
         return affected_rows
     
+    def create_and_return_id(sql, val=None):
+        connect = Database.connection_pool.get_connection()
+        mycursor = connect.cursor(dictionary=True)
+        mycursor.execute(sql, val)
+        last_id = mycursor.lastrowid
+        connect.commit()
+        mycursor.close()
+        connect.close()
+        return last_id
+    
     def update(sql, val=None):
         connect = Database.connection_pool.get_connection()
         mycursor = connect.cursor(dictionary=True)
