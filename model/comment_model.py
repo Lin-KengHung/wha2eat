@@ -65,28 +65,30 @@ class CommentModel:
                 return False
             
     def get_restaurant_comment(restaurant_id):
-        sql = f"""
+        sql = """
         SELECT c.id, c.rating, c.context, u.username, u.avg_rating, i.url 
-        FROM (SELECT * FROM comments WHERE restaurant_id = {restaurant_id}) AS c 
+        FROM (SELECT * FROM comments WHERE restaurant_id = %s) AS c 
         JOIN users AS u ON c.user_id = u.id 
         LEFT JOIN images AS i ON c.image_id = i.id
         ORDER BY id DESC;
         """
-        results = Database.read_all(sql)
+        val = (restaurant_id,)
+        results = Database.read_all(sql, val)
         comment_group = []
         for result in results:
             comment_group.append(RestaurantComment(**result))
         return comment_group
 
     def get_user_comment(user_id):
-        sql = f"""
+        sql = """
         SELECT c.id, r.name AS restaurant_name, c.rating, c.context, c.created_at, i.url 
-        FROM (SELECT * FROM comments WHERE user_id = {user_id}) AS c 
+        FROM (SELECT * FROM comments WHERE user_id = %s) AS c 
         JOIN restaurants AS r ON c.restaurant_id = r.id 
         LEFT JOIN images AS i ON c.image_id = i.id
         ORDER BY c.created_at DESC;
         """
-        results = Database.read_all(sql)
+        val = (user_id,)
+        results = Database.read_all(sql, val)
         comment_group = []
         datetime_pattern = r'(\d{4}-\d{2}-\d{2})'
 
