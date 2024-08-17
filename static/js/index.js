@@ -1,12 +1,13 @@
 let cardN = 0;
 let photoN = 0;
 let recentData = [];
-let commentData = [];
 let user_id;
 let showDetail = false;
 let loginState = false;
+let nextPage = null;
+let keyword;
 
-// 獲得餐廳資訊
+// 獲得推薦餐廳資訊
 async function get_restaurant_card() {
   const response = await fetch("/api/cards/suggest", { method: "GET" });
   const data_list = await response.json();
@@ -24,6 +25,51 @@ async function get_restaurant_card() {
     }
   }
   recentData = recentData.concat(data_list.data);
+  return true;
+}
+
+// 搜尋餐廳
+async function searchRestaurantCard() {
+  if (nextPage === null) {
+    nextPage = 0;
+  }
+  url = "/api/cards/search?keyword=" + keyword + "&page=" + nextPage;
+  const response = await fetch(url, { method: "GET" });
+  const data_list = await response.json();
+  if (data_list.data == false) {
+    return false;
+  }
+  if (nextPage == 0) {
+    console.log("目前的next page = 0，第一次搜尋，清空recentData");
+    recentData = [];
+    photoN = 0;
+    cardN = 0;
+    if (data_list.data.length == 1) {
+      console.log("只有一筆資料");
+      get_restaurant_card();
+    }
+  } else {
+    console.log("目前的next page是" + nextPage);
+  }
+  nextPage = data_list.next_page;
+
+  // 圖片preload
+  for (let i = 0; i < data_list.data.length; i++) {
+    if (data_list.data[i].imgs !== null) {
+      let preloadImg = [];
+      for (let j = 0; j < data_list.data[i].imgs.length; j++) {
+        const img = new Image();
+        img.src = data_list.data[i].imgs[j];
+        preloadImg.push(img);
+      }
+      data_list.data[i].imgs = preloadImg;
+    }
+  }
+  recentData = recentData.concat(data_list.data);
+
+  console.log("更新後的nexPage是" + nextPage);
+  console.log("recentData的長度是" + recentData.length);
+
   return true;
 }
 
@@ -51,6 +97,7 @@ async function getComment(restaurant_id) {
 function change_restaurant_card() {
   cardN += 1;
   photoN = 0;
+  console.log("目前cardN是" + cardN);
   render_restaurant_card(recentData[cardN]);
   if (recentData[cardN].imgs == null) {
     render_photo(null);
@@ -58,7 +105,9 @@ function change_restaurant_card() {
     render_photo("with url");
   }
   render_arrow();
-  if (cardN == recentData.length - 3) {
+  if (nextPage !== null && cardN == recentData.length - 3) {
+    searchRestaurantCard();
+  } else if (cardN == recentData.length - 3) {
     get_restaurant_card();
   }
   getComment(recentData[cardN].id);
@@ -243,7 +292,30 @@ async function init() {
   render_arrow();
 }
 
+// 事件
 init();
+console.log("ttest");
+//搜尋
+document.querySelector(".search").addEventListener("keydown", async (e) => {
+  if (e.key === "Enter" && e.target.value !== "") {
+    keyword = e.target.value;
+    nextPage = null;
+    let getData = await searchRestaurantCard();
+    if (getData) {
+      getComment(recentData[cardN].id);
+      render_restaurant_card(recentData[cardN]);
+      if (recentData[cardN].imgs == null) {
+        render_photo(null);
+      } else {
+        render_photo("with url");
+      }
+      render_arrow();
+    } else {
+      alert("搜尋不到相關餐廳");
+    }
+  }
+});
+
 // 換餐廳與加入口袋
 // 喜歡
 document.querySelector(".like").addEventListener("click", async (e) => {

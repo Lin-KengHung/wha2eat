@@ -123,6 +123,10 @@ main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaura
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
+}
+main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaurant-info .restaurant-name:hover {
+  font-weight: 500;
 }
 main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box .restaurant-info .pocket-delete {
   width: 15px;
@@ -154,10 +158,6 @@ main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box:hover {
   background-color: rgba(128, 128, 128, 0.5);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
   transition: 0.3s ease;
-}
-main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box:hover .restaurant-name {
-  font-size: 1.3rem;
-  font-weight: 500;
 }
 main .pocket .pocket-restaurants .restaurant-box-group .restaurant-box:hover .pocket-delete {
   display: block;

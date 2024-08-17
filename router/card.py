@@ -20,7 +20,7 @@ async def get_restaurant_by_id(id:int):
      result = CardModel.get_restaurant_by_id(id)
      return result
 
-@router.get("/cards/search",  summary="搜尋餐廳卡片", tags=["Card"])
-async def search_restaurant_card():
-
-     return "ok"
+@router.get("/cards/search", summary="搜尋餐廳卡片", tags=["Card"])
+async def search_restaurant_card(keyword:str, page:int):
+     result = CardModel.get_search_restaurants_info(keyword=keyword, page=page)
+     return result

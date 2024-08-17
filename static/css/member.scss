@@ -117,6 +117,11 @@ main {
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
+              cursor: pointer;
+              &:hover {
+                font-weight: 500;
+                // text-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+              }
             }
             .pocket-delete {
               width: 15px;
@@ -149,10 +154,6 @@ main {
             background-color: rgba(gray, 0.5);
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
 
-            .restaurant-name {
-              font-size: 1.3rem;
-              font-weight: 500;
-            }
             .pocket-delete {
               display: block;
               cursor: pointer;
