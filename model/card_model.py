@@ -27,7 +27,7 @@ class CardModel:
     def get_suggest_restaurants_info(day_of_week = datetime.today().weekday() + 1):
         
         # 隨機選擇餐廳id
-        random_id = ["1769"]
+        random_id = []
         for i in range(9):
             random_id.append(str(random.randint(1,4117)))
         
