@@ -5,16 +5,20 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+DATABASE_HOST = os.getenv('DATABASE_HOST')
+DATABASE_USER = os.getenv('DATABASE_USER')
+DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
+DATABASE_NAME = os.getenv('DATABASE_NAME')
 
 
 class Database:
     mydb = {
-        "host" : "localhost",
-        "user" : "root",
-        "password" : os.getenv("PASSWORD"),
-        "database" : "wha2eat_ncku"
+        "host" : DATABASE_HOST,
+        "user" : DATABASE_USER,
+        "password" : DATABASE_PASSWORD,
+        "database" : DATABASE_NAME
     }
-    connection_pool = mysql.connector.pooling.MySQLConnectionPool(pool_name="my_pool", pool_size=15, **mydb)
+    connection_pool = mysql.connector.pooling.MySQLConnectionPool(pool_name="my_pool", pool_size=32, **mydb)
     
     def read_all(sql, val=None):
         connect = Database.connection_pool.get_connection()
