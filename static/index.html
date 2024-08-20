@@ -35,6 +35,211 @@
       </nav>
     </header>
     <main>
+      <section class="constraint">
+        <div class="btn-group">
+          <button
+            id="algorithm-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            隨機
+          </button>
+          <ul class="dropdown-menu" id="algorithm-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="random">隨機</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="rating-height"
+                >高評價</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="rating-count-height"
+                >評論熱烈</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="btn-group">
+          <button
+            id="type-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            全部類型
+          </button>
+          <ul class="dropdown-menu" id="type-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="all">全部類型</a>
+            </li>
+            <li><a class="dropdown-item" href="#" data-value="BBQ">BBQ</a></li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="法式餐廳"
+                >法式餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="拉麵">拉麵</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="餐廳">餐廳</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="泰式餐廳"
+                >泰式餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="素食餐廳"
+                >素食餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="印度餐廳"
+                >印度餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="韓式餐廳"
+                >韓式餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="餐酒館">餐酒館</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="義大利餐廳"
+                >義大利餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="壽司">壽司</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="印尼餐廳"
+                >印尼餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="速食">速食</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="牛排館">牛排館</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="海鮮餐廳"
+                >海鮮餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="西班牙餐廳"
+                >西班牙餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="墨西哥餐廳"
+                >墨西哥餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="漢堡餐廳"
+                >漢堡餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="日式餐廳"
+                >日式餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="早餐店">早餐店</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="越南餐廳"
+                >越南餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="中式餐廳"
+                >中式餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="美式餐廳"
+                >美式餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="外賣">外賣</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="中東餐廳"
+                >中東餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="地中海餐廳"
+                >地中海餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="早午餐">早午餐</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="土耳其餐廳"
+                >土耳其餐廳</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="三明治店"
+                >三明治店</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="巴西餐廳"
+                >巴西餐廳</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="btn-group">
+          <button
+            id="distance-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            2公里以內
+          </button>
+          <ul class="dropdown-menu" id="distance-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="no-limit"
+                >2公里以內</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="5min"
+                >走路5分鐘內</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="10min"
+                >走路10分鐘內</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <button class="constraint-apply" id="apply-btn">套用</button>
+      </section>
+
       <section class="restaurant">
         <div class="restaurant-card">
           <div class="restaurant-photo">

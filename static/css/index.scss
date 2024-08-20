@@ -3,6 +3,127 @@ main {
   flex-direction: column;
   align-items: center;
 
+  .constraint {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    max-width: 620px;
+    padding: 0 10px;
+    position: relative;
+    border-radius: 10px;
+    flex-wrap: wrap;
+    // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    .btn-group {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      margin-right: 15px;
+      margin-top: 10px;
+
+      .btn {
+        padding: 5px 10px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: #f7988f;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: darken(#f7988f, 10%);
+        }
+
+        &:active {
+          background-color: darken(#f7988f, 15%);
+        }
+
+        &.dropdown-toggle::after {
+          margin-left: 10px;
+          content: "\25BC"; // Down arrow
+          font-size: 12px;
+          color: #fff;
+        }
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        display: none;
+        min-width: 160px;
+        padding: 5px 0;
+        margin: 2px 0 0;
+        font-size: 16px;
+        color: #333;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 5px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+
+        .dropdown-item {
+          display: block;
+          width: 100%;
+          padding: 8px 20px;
+          clear: both;
+          font-weight: normal;
+          color: #333;
+          text-align: inherit;
+          white-space: nowrap;
+          background: none;
+          border: 0;
+
+          &:hover,
+          &:focus {
+            color: #fff;
+            text-decoration: none;
+            background-color: #f7988f;
+          }
+        }
+
+        .dropdown-divider {
+          height: 1px;
+          margin: 0.5rem 0;
+          overflow: hidden;
+          background-color: #e9ecef;
+        }
+      }
+
+      &:hover .dropdown-menu,
+      &:focus .dropdown-menu {
+        display: block;
+      }
+    }
+
+    .constraint-apply {
+      margin-top: 10px;
+
+      padding: 5px 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #f7988f;
+      background-color: white;
+      border: 2px solid #f7988f;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: darken(#f7988f, 10%);
+      }
+
+      &:active {
+        background-color: darken(#f7988f, 15%);
+      }
+    }
+  }
+
   .restaurant {
     display: flex;
     flex-direction: column;

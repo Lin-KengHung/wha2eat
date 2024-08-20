@@ -423,3 +423,97 @@ document
   .addEventListener("click", async (e) => {
     location.href = "/restaurant/" + restaurant.id;
   });
+
+// Function to update the button text and close the dropdown
+function updateButton(btnId, value) {
+  const button = document.getElementById(btnId);
+  button.textContent = value;
+}
+
+// Function to handle the dropdown item click
+function handleDropdownClick(event, btnId) {
+  event.preventDefault();
+  const value = event.target.getAttribute("data-value");
+  updateButton(btnId, value);
+  // Close the dropdown menu
+  event.target
+    .closest(".btn-group")
+    .querySelector(".dropdown-menu")
+    .classList.remove("show");
+}
+
+// Function to log the current selections when 'apply' button is clicked
+function applySelections() {
+  const algorithm = document.getElementById("algorithm-btn").textContent;
+  const type = document.getElementById("type-btn").textContent;
+  const distance = document.getElementById("distance-btn").textContent;
+
+  console.log(`Algorithm: ${algorithm}`);
+  console.log(`Type: ${type}`);
+  console.log(`Distance: ${distance}`);
+}
+
+// 條件搜尋
+// 更新按鈕文本並關閉下拉選單的函數
+function updateButton(btnId, displayText, value) {
+  const button = document.getElementById(btnId);
+  button.textContent = displayText;
+  button.setAttribute("data-selected-value", value); // 將選中的值存儲為 data 屬性
+}
+
+// 處理下拉選單項目點擊的函數
+function handleDropdownClick(event, btnId) {
+  event.preventDefault();
+  const displayText = event.target.textContent; // 使用可見的文字
+  const value = event.target.getAttribute("data-value");
+  updateButton(btnId, displayText, value);
+
+  // 關閉下拉選單
+  const dropdownMenu = event.target
+    .closest(".btn-group")
+    .querySelector(".dropdown-menu");
+  const dropdownButton = event.target
+    .closest(".btn-group")
+    .querySelector(".btn");
+  dropdownMenu.classList.remove("show");
+  dropdownButton.setAttribute("aria-expanded", "false");
+}
+
+// 當點擊「套用」按鈕時，記錄當前選擇並將其存儲到 cookie 中的函數
+function applySelections() {
+  const algorithm = document
+    .getElementById("algorithm-btn")
+    .getAttribute("data-selected-value");
+  const type = document
+    .getElementById("type-btn")
+    .getAttribute("data-selected-value");
+  const distance = document
+    .getElementById("distance-btn")
+    .getAttribute("data-selected-value");
+
+  console.log(`Algorithm: ${algorithm}`);
+  console.log(`Type: ${type}`);
+  console.log(`Distance: ${distance}`);
+}
+
+// 為每個下拉選單項目附加事件監聽器
+document.querySelectorAll("#algorithm-menu .dropdown-item").forEach((item) => {
+  item.addEventListener("click", (event) =>
+    handleDropdownClick(event, "algorithm-btn")
+  );
+});
+
+document.querySelectorAll("#type-menu .dropdown-item").forEach((item) => {
+  item.addEventListener("click", (event) =>
+    handleDropdownClick(event, "type-btn")
+  );
+});
+
+document.querySelectorAll("#distance-menu .dropdown-item").forEach((item) => {
+  item.addEventListener("click", (event) =>
+    handleDropdownClick(event, "distance-btn")
+  );
+});
+
+// 為「套用」按鈕附加事件監聽器
+document.getElementById("apply-btn").addEventListener("click", applySelections);

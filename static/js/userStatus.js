@@ -85,7 +85,10 @@ document
     const password = document.querySelector(".signup-password").value;
     const gender_tag = document.querySelector('input[name="gender"]:checked');
     gender = gender_tag ? gender_tag.value : null;
-    const age = document.querySelector(".age").value;
+    let age = document.querySelector(".age").value;
+    if (age == "") {
+      age = null;
+    }
     const error = document.querySelector(".signup-error");
     const success = document.querySelector(".signup-success");
     const message = checkSignupData(name, email, password, age);
