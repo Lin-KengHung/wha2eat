@@ -8,7 +8,7 @@ sys.path.insert(0, root_dir)
 
 from dbconfig import Database
 
-with open("data/NCKU_4km_photo_0801.json", mode="r", encoding="utf-8") as file:
+with open("data/小樹屋2km_photo_0815", mode="r", encoding="utf-8") as file:
     data = json.load(file)
 
 sql = ("INSERT INTO images (place_id, url) "
