@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 import json
 from datetime import datetime
-import random
+
 
 class Restaurant(BaseModel):
     id : int
@@ -19,66 +19,109 @@ class Restaurant(BaseModel):
     dineIn : Optional[bool]
     delivery : Optional[bool]
     reservable : Optional[bool]
+    distance : int
+    attitude : Optional[str] = None
 
 class RestaurantOut(BaseModel):
     data : List[Restaurant]
     next_page : Optional[int] = None
 class CardModel:
-    def get_suggest_restaurants_info(day_of_week = datetime.today().weekday() + 1):
-        
-        # 隨機選擇餐廳id
-        random_id = []
-        for i in range(9):
-            random_id.append(str(random.randint(1,4117)))
-        
-        placeholders = ', '.join(['%s'] * len(random_id))
+    def get_suggest_restaurants_info(
+            min_google_rating,
+            min_rating_count,
+            user_lat, 
+            user_lng,
+            restaurant_type,
+            distance_limit,
+            user_id,
+            day_of_week = datetime.today().weekday() + 1
+        ):
 
-        sql = f"""
-        SELECT 
-            r.id, 
-            r.name, 
-            r.type,
-            r.google_rating, 
-            r.google_rating_count,
-            r.address,
-            r.takeout,
-            r.dineIn,
-            r.delivery,
-            r.reservable,
-            o.opening_hours, 
-            i.urls 
-        FROM 
-            (SELECT * FROM restaurants WHERE id in ({placeholders}) and businessStatus = 1) AS r
-        LEFT JOIN 
-            (SELECT 
-                place_id, 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'day_of_week', day_of_week, 
-                        'open_time', TIME_FORMAT(open_time, '%H:%\i:%\s'), 
-                        'close_time', TIME_FORMAT(close_time, '%H:%\i:%\s')
-                    ) 
-                ) AS opening_hours 
+        # 預設在小樹屋中
+        if user_lat is None:
+            user_lat = 25.062673934754084
+        if user_lng is None:
+            user_lng = 121.52174308176814
+
+
+        sql = """
+            SELECT DISTINCT
+                r.id, 
+                r.name, 
+                r.type,
+                r.google_rating, 
+                r.google_rating_count,
+                r.address,
+                r.takeout,
+                r.dineIn,
+                r.delivery,
+                r.reservable,
+                o.opening_hours, 
+                i.urls,
+                p.attitude,
+                ST_Distance_Sphere(r.coordinates, POINT(%s, %s)) AS distance
             FROM 
-                opening_hours 
-            GROUP BY 
-                place_id) AS o 
-        ON r.place_id = o.place_id 
-        LEFT JOIN 
-            (SELECT
-                place_id, 
-                JSON_ARRAYAGG(url) AS urls 
-            FROM 
-                images
+                restaurants AS r
+            LEFT JOIN 
+                (SELECT 
+                    place_id, 
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'open_time', TIME_FORMAT(open_time, '%H:%\i:%\s'), 
+                            'close_time', TIME_FORMAT(close_time, '%H:%\i:%\s')
+                        ) 
+                    ) AS opening_hours 
+                FROM 
+                    opening_hours 
+                WHERE 
+                    day_of_week = %s
+                GROUP BY 
+                    place_id) AS o 
+            ON r.place_id = o.place_id 
+            LEFT JOIN 
+                (SELECT
+                    place_id, 
+                    JSON_ARRAYAGG(url) AS urls 
+                FROM 
+                    images
+                WHERE
+                    upload_by_user = 0
+                GROUP BY 
+                    place_id) AS i 
+            ON r.place_id = i.place_id
+            LEFT JOIN pockets AS p 
+            ON r.id = p.restaurant_id AND p.user_id = %s
             WHERE
-                upload_by_user = 0
-            GROUP BY 
-                place_id) AS i 
-        ON r.place_id = i.place_id;
+                r.businessStatus = 1 
+                AND (p.attitude IS NULL OR p.attitude != 'dislike')
         """
-        val = tuple(random_id)
 
-        result = Database.read_all(sql,val)
+        # 參數列表
+        params = [user_lng, user_lat, day_of_week, user_id] 
+
+        # 餐廳類型，評分，評分數判斷
+        if min_google_rating is not None:
+            sql += " AND r.google_rating >= %s"
+            params.append(min_google_rating)
+
+        if min_rating_count is not None:
+            sql += " AND r.google_rating_count >= %s"
+            params.append(min_rating_count)
+
+        if restaurant_type != "*" and restaurant_type is not None:
+            sql += " AND r.type = %s"
+            params.append(restaurant_type)
+
+        # 距離條件判斷
+        if distance_limit is not None:
+            sql += " HAVING distance <= %s"
+            params.append(distance_limit)
+
+        # 排序和限制
+        sql += " ORDER BY RAND() LIMIT 10;"
+
+        # 將val參數轉成tuple並查詢資料庫
+        result = Database.read_all(sql, tuple(params))
         
         # 資料格式處裡
         restaurant_group = []
@@ -98,13 +141,16 @@ class CardModel:
             if result[i]["opening_hours"] is not None:
                 open = False
                 result[i]["opening_hours"] = json.loads(result[i]["opening_hours"])
+                currentTime = datetime.now().strftime("%H:%M:%S")
                 for opening_hour in result[i]["opening_hours"]:
-                    if opening_hour["day_of_week"] == day_of_week:
-                        currentTime = datetime.now().strftime("%H:%M:%S")
-                        if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
-                            open = True
-                            break
+                    if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
+                        open = True
+                        break
             
+            # 處裡距離格式
+            distance = int(round(result[i]["distance"], -1))
+
+
             restaurant_group.append(
                 Restaurant(
                     id=result[i]["id"], 
@@ -118,7 +164,9 @@ class CardModel:
                     takeout=result[i]["takeout"],
                     dineIn=result[i]["dineIn"],
                     delivery=result[i]["delivery"],
-                    reservable=result[i]["reservable"]
+                    reservable=result[i]["reservable"],
+                    distance=distance,
+                    attitude = result[i]["attitude"]
                 )
             )
 

@@ -56,7 +56,7 @@ class UserModel:
         else:
             return False
     
-    def signup(name:str, email: str, password: str, gender: Gender, age: Optional[int], photo: Optional[str]) -> bool:
+    def signup(name:str, email: str, password: str, gender: Gender, age: Optional[int] , photo: Optional[str]) -> bool:
         hash_password = make_hash_password(password)
         gender = gender.value if gender is not None else None
         print(f'name:{name}, email: {email}, password: {hash_password}, gender: {gender}, age: {age}, photo: {photo}')
