@@ -19,7 +19,7 @@ class Restaurant(BaseModel):
     dineIn : Optional[bool]
     delivery : Optional[bool]
     reservable : Optional[bool]
-    distance : int
+    distance : Optional[int] = None
     attitude : Optional[str] = None
 
 class RestaurantOut(BaseModel):
@@ -260,9 +260,23 @@ class CardModel:
 
         return restaurant
 
-    def get_search_restaurants_info(keyword:str, page:int, day_of_week = datetime.today().weekday() + 1):
+    def get_search_restaurants_info(
+            keyword:str, 
+            page:int,
+            user_lat, 
+            user_lng,
+            user_id,
+            day_of_week = datetime.today().weekday() + 1
+            ):
         keyword = '%' + keyword + '%'
         offset = page * 10
+
+        # 預設在小樹屋中
+        if user_lat is None:
+            user_lat = 25.062673934754084
+        if user_lng is None:
+            user_lng = 121.52174308176814
+
         sql = """
         SELECT 
             r.id,
@@ -277,7 +291,9 @@ class CardModel:
             r.delivery,
             r.reservable,
             o.opening_hours, 
-            i.urls 
+            i.urls,
+            p.attitude,
+            ST_Distance_Sphere(r.coordinates, POINT(%s, %s)) AS distance
         FROM 
             (SELECT * FROM restaurants WHERE name LIKE %s LIMIT %s, 11) AS r
         LEFT JOIN 
@@ -285,13 +301,14 @@ class CardModel:
                 place_id, 
                 JSON_ARRAYAGG(
                     JSON_OBJECT(
-                        'day_of_week', day_of_week, 
                         'open_time', TIME_FORMAT(open_time, '%H:%\i:%\s'), 
                         'close_time', TIME_FORMAT(close_time, '%H:%\i:%\s')
                     ) 
                 ) AS opening_hours 
             FROM 
                 opening_hours 
+            WHERE 
+                day_of_week = %s
             GROUP BY 
                 place_id) AS o 
         ON r.place_id = o.place_id 
@@ -305,9 +322,11 @@ class CardModel:
                 upload_by_user = 0
             GROUP BY 
                 place_id) AS i 
-        ON r.place_id = i.place_id;
+        ON r.place_id = i.place_id
+        LEFT JOIN pockets AS p 
+        ON r.id = p.restaurant_id AND p.user_id = %s;
         """
-        val = (keyword, offset)
+        val = (user_lng, user_lat,keyword, offset, day_of_week, user_id)
         result = Database.read_all(sql, val)
         print(f'搜尋{keyword}回傳比數: {len(result)}')
         # 判斷 next_page
@@ -334,13 +353,15 @@ class CardModel:
             if result[i]["opening_hours"] is not None:
                 open = False
                 result[i]["opening_hours"] = json.loads(result[i]["opening_hours"])
+                currentTime = datetime.now().strftime("%H:%M:%S")
                 for opening_hour in result[i]["opening_hours"]:
-                    if opening_hour["day_of_week"] == day_of_week:
-                        currentTime = datetime.now().strftime("%H:%M:%S")
-                        if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
-                            open = True
-                            break
+                    if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
+                        open = True
+                        break
             
+            # 處裡距離格式
+            distance = int(round(result[i]["distance"], -1))
+
             restaurant_group.append(
                 Restaurant(
                     id=result[i]["id"], 
@@ -354,7 +375,9 @@ class CardModel:
                     takeout=result[i]["takeout"],
                     dineIn=result[i]["dineIn"],
                     delivery=result[i]["delivery"],
-                    reservable=result[i]["reservable"]
+                    reservable=result[i]["reservable"],
+                    distance=distance,
+                    attitude = result[i]["attitude"]
                 )
             )
 

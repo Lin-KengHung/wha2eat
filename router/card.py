@@ -56,7 +56,12 @@ async def get_restaurant_by_id(id:int):
      result = CardModel.get_restaurant_by_id(id)
      return result
 
-@router.get("/cards/search", summary="搜尋餐廳卡片", tags=["Card"])
-async def search_restaurant_card(keyword:str, page:int):
-     result = CardModel.get_search_restaurants_info(keyword=keyword, page=page)
+@router.get("/cards/search", summary="訪客搜尋餐廳卡片", tags=["Card"])
+async def search_restaurant_card(keyword:str, page:int, lat:Optional[float] | None = None, lng:Optional[float] | None = None,):
+     result = CardModel.get_search_restaurants_info(keyword=keyword, page=page, user_lat=lat, user_lng=lng, user_id=None)
+     return result
+
+@router.get("/cards/search/login", summary="用戶搜尋餐廳卡片", tags=["Card"])
+async def search_restaurant_card(keyword:str, page:int, lat:Optional[float] | None = None, lng:Optional[float] | None = None, payload =  Depends(security)):
+     result = CardModel.get_search_restaurants_info(keyword=keyword, page=page, user_lat=lat, user_lng=lng, user_id=payload["id"])
      return result
