@@ -221,6 +221,8 @@ main .comments_group .add-comment .comment-container .rating .star-group .star {
   height: 20px;
 }
 main .comments_group .add-comment .comment-container .comment-content {
+  width: 100%;
+  height: auto;
   border-radius: 5px;
   margin-top: 10px;
   padding: 5px;
