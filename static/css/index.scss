@@ -66,7 +66,9 @@ main {
         border: 1px solid rgba(0, 0, 0, 0.15);
         border-radius: 5px;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-
+        &.show {
+          display: block;
+        }
         .dropdown-item {
           display: block;
           width: 100%;
@@ -121,6 +123,19 @@ main {
       &:active {
         background-color: darken(#f7988f, 15%);
       }
+    }
+    .data-length {
+      margin-top: 10px;
+      margin-left: 10px;
+      padding: 5px 10px;
+      // border: 2px solid black;
+      font-weight: 700;
+      border-radius: 20px;
+      color: rgb(255, 123, 0);
+      text-shadow: 0 2px 5px rgba(255, 123, 0, 0.3);
+      box-shadow: 0 1px 5px rgba(255, 123, 0, 0.5);
+      opacity: 0;
+      // transition: 0.1 ease;
     }
   }
 
@@ -217,11 +232,26 @@ main {
             color: white;
             display: none;
           }
+          .attitude-new {
+            background-color: rgba(rgb(255, 136, 0), 1);
+            color: white;
+            display: none;
+          }
+          .attitude-like {
+            background-color: rgba(rgb(242, 100, 124), 1);
+            color: white;
+            display: none;
+          }
+          .attitude-consider {
+            background-color: rgba(#10a4e8, 1);
+            color: white;
+            display: none;
+          }
         }
       }
       .restaurant-detail_info {
-        // display: flex;
-        display: none;
+        display: flex;
+        // display: none;
         flex-direction: column;
         align-items: center;
         .seperate {

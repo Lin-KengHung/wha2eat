@@ -52,14 +52,10 @@
               <a class="dropdown-item" href="#" data-value="random">隨機</a>
             </li>
             <li>
-              <a class="dropdown-item" href="#" data-value="rating-height"
-                >高評價</a
-              >
+              <a class="dropdown-item" href="#" data-value="4">高評價</a>
             </li>
             <li>
-              <a class="dropdown-item" href="#" data-value="rating-count-height"
-                >評論熱烈</a
-              >
+              <a class="dropdown-item" href="#" data-value="200">評論熱烈</a>
             </li>
           </ul>
         </div>
@@ -221,24 +217,23 @@
           </button>
           <ul class="dropdown-menu" id="distance-menu">
             <li>
-              <a class="dropdown-item" href="#" data-value="no-limit"
-                >2公里以內</a
-              >
+              <a class="dropdown-item" href="#" data-value="2000">2公里以內</a>
             </li>
             <li>
-              <a class="dropdown-item" href="#" data-value="5min"
-                >走路5分鐘內</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="10min"
+              <a class="dropdown-item" href="#" data-value="500"
                 >走路10分鐘內</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="800"
+                >走路15分鐘內</a
               >
             </li>
           </ul>
         </div>
 
         <button class="constraint-apply" id="apply-btn">套用</button>
+        <div class="data-length">有5筆資料！</div>
       </section>
 
       <section class="restaurant">
@@ -264,18 +259,22 @@
           </div>
           <div class="restaurant-title">
             <h2 class="restaurant-name">loading...</h2>
-            <img
+            <!-- <img
               src="/static/image/down_arrow.svg"
               alt="詳細資訊"
               class="restaurant-detail_btn"
-            />
+            /> -->
           </div>
           <div class="restaurant-info">
             <div class="restaurant-tags_group">
               <p class="restaurant-tag restaurant-open">營業中</p>
               <p class="restaurant-tag restaurant-close">休息中</p>
-              <p class="restaurant-tag restaurant-type">restaurant</p>
+              <p class="restaurant-tag distance">500公尺</p>
               <p class="restaurant-tag restaurant-rating">Google評分</p>
+              <p class="restaurant-tag restaurant-type">restaurant</p>
+              <p class="restaurant-tag attitude-new">新的發現！</p>
+              <p class="restaurant-tag attitude-like">你喜歡！</p>
+              <p class="restaurant-tag attitude-consider">你曾看過</p>
             </div>
             <div class="restaurant-detail_info">
               <hr class="seperate" />

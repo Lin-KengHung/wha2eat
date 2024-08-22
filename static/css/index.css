@@ -63,6 +63,9 @@ main .constraint .btn-group .dropdown-menu {
   border-radius: 5px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
+main .constraint .btn-group .dropdown-menu.show {
+  display: block;
+}
 main .constraint .btn-group .dropdown-menu .dropdown-item {
   display: block;
   width: 100%;
@@ -106,6 +109,17 @@ main .constraint .constraint-apply:hover {
 }
 main .constraint .constraint-apply:active {
   background-color: #f25648;
+}
+main .constraint .data-length {
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-weight: 700;
+  border-radius: 20px;
+  color: rgb(255, 123, 0);
+  text-shadow: 0 2px 5px rgba(255, 123, 0, 0.3);
+  box-shadow: 0 1px 5px rgba(255, 123, 0, 0.5);
+  opacity: 0;
 }
 main .restaurant {
   display: flex;
@@ -200,8 +214,23 @@ main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .resta
   color: white;
   display: none;
 }
-main .restaurant .restaurant-card .restaurant-detail_info {
+main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .attitude-new {
+  background-color: #ff8800;
+  color: white;
   display: none;
+}
+main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .attitude-like {
+  background-color: #f2647c;
+  color: white;
+  display: none;
+}
+main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .attitude-consider {
+  background-color: #10a4e8;
+  color: white;
+  display: none;
+}
+main .restaurant .restaurant-card .restaurant-detail_info {
+  display: flex;
   flex-direction: column;
   align-items: center;
 }

@@ -6,26 +6,62 @@ let showDetail = false;
 let loginState = false;
 let nextPage = null;
 let keyword;
-
 // 獲得推薦餐廳資訊
 async function get_restaurant_card() {
-  const response = await fetch("/api/cards/suggest", { method: "GET" });
-  const data_list = await response.json();
+  let url = "/api/cards/suggest";
+  let setting = { method: "GET" };
+  if (localStorage.getItem("user_token")) {
+    url += "/login";
+    setting = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user_token"),
+      },
+    };
+  }
 
-  // 圖片preload
-  for (let i = 0; i < data_list.data.length; i++) {
-    if (data_list.data[i].imgs !== null) {
-      let preloadImg = [];
-      for (let j = 0; j < data_list.data[i].imgs.length; j++) {
-        const img = new Image();
-        img.src = data_list.data[i].imgs[j];
-        preloadImg.push(img);
-      }
-      data_list.data[i].imgs = preloadImg;
+  if (localStorage.getItem("restaurantFilter")) {
+    let constrain = JSON.parse(localStorage.getItem("restaurantFilter"));
+    url += "?distance_limit=" + constrain.distance.value;
+    if (constrain.algorithm.displayText === "高評價") {
+      url += "&min_google_rating=" + constrain.algorithm.value;
+    } else if (constrain.algorithm.displayText === "評論熱烈") {
+      url += "&min_rating_count=" + constrain.algorithm.value;
+    }
+    if (constrain.type.value !== "all") {
+      url += "&restaurant_type=" + constrain.type.value;
     }
   }
-  recentData = recentData.concat(data_list.data);
-  return true;
+
+  const response = await fetch(url, setting);
+  const data_list = await response.json();
+
+  if (data_list.data == false) {
+    console.log(data_list);
+    showDataLength(0);
+
+    resetTypeToDefault();
+    return false;
+  } else {
+    // 圖片preload
+    for (let i = 0; i < data_list.data.length; i++) {
+      if (data_list.data[i].imgs !== null) {
+        let preloadImg = [];
+        for (let j = 0; j < data_list.data[i].imgs.length; j++) {
+          const img = new Image();
+          img.src = data_list.data[i].imgs[j];
+          preloadImg.push(img);
+        }
+        data_list.data[i].imgs = preloadImg;
+      }
+    }
+    recentData = recentData.concat(data_list.data);
+    const len = recentData.length;
+    while (recentData.length < 4) {
+      recentData = recentData.concat(data_list.data);
+    }
+    return len;
+  }
 }
 
 // 搜尋餐廳
@@ -33,23 +69,33 @@ async function searchRestaurantCard() {
   if (nextPage === null) {
     nextPage = 0;
   }
-  url = "/api/cards/search?keyword=" + keyword + "&page=" + nextPage;
-  const response = await fetch(url, { method: "GET" });
+  let url = "/api/cards/search";
+  let setting = { method: "GET" };
+  if (localStorage.getItem("user_token")) {
+    url += "/login";
+    setting = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user_token"),
+      },
+    };
+  }
+  url += "?keyword=" + keyword + "&page=" + nextPage;
+  const response = await fetch(url, setting);
   const data_list = await response.json();
+  const len = data_list.data.length;
   if (data_list.data == false) {
     return false;
   }
+  document.querySelector(".restaurant-img").src = "/static/image/logo.png";
+
   if (nextPage == 0) {
-    console.log("目前的next page = 0，第一次搜尋，清空recentData");
     recentData = [];
     photoN = 0;
     cardN = 0;
     if (data_list.data.length == 1) {
-      console.log("只有一筆資料");
       get_restaurant_card();
     }
-  } else {
-    console.log("目前的next page是" + nextPage);
   }
   nextPage = data_list.next_page;
 
@@ -67,10 +113,7 @@ async function searchRestaurantCard() {
   }
   recentData = recentData.concat(data_list.data);
 
-  console.log("更新後的nexPage是" + nextPage);
-  console.log("recentData的長度是" + recentData.length);
-
-  return true;
+  return len;
 }
 
 // 獲得留言資訊
@@ -97,7 +140,6 @@ async function getComment(restaurant_id) {
 function change_restaurant_card() {
   cardN += 1;
   photoN = 0;
-  console.log("目前cardN是" + cardN);
   render_restaurant_card(recentData[cardN]);
   if (recentData[cardN].imgs == null) {
     render_photo(null);
@@ -119,12 +161,20 @@ function render_restaurant_card(data) {
   restaurantName.id = data.id;
   document.querySelector(".restaurant-type").innerHTML = data.restaurant_type;
   document.querySelector(".address").innerHTML = data.address;
-  document.querySelector(".restaurant-rating").innerHTML =
-    "Google評分: " +
-    data.google_rating +
-    "（" +
-    data.google_rating_count +
-    "）";
+
+  // google 評論
+  const googleTag = document.querySelector(".restaurant-rating");
+  if (data.google_rating === null || data.google_rating_count === null) {
+    googleTag.style.display = "none";
+  } else {
+    googleTag.style.display = "block";
+    googleTag.innerHTML =
+      "Google評分: " +
+      data.google_rating +
+      "（" +
+      data.google_rating_count +
+      "）";
+  }
 
   // 營業判斷
   openTag = document.querySelector(".restaurant-open");
@@ -140,6 +190,33 @@ function render_restaurant_card(data) {
     closeTag.style.display = "none";
   }
 
+  // 態度判斷
+  if (localStorage.getItem("user_token")) {
+    newTag = document.querySelector(".attitude-new");
+    likeTag = document.querySelector(".attitude-like");
+    considerTag = document.querySelector(".attitude-consider");
+    if (data.attitude === "consider") {
+      considerTag.style.display = "block";
+      newTag.style.display = "none";
+      likeTag.style.display = "none";
+    } else if (data.attitude === "like") {
+      considerTag.style.display = "none";
+      newTag.style.display = "none";
+      likeTag.style.display = "block";
+    } else if (data.attitude === null) {
+      considerTag.style.display = "none";
+      newTag.style.display = "block";
+      likeTag.style.display = "none";
+    }
+  }
+
+  // 距離判斷
+  distanceTag = document.querySelector(".distance");
+  if (data.distance > 1000) {
+    distanceTag.innerHTML = data.distance / 1000 + "公里";
+  } else {
+    distanceTag.innerHTML = data.distance + "公尺";
+  }
   // 判斷內用，外帶，外送，訂位
   const services = ["takeout", "dineIn", "delivery", "reservable"];
   services.forEach((service) => {
@@ -277,10 +354,14 @@ async function init() {
     document.querySelector(".profile_icon").style.display = "none";
     document.querySelector(".user_status").style.display = "block";
   }
+
+  // 讀取local storage 的餐廳搜尋條件
+  loadRestaurantFilter();
   // 餐廳
   let getData = await get_restaurant_card();
 
-  if (getData === true) {
+  if (getData) {
+    console.log("初始化的getData長度 " + getData);
     getComment(recentData[cardN].id);
     render_restaurant_card(recentData[cardN]);
     if (recentData[cardN].imgs == null) {
@@ -288,13 +369,12 @@ async function init() {
     } else {
       render_photo("with url");
     }
+    render_arrow();
   }
-  render_arrow();
 }
 
 // 事件
 init();
-console.log("ttest");
 //搜尋
 document.querySelector(".search").addEventListener("keydown", async (e) => {
   if (e.key === "Enter" && e.target.value !== "") {
@@ -302,6 +382,10 @@ document.querySelector(".search").addEventListener("keydown", async (e) => {
     nextPage = null;
     let getData = await searchRestaurantCard();
     if (getData) {
+      console.log("搜尋後的長度" + getData);
+      showDataLength(getData);
+      document.querySelector(".restaurant-img").src =
+        "static/image/loading.gif";
       getComment(recentData[cardN].id);
       render_restaurant_card(recentData[cardN]);
       if (recentData[cardN].imgs == null) {
@@ -311,7 +395,7 @@ document.querySelector(".search").addEventListener("keydown", async (e) => {
       }
       render_arrow();
     } else {
-      alert("搜尋不到相關餐廳");
+      showDataLength(0);
     }
   }
 });
@@ -335,7 +419,7 @@ document.querySelector(".like").addEventListener("click", async (e) => {
     });
     const result = await response.json();
     if (result.error) {
-      alert("有錯快跟我講");
+      console.log("按讚過快");
     }
   }
 
@@ -359,7 +443,7 @@ document.querySelector(".dislike").addEventListener("click", async (e) => {
     });
     const result = await response.json();
     if (result.error) {
-      alert("有錯快跟我講");
+      console.log("按讚過快");
     }
   }
 
@@ -383,7 +467,7 @@ document.querySelector(".consider").addEventListener("click", async (e) => {
     });
     const result = await response.json();
     if (result.error) {
-      alert("有錯快跟我講");
+      console.log("按讚過快");
     }
   }
 
@@ -402,20 +486,6 @@ rightBtn.addEventListener("click", (e) => {
   render_photo("with url");
 });
 
-// 顯示詳細資訊
-const detailInfo = document.querySelector(".restaurant-detail_info");
-document
-  .querySelector(".restaurant-detail_btn")
-  .addEventListener("click", (e) => {
-    if (showDetail) {
-      detailInfo.style.display = "none";
-      showDetail = false;
-    } else {
-      detailInfo.style.display = "flex";
-      showDetail = true;
-    }
-  });
-
 // 導向到餐廳頁面
 const restaurant = document.querySelector(".restaurant-name");
 document
@@ -424,36 +494,33 @@ document
     location.href = "/restaurant/" + restaurant.id;
   });
 
-// Function to update the button text and close the dropdown
-function updateButton(btnId, value) {
-  const button = document.getElementById(btnId);
-  button.textContent = value;
-}
+// -------------------------------------------------- //
+// 條件相關
+// 切換下拉選單的顯示和隱藏
+function toggleDropdownMenu(btnId) {
+  // 先關閉其他所有下拉選單
+  document.querySelectorAll(".btn-group .dropdown-menu").forEach((menu) => {
+    const parentButton = menu.closest(".btn-group").querySelector(".btn");
+    if (parentButton.id !== btnId) {
+      menu.style.display = "none";
+      parentButton.setAttribute("aria-expanded", "false");
+    }
+  });
 
-// Function to handle the dropdown item click
-function handleDropdownClick(event, btnId) {
-  event.preventDefault();
-  const value = event.target.getAttribute("data-value");
-  updateButton(btnId, value);
-  // Close the dropdown menu
-  event.target
+  // 然後打開當前的下拉選單
+  const dropdownMenu = document
+    .getElementById(btnId)
     .closest(".btn-group")
-    .querySelector(".dropdown-menu")
-    .classList.remove("show");
+    .querySelector(".dropdown-menu");
+
+  // 切換顯示狀態
+  if (dropdownMenu.style.display === "block") {
+    dropdownMenu.style.display = "none";
+  } else {
+    dropdownMenu.style.display = "block";
+  }
 }
 
-// Function to log the current selections when 'apply' button is clicked
-function applySelections() {
-  const algorithm = document.getElementById("algorithm-btn").textContent;
-  const type = document.getElementById("type-btn").textContent;
-  const distance = document.getElementById("distance-btn").textContent;
-
-  console.log(`Algorithm: ${algorithm}`);
-  console.log(`Type: ${type}`);
-  console.log(`Distance: ${distance}`);
-}
-
-// 條件搜尋
 // 更新按鈕文本並關閉下拉選單的函數
 function updateButton(btnId, displayText, value) {
   const button = document.getElementById(btnId);
@@ -468,52 +535,166 @@ function handleDropdownClick(event, btnId) {
   const value = event.target.getAttribute("data-value");
   updateButton(btnId, displayText, value);
 
-  // 關閉下拉選單
-  const dropdownMenu = event.target
-    .closest(".btn-group")
-    .querySelector(".dropdown-menu");
-  const dropdownButton = event.target
-    .closest(".btn-group")
-    .querySelector(".btn");
-  dropdownMenu.classList.remove("show");
+  // 手動控制顯示與隱藏
+  const dropdownMenu = event.target.closest(".dropdown-menu");
+
+  // 使用 display 控制顯示與隱藏
+  dropdownMenu.style.display = "none";
+
+  // 更新按鈕的 aria-expanded 屬性
+  const dropdownButton = document.getElementById(btnId);
   dropdownButton.setAttribute("aria-expanded", "false");
 }
 
 // 當點擊「套用」按鈕時，記錄當前選擇並將其存儲到 cookie 中的函數
-function applySelections() {
-  const algorithm = document
-    .getElementById("algorithm-btn")
-    .getAttribute("data-selected-value");
-  const type = document
-    .getElementById("type-btn")
-    .getAttribute("data-selected-value");
-  const distance = document
-    .getElementById("distance-btn")
-    .getAttribute("data-selected-value");
+async function applySelections() {
+  const algorithmButton = document.getElementById("algorithm-btn");
+  const typeButton = document.getElementById("type-btn");
+  const distanceButton = document.getElementById("distance-btn");
 
-  console.log(`Algorithm: ${algorithm}`);
-  console.log(`Type: ${type}`);
-  console.log(`Distance: ${distance}`);
+  const algorithmDisplayText = algorithmButton.textContent;
+  const algorithmValue = algorithmButton.getAttribute("data-selected-value");
+
+  const typeDisplayText = typeButton.textContent;
+  const typeValue = typeButton.getAttribute("data-selected-value");
+
+  const distanceDisplayText = distanceButton.textContent;
+  const distanceValue = distanceButton.getAttribute("data-selected-value");
+
+  // 將顯示文字和值儲存到 localStorage
+  localStorage.setItem(
+    "restaurantFilter",
+    JSON.stringify({
+      algorithm: { displayText: algorithmDisplayText, value: algorithmValue },
+      type: { displayText: typeDisplayText, value: typeValue },
+      distance: { displayText: distanceDisplayText, value: distanceValue },
+    })
+  );
+
+  // console.log(`Algorithm: ${algorithmDisplayText} (${algorithmValue})`);
+  // console.log(`Type: ${typeDisplayText} (${typeValue})`);
+  // console.log(`Distance: ${distanceDisplayText} (${distanceValue})`);
+
+  // 在這裡可以發送 fetch 請求以獲取推薦餐廳
+  recentData = [];
+  photoN = 0;
+  cardN = 0;
+  document.querySelector(".restaurant-img").src = "static/image/loading.gif";
+  let getData = await get_restaurant_card();
+  if (getData) {
+    console.log("套用的getData長度 " + getData);
+    showDataLength(getData);
+    getComment(recentData[cardN].id);
+    render_restaurant_card(recentData[cardN]);
+    if (recentData[cardN].imgs == null) {
+      render_photo(null);
+    } else {
+      render_photo("with url");
+    }
+    render_arrow();
+  } else {
+    console.log("按下套用後get card回傳false");
+    showDataLength(0);
+    let getData = await get_restaurant_card();
+    getComment(recentData[cardN].id);
+    render_restaurant_card(recentData[cardN]);
+    if (recentData[cardN].imgs == null) {
+      render_photo(null);
+    } else {
+      render_photo("with url");
+    }
+    render_arrow();
+  }
 }
 
+// 為每個下拉選單按鈕附加點擊事件監聽器
+document.querySelectorAll(".btn.dropdown-toggle").forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    toggleDropdownMenu(event.currentTarget.id);
+  });
+});
+
 // 為每個下拉選單項目附加事件監聽器
-document.querySelectorAll("#algorithm-menu .dropdown-item").forEach((item) => {
-  item.addEventListener("click", (event) =>
-    handleDropdownClick(event, "algorithm-btn")
-  );
+document.querySelectorAll(".dropdown-menu .dropdown-item").forEach((item) => {
+  item.addEventListener("click", (event) => {
+    handleDropdownClick(
+      event,
+      event.target.closest(".btn-group").querySelector(".btn").id
+    );
+  });
 });
 
-document.querySelectorAll("#type-menu .dropdown-item").forEach((item) => {
-  item.addEventListener("click", (event) =>
-    handleDropdownClick(event, "type-btn")
-  );
-});
-
-document.querySelectorAll("#distance-menu .dropdown-item").forEach((item) => {
-  item.addEventListener("click", (event) =>
-    handleDropdownClick(event, "distance-btn")
-  );
-});
-
-// 為「套用」按鈕附加事件監聽器
+// 套用」按鈕附加事件監聽器
 document.getElementById("apply-btn").addEventListener("click", applySelections);
+
+function loadRestaurantFilter() {
+  const savedFilters = JSON.parse(localStorage.getItem("restaurantFilter"));
+
+  // 預設初始值
+  const defaultFilters = {
+    algorithm: { displayText: "隨機", value: "random" },
+    type: { displayText: "全部類型", value: "all" },
+    distance: { displayText: "2公里以內", value: 2000 },
+  };
+
+  const filters = savedFilters || defaultFilters;
+
+  updateButton(
+    "algorithm-btn",
+    filters.algorithm.displayText,
+    filters.algorithm.value
+  );
+  updateButton("type-btn", filters.type.displayText, filters.type.value);
+  updateButton(
+    "distance-btn",
+    filters.distance.displayText,
+    filters.distance.value
+  );
+}
+
+// 重製餐廳類型
+function resetTypeToDefault() {
+  const defaultType = { displayText: "全部類型", value: "all" };
+
+  // 更新按鈕顯示為預設值
+  updateButton("type-btn", defaultType.displayText, defaultType.value);
+
+  // 更新 localStorage 中的條件
+  const savedFilters =
+    JSON.parse(localStorage.getItem("restaurantFilter")) || {};
+  savedFilters.type = defaultType; // 設定 type 為預設值
+  localStorage.setItem("restaurantFilter", JSON.stringify(savedFilters));
+
+  console.log("Type reset to default: 全部類型 (all)");
+}
+
+// data比數動畫
+function showDataLength(n, delay = 3000) {
+  const element = document.querySelector(".data-length");
+
+  // 設置元素的內容並將其透明度設為1以顯示內容
+  if (n == 10) {
+    element.textContent = "超過" + n + "筆資料！";
+  } else if (n == 0) {
+    element.textContent = "沒有資料😭";
+  } else {
+    element.textContent = "有" + n + "筆資料！";
+  }
+
+  element.style.opacity = 1;
+  element.style.display = "block"; // 確保元素可見
+
+  // 延遲指定時間（毫秒）後執行淡出效果
+  setTimeout(() => {
+    let opacity = 1; // 元素初始透明度
+    const fadeOut = setInterval(() => {
+      if (opacity <= 0.1) {
+        clearInterval(fadeOut);
+        element.style.display = "none"; // 完全消失後隱藏元素
+      }
+      element.style.opacity = opacity;
+      opacity -= opacity * 0.1; // 每次減少透明度的10%
+    }, 50); // 每50毫秒更新一次透明度
+  }, delay);
+}
