@@ -16,11 +16,6 @@ async function getMyPocket(page) {
     document.querySelector(".pocket-restaurants").style.display = "none";
     console.log("沒東西");
   } else {
-    if (data.data.length < 3) {
-      document.querySelector(".pocket-right-arrow").style.display = "none";
-      document.querySelector(".pocket-left-arrow").style.display = "none";
-    }
-
     for (let i = 0; i < data.data.length; i++) {
       renderPocket(data.data[i]);
       // 新增lister導向餐廳
@@ -37,6 +32,7 @@ async function getMyPocket(page) {
         });
     }
     pocket_next_page = data.next_page;
+
     return "ok";
   }
 }
@@ -131,7 +127,13 @@ async function init() {
     location.href = "/";
   }
   // 口袋清單
-  getMyPocket(0);
+  let init_result = await getMyPocket(0);
+  if (init_result == "ok") {
+    if (document.querySelectorAll(".restaurant-box").length < 3) {
+      document.querySelector(".pocket-right-arrow").style.display = "none";
+      document.querySelector(".pocket-left-arrow").style.display = "none";
+    }
+  }
   // 會員評論
   getComment();
 }
