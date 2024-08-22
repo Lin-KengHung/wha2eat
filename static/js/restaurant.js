@@ -2,7 +2,7 @@ let recentData;
 let photoN = 0;
 let loginState = false;
 let userId;
-const pattern = /^http:.+\/restaurant\/(\d+)$/;
+const pattern = /^http.+\/restaurant\/(\d+)$/;
 const restaurantId = location.href.match(pattern)[1];
 
 async function get_restaurant_card() {
