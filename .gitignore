@@ -3,3 +3,6 @@ presente/
 raw_data/
 .env
 data/
+default.conf
+nginx/
+nohup.out
