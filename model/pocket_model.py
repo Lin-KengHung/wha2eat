@@ -3,8 +3,10 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 import json
 from datetime import datetime
-
-
+import pytz
+taiwan_tz = pytz.timezone('Asia/Taipei')
+taiwan_time = datetime.now(taiwan_tz)
+weekday = 0 if taiwan_time.weekday() == 6 else taiwan_time.weekday() + 1
 class Match(BaseModel):
     user_id: int
     restaurant_id: int
@@ -40,7 +42,7 @@ class PocketModel:
         else:
             return False
 
-    def get_my_pocket(id, page, day_of_week=datetime.today().weekday() + 1):
+    def get_my_pocket(id, page, day_of_week=weekday):
 
         offset = page * 10
         sql = """
@@ -103,7 +105,7 @@ class PocketModel:
             if result[i]["opening_hours"] is not None:
                 open = False
                 result[i]["opening_hours"] = json.loads(result[i]["opening_hours"])
-                currentTime = datetime.now().strftime("%H:%M:%S")
+                currentTime = taiwan_time.strftime("%H:%M:%S")
                 for opening_hour in result[i]["opening_hours"]:
                     if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
                         open = True

@@ -3,8 +3,10 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 import json
 from datetime import datetime
-
-
+import pytz
+taiwan_tz = pytz.timezone('Asia/Taipei')
+taiwan_time = datetime.now(taiwan_tz)
+weekday = 0 if taiwan_time.weekday() == 6 else taiwan_time.weekday() + 1
 class Restaurant(BaseModel):
     id : int
     place_id : Optional[str] = None
@@ -34,7 +36,7 @@ class CardModel:
             restaurant_type,
             distance_limit,
             user_id,
-            day_of_week = datetime.today().weekday() + 1
+            day_of_week = weekday
         ):
 
         # 預設在小樹屋中
@@ -141,7 +143,7 @@ class CardModel:
             if result[i]["opening_hours"] is not None:
                 open = False
                 result[i]["opening_hours"] = json.loads(result[i]["opening_hours"])
-                currentTime = datetime.now().strftime("%H:%M:%S")
+                currentTime = taiwan_time.strftime("%H:%M:%S")
                 for opening_hour in result[i]["opening_hours"]:
                     if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
                         open = True
@@ -172,7 +174,7 @@ class CardModel:
 
         return RestaurantOut(data=restaurant_group)
 
-    def get_restaurant_by_id(id, day_of_week = datetime.today().weekday() + 1):
+    def get_restaurant_by_id(id, day_of_week = weekday):
         sql = """
         SELECT 
             r.id,
@@ -236,7 +238,7 @@ class CardModel:
             result["opening_hours"] = json.loads(result["opening_hours"])
             for opening_hour in result["opening_hours"]:
                 if opening_hour["day_of_week"] == day_of_week:
-                    currentTime = datetime.now().strftime("%H:%M:%S")
+                    currentTime = taiwan_time.strftime("%H:%M:%S")
                     if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
                         open = True
                         break
@@ -266,7 +268,7 @@ class CardModel:
             user_lat, 
             user_lng,
             user_id,
-            day_of_week = datetime.today().weekday() + 1
+            day_of_week = weekday
             ):
         keyword = '%' + keyword + '%'
         offset = page * 10
@@ -353,7 +355,7 @@ class CardModel:
             if result[i]["opening_hours"] is not None:
                 open = False
                 result[i]["opening_hours"] = json.loads(result[i]["opening_hours"])
-                currentTime = datetime.now().strftime("%H:%M:%S")
+                currentTime = taiwan_time.strftime("%H:%M:%S")
                 for opening_hour in result[i]["opening_hours"]:
                     if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
                         open = True
