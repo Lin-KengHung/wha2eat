@@ -44,7 +44,7 @@ class CardModel:
             user_lat = 25.062673934754084
         if user_lng is None:
             user_lng = 121.52174308176814
-
+        print(taiwan_time)
 
         sql = """
             SELECT DISTINCT
@@ -384,3 +384,54 @@ class CardModel:
             )
 
         return RestaurantOut(data=restaurant_group, next_page=next_page)
+
+    def get_suggest_restaurant_list(user_id):
+        sql = """
+            WITH liked_restaurants AS (
+                SELECT restaurant_id 
+                FROM pockets 
+                WHERE user_id = %s AND attitude = 'like'
+            )
+            SELECT 
+                recommended_restaurant_id, 
+                SUM(pair_count) AS pair_count
+            FROM (
+                SELECT 
+                    CASE 
+                        WHEN restaurant_id_1 IN (SELECT restaurant_id FROM liked_restaurants) THEN restaurant_id_2
+                        WHEN restaurant_id_2 IN (SELECT restaurant_id FROM liked_restaurants) THEN restaurant_id_1
+                    END AS recommended_restaurant_id,
+                    pair_count
+                FROM (
+                    SELECT 
+                        p1.restaurant_id AS restaurant_id_1, 
+                        p2.restaurant_id AS restaurant_id_2, 
+                        COUNT(*) AS pair_count
+                    FROM 
+                        pockets p1
+                    JOIN 
+                        pockets p2 ON p1.user_id = p2.user_id AND p1.restaurant_id < p2.restaurant_id
+                    WHERE 
+                        p1.attitude = 'like' AND p2.attitude = 'like'
+                    GROUP BY 
+                        p1.restaurant_id, p2.restaurant_id
+                    HAVING 
+                        COUNT(*) >= %s
+                ) AS pair_table
+                WHERE 
+                    CASE 
+                        WHEN restaurant_id_1 IN (SELECT restaurant_id FROM liked_restaurants) THEN restaurant_id_2
+                        WHEN restaurant_id_2 IN (SELECT restaurant_id FROM liked_restaurants) THEN restaurant_id_1
+                    END IS NOT NULL
+            ) AS recommended_pairs
+            WHERE 
+                recommended_restaurant_id NOT IN (SELECT restaurant_id FROM liked_restaurants)
+            GROUP BY 
+                recommended_restaurant_id
+            ORDER BY 
+                pair_count DESC;
+        """
+        val = (user_id,1)
+        result = Database.read_all(sql,val)
+        return result
+        

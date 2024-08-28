@@ -65,3 +65,10 @@ async def search_restaurant_card(keyword:str, page:int, lat:Optional[float] | No
 async def search_restaurant_card(keyword:str, page:int, lat:Optional[float] | None = None, lng:Optional[float] | None = None, payload =  Depends(security)):
      result = CardModel.get_search_restaurants_info(keyword=keyword, page=page, user_lat=lat, user_lng=lng, user_id=payload["id"])
      return result
+
+@router.get("/cards/suggest/user-base", summary="推薦演算法，user-base，窮舉", tags=["Card"])
+async def test(user_id:int):
+     result = CardModel.get_suggest_restaurant_list(user_id)
+     return result
+
+@router.get("/cards/suggest/item-base", summary="推薦演算法，item-base，KNN", tags=["Card"])
