@@ -6,7 +6,7 @@ from datetime import datetime
 import pytz
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
-
+pd.set_option('future.no_silent_downcasting', True)
 
 taiwan_tz = pytz.timezone('Asia/Taipei')
 taiwan_time = datetime.now(taiwan_tz)
@@ -27,7 +27,6 @@ class Restaurant(BaseModel):
     reservable : Optional[bool]
     distance : Optional[int] = None
     attitude : Optional[str] = None
-
 class RestaurantOut(BaseModel):
     data : List[Restaurant]
     next_page : Optional[int] = None
@@ -388,61 +387,75 @@ class CardModel:
             )
 
         return RestaurantOut(data=restaurant_group, next_page=next_page)
+        
 
-    def get_suggest_restaurant_list(user_id):
+class CollaborativeFiltering:
+    def user_base_suggest(user_id):
         sql = """
+            -- 定義一個公共表達式 (CTE)，方便其他子查詢使用，此查詢結果為使用者已標記為 'like' 的所有餐廳ID
             WITH liked_restaurants AS (
                 SELECT restaurant_id 
                 FROM pockets 
-                WHERE user_id = %s AND attitude = 'like'
+                WHERE user_id = %s AND attitude = 'like' 
             )
+
+            -- 主查詢，根據合併的配對總分，去掉已經喜歡的餐廳後推薦餐廳
             SELECT 
                 recommended_restaurant_id, 
-                SUM(pair_count) AS pair_count
+                SUM(pair_count) AS pair_count  -- 對配對次數進行求和，以統計配對的總數
             FROM (
+                -- 子查詢：計算兩兩餐廳配對次數，根據特定使用者口袋名單的每一餐廳，計算其他餐廳的配對總分
                 SELECT 
                     CASE 
+                        -- 如果餐廳id1在使用者的喜好清單中，推薦餐廳id2
                         WHEN restaurant_id_1 IN (SELECT restaurant_id FROM liked_restaurants) THEN restaurant_id_2
+                        -- 如果餐廳id2在使用者的喜好清單中，推薦餐廳id1
                         WHEN restaurant_id_2 IN (SELECT restaurant_id FROM liked_restaurants) THEN restaurant_id_1
                     END AS recommended_restaurant_id,
-                    pair_count
+                    pair_count  -- 各餐廳配對次數
                 FROM (
+                    -- 查詢兩兩餐廳在單一使用者中的配對次數，保留配對結果，並總和所有使用者的配對次數
                     SELECT 
                         p1.restaurant_id AS restaurant_id_1, 
                         p2.restaurant_id AS restaurant_id_2, 
-                        COUNT(*) AS pair_count
+                        COUNT(*) AS pair_count  
                     FROM 
                         pockets p1
                     JOIN 
-                        pockets p2 ON p1.user_id = p2.user_id AND p1.restaurant_id < p2.restaurant_id
+                        pockets p2 ON p1.user_id = p2.user_id AND p1.restaurant_id < p2.restaurant_id  -- 避免餐廳id重複配對
                     WHERE 
-                        p1.attitude = 'like' AND p2.attitude = 'like'
+                        p1.attitude = 'like' AND p2.attitude = 'like'  -- 僅考慮喜歡的餐廳 
                     GROUP BY 
-                        p1.restaurant_id, p2.restaurant_id
+                        p1.restaurant_id, p2.restaurant_id  
                     HAVING 
-                        COUNT(*) >= %s
+                        COUNT(*) >= %s 
                 ) AS pair_table
                 WHERE 
                     CASE 
+                        -- 僅保留有效的推薦結果
                         WHEN restaurant_id_1 IN (SELECT restaurant_id FROM liked_restaurants) THEN restaurant_id_2
                         WHEN restaurant_id_2 IN (SELECT restaurant_id FROM liked_restaurants) THEN restaurant_id_1
-                    END IS NOT NULL
+                    END IS NOT NULL  -- 排除沒有推薦結果的情況
             ) AS recommended_pairs
             WHERE 
-                recommended_restaurant_id NOT IN (SELECT restaurant_id FROM liked_restaurants)
+                recommended_restaurant_id NOT IN (SELECT restaurant_id FROM liked_restaurants)  -- 排除已經喜歡的
             GROUP BY 
-                recommended_restaurant_id
+                recommended_restaurant_id 
             ORDER BY 
-                pair_count DESC;
+                pair_count DESC; 
         """
         val = (user_id,1)
-        result = Database.read_all(sql,val)
-        return result
+        results = Database.read_all(sql,val)
+        recommendations= []
 
-    def item_base_suggest():
-        user_id = 2
-        pd.set_option('future.no_silent_downcasting', True)
-        sql = """
+        for result in results:
+            recommendations.append(result["recommended_restaurant_id"])
+            # print(result["recommended_restaurant_id"])
+        return recommendations
+
+    def item_base_suggest(user_id):
+        # 計算使用者評分紀錄
+        sql_4_user_rating = """
             SELECT
                 p.user_id,
                 p.restaurant_id,
@@ -468,12 +481,11 @@ class CardModel:
                 p.user_id = c.user_id AND p.restaurant_id = c.restaurant_id;
             """
             
-
-        ratings_result = Database.read_all(sql)
+        ratings_result = Database.read_all(sql_4_user_rating)
         restaurant_ids = [row['restaurant_id'] for row in ratings_result]
 
-        # 获取餐厅的Google评分
-        sql_google_rating = """
+        # 獲得餐廳的google評分
+        sql_4_google_rating = """
             SELECT
                 id AS restaurant_id,
                 google_rating
@@ -483,51 +495,48 @@ class CardModel:
                 id IN (%s);
             """ % ','.join([str(id) for id in restaurant_ids])
 
-        google_rating_result = Database.read_all(sql_google_rating)
+        google_rating_result = Database.read_all(sql_4_google_rating)
 
+        # 建立google 評分字典，NaN用2.5取代(與consider分數相同)
         google_rating_dict = {
             row['restaurant_id']: float(row['google_rating']) if row['google_rating'] is not None else 2.5
             for row in google_rating_result
         }
 
-        # 構建以餐廳為索引、使用者為列的 DataFrame
+        # 構建使用者對餐廳評分 DataFrame
         df = pd.DataFrame(ratings_result)
         pivot_table = df.pivot_table(index='restaurant_id', columns='user_id', values='total_score')
 
-        # 紀錄每個使用者尚未評價的餐廳
-        unrated_restaurants = pivot_table[user_id][pivot_table[user_id].isna()].index.tolist()
+        # 紀錄特定使用者尚未評價或曾考慮過的餐廳
+        unrated_or_considered_restaurants = pivot_table[user_id][(pivot_table[user_id].isna()) | (pivot_table[user_id] == 2.5)].index.tolist()
 
-        # 紀錄使用者已評價且分數 >=5 的餐廳
+        # 紀錄特定使用者喜歡的(分數 >=5)的餐廳
         high_score_restaurants = pivot_table[user_id][pivot_table[user_id] >= 5].index.tolist()
 
         # 使用 Google Rating 填充 NaN 值
         pivot_table_filled = pivot_table.apply(lambda row: row.fillna(google_rating_dict.get(row.name)), axis=1)
-        print(pivot_table_filled)
+
         # 計算餐廳之間的餘弦相似度
         cosine_sim_matrix = cosine_similarity(pivot_table_filled)
 
-        # 將相似度矩陣轉換成 DataFrame，行列標籤為 restaurant_id
+        # 將相似度矩陣轉換成 restaurant_id x restaurant_id 的 DataFrame
         cosine_sim_df = pd.DataFrame(cosine_sim_matrix, index=pivot_table.index, columns=pivot_table.index)
-        print(cosine_sim_df)
-        def recommend_restaurants_for_user(cosine_sim_df, high_score_restaurants, unrated_restaurants, top_n=3):
+        
+        def recommend_restaurants_for_user(cosine_sim_df, high_score_restaurants, unrated_or_considered_restaurants, top_n=3):
             recommended_restaurants = set()
             
             for restaurant_id in high_score_restaurants:
+                
                 # 找到與此餐廳相似的餐廳
                 similar_restaurants = cosine_sim_df[restaurant_id].sort_values(ascending=False).index.tolist()
                 
                 # 過濾出尚未評價的餐廳
-                similar_unrated_restaurants = [r for r in similar_restaurants if r in unrated_restaurants]
+                similar_unrated_or_considered_restaurants = [r for r in similar_restaurants if r in unrated_or_considered_restaurants]
                 
                 # 添加到推薦列表
-                recommended_restaurants.update(similar_unrated_restaurants[:top_n])
+                recommended_restaurants.update(similar_unrated_or_considered_restaurants[:top_n])
             
             return list(recommended_restaurants)
-
-        # 假設要為 user_id = 1 進行推薦
     
-        recommendations = recommend_restaurants_for_user(cosine_sim_df, high_score_restaurants, unrated_restaurants)
-
-        print(f"推薦給使用者 {user_id} 的餐廳列表:", recommendations)
-
-
+        recommendations = recommend_restaurants_for_user(cosine_sim_df, high_score_restaurants, unrated_or_considered_restaurants)
+        return recommendations

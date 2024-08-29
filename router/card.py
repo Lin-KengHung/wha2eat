@@ -66,12 +66,12 @@ async def search_restaurant_card(keyword:str, page:int, lat:Optional[float] | No
      result = CardModel.get_search_restaurants_info(keyword=keyword, page=page, user_lat=lat, user_lng=lng, user_id=payload["id"])
      return result
 
-@router.get("/cards/suggest/user-base", summary="推薦演算法，user-base，窮舉", tags=["Card"])
-async def test(user_id:int):
-     result = CardModel.get_suggest_restaurant_list(user_id)
-     return result
+# @router.get("/cards/suggest/user-base", summary="推薦演算法: User-base 協同過濾", tags=["Recommend"])
+# async def test(user_id:int):
+#      result = CollaborativeFiltering.user_base_suggest(user_id)
+#      return result
 
-@router.get("/cards/suggest/item-base", summary="推薦演算法，item-base，KNN", tags=["Card"])
-async def test2():
-     result = CardModel.item_base_suggest()
-     return result
+# @router.get("/cards/suggest/item-base", summary="推薦演算法，Item-base 協同過濾", tags=["Recommend"])
+# async def test2(user_id:int):
+#      result = CollaborativeFiltering.item_base_suggest(user_id)
+#      return result

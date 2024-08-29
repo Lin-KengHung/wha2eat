@@ -1,6 +1,6 @@
 from fastapi import *
 from fastapi.responses import FileResponse, JSONResponse
-from router import card, user, pocket, comment
+from router import card, user, pocket, comment, recommend
 from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from model.user_model import CustomizeRaise
@@ -10,6 +10,7 @@ from model.share import Error
 app = FastAPI()
 
 app.include_router(card.router)
+app.include_router(recommend.router)
 app.include_router(user.router)
 app.include_router(pocket.router)
 app.include_router(comment.router)
