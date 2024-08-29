@@ -72,3 +72,6 @@ async def test(user_id:int):
      return result
 
 @router.get("/cards/suggest/item-base", summary="推薦演算法，item-base，KNN", tags=["Card"])
+async def test2():
+     result = CardModel.item_base_suggest()
+     return result

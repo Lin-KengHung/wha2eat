@@ -4,6 +4,10 @@ from typing import Optional, List
 import json
 from datetime import datetime
 import pytz
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+
+
 taiwan_tz = pytz.timezone('Asia/Taipei')
 taiwan_time = datetime.now(taiwan_tz)
 weekday = 0 if taiwan_time.weekday() == 6 else taiwan_time.weekday() + 1
@@ -434,4 +438,96 @@ class CardModel:
         val = (user_id,1)
         result = Database.read_all(sql,val)
         return result
-        
+
+    def item_base_suggest():
+        user_id = 2
+        pd.set_option('future.no_silent_downcasting', True)
+        sql = """
+            SELECT
+                p.user_id,
+                p.restaurant_id,
+                CASE
+                    WHEN p.attitude = 'like' THEN 5
+                    WHEN p.attitude = 'consider' THEN 2.5
+                    WHEN p.attitude = 'dislike' THEN 0
+                    ELSE 0
+                END +
+                CASE
+                    WHEN c.rating = 5 THEN 5
+                    WHEN c.rating = 4 THEN 3
+                    WHEN c.rating = 3 THEN 1
+                    WHEN c.rating = 2 THEN -2
+                    WHEN c.rating = 1 THEN -4
+                    ELSE 0
+                END AS total_score
+            FROM
+                pockets p
+            LEFT JOIN
+                comments c
+            ON
+                p.user_id = c.user_id AND p.restaurant_id = c.restaurant_id;
+            """
+            
+
+        ratings_result = Database.read_all(sql)
+        restaurant_ids = [row['restaurant_id'] for row in ratings_result]
+
+        # 获取餐厅的Google评分
+        sql_google_rating = """
+            SELECT
+                id AS restaurant_id,
+                google_rating
+            FROM
+                restaurants
+            WHERE
+                id IN (%s);
+            """ % ','.join([str(id) for id in restaurant_ids])
+
+        google_rating_result = Database.read_all(sql_google_rating)
+
+        google_rating_dict = {
+            row['restaurant_id']: float(row['google_rating']) if row['google_rating'] is not None else 2.5
+            for row in google_rating_result
+        }
+
+        # 構建以餐廳為索引、使用者為列的 DataFrame
+        df = pd.DataFrame(ratings_result)
+        pivot_table = df.pivot_table(index='restaurant_id', columns='user_id', values='total_score')
+
+        # 紀錄每個使用者尚未評價的餐廳
+        unrated_restaurants = pivot_table[user_id][pivot_table[user_id].isna()].index.tolist()
+
+        # 紀錄使用者已評價且分數 >=5 的餐廳
+        high_score_restaurants = pivot_table[user_id][pivot_table[user_id] >= 5].index.tolist()
+
+        # 使用 Google Rating 填充 NaN 值
+        pivot_table_filled = pivot_table.apply(lambda row: row.fillna(google_rating_dict.get(row.name)), axis=1)
+        print(pivot_table_filled)
+        # 計算餐廳之間的餘弦相似度
+        cosine_sim_matrix = cosine_similarity(pivot_table_filled)
+
+        # 將相似度矩陣轉換成 DataFrame，行列標籤為 restaurant_id
+        cosine_sim_df = pd.DataFrame(cosine_sim_matrix, index=pivot_table.index, columns=pivot_table.index)
+        print(cosine_sim_df)
+        def recommend_restaurants_for_user(cosine_sim_df, high_score_restaurants, unrated_restaurants, top_n=3):
+            recommended_restaurants = set()
+            
+            for restaurant_id in high_score_restaurants:
+                # 找到與此餐廳相似的餐廳
+                similar_restaurants = cosine_sim_df[restaurant_id].sort_values(ascending=False).index.tolist()
+                
+                # 過濾出尚未評價的餐廳
+                similar_unrated_restaurants = [r for r in similar_restaurants if r in unrated_restaurants]
+                
+                # 添加到推薦列表
+                recommended_restaurants.update(similar_unrated_restaurants[:top_n])
+            
+            return list(recommended_restaurants)
+
+        # 假設要為 user_id = 1 進行推薦
+    
+        recommendations = recommend_restaurants_for_user(cosine_sim_df, high_score_restaurants, unrated_restaurants)
+
+        print(f"推薦給使用者 {user_id} 的餐廳列表:", recommendations)
+
+
