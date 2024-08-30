@@ -8,9 +8,7 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 pd.set_option('future.no_silent_downcasting', True)
 
-taiwan_tz = pytz.timezone('Asia/Taipei')
-taiwan_time = datetime.now(taiwan_tz)
-weekday = 0 if taiwan_time.weekday() == 6 else taiwan_time.weekday() + 1
+
 class Restaurant(BaseModel):
     id : int
     place_id : Optional[str] = None
@@ -39,15 +37,17 @@ class CardModel:
             restaurant_type,
             distance_limit,
             user_id,
-            day_of_week = weekday
+            have_seen,
+            is_open,
+            restaurant_id_list
         ):
+
 
         # 預設在小樹屋中
         if user_lat is None:
             user_lat = 25.062673934754084
         if user_lng is None:
             user_lng = 121.52174308176814
-        print(taiwan_time)
 
         sql = """
             SELECT DISTINCT
@@ -61,28 +61,23 @@ class CardModel:
                 r.dineIn,
                 r.delivery,
                 r.reservable,
-                o.opening_hours, 
                 i.urls,
                 p.attitude,
-                ST_Distance_Sphere(r.coordinates, POINT(%s, %s)) AS distance
+                ST_Distance_Sphere(r.coordinates, POINT(%s, %s)) AS distance,
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 
+                        FROM opening_hours AS o
+                        WHERE 
+                            o.place_id = r.place_id 
+                            AND o.day_of_week = MOD(DAYOFWEEK(NOW()), 7)
+                            AND o.open_time <= CURTIME()
+                            AND o.close_time > CURTIME()
+                    ) THEN TRUE
+                    ELSE FALSE
+                END AS is_open
             FROM 
                 restaurants AS r
-            LEFT JOIN 
-                (SELECT 
-                    place_id, 
-                    JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'open_time', TIME_FORMAT(open_time, '%H:%\i:%\s'), 
-                            'close_time', TIME_FORMAT(close_time, '%H:%\i:%\s')
-                        ) 
-                    ) AS opening_hours 
-                FROM 
-                    opening_hours 
-                WHERE 
-                    day_of_week = %s
-                GROUP BY 
-                    place_id) AS o 
-            ON r.place_id = o.place_id 
             LEFT JOIN 
                 (SELECT
                     place_id, 
@@ -98,29 +93,50 @@ class CardModel:
             ON r.id = p.restaurant_id AND p.user_id = %s
             WHERE
                 r.businessStatus = 1 
-                AND (p.attitude IS NULL OR p.attitude != 'dislike')
         """
 
         # 參數列表
-        params = [user_lng, user_lat, day_of_week, user_id] 
+        params = [user_lng, user_lat, user_id] 
 
-        # 餐廳類型，評分，評分數判斷
+        # 判斷有沒有看過，以及需不需要有or沒看過或不限制
+        if have_seen is True:
+            sql += " AND p.attitude != 'dislike'"
+        elif have_seen is False:
+            sql += " AND p.attitude IS NULL"
+        else:
+            sql += " AND (p.attitude IS NULL OR p.attitude != 'dislike')"
+
+
+        # google評分篩選
         if min_google_rating is not None:
             sql += " AND r.google_rating >= %s"
             params.append(min_google_rating)
 
+        # google評分數量篩選
         if min_rating_count is not None:
             sql += " AND r.google_rating_count >= %s"
             params.append(min_rating_count)
 
+        # 限制只能在推薦的餐廳list中
+        if restaurant_id_list:
+            sql += " AND r.id IN (%s)" % ','.join(['%s'] * len(restaurant_id_list))
+            params.extend(restaurant_id_list)
+
+        # 餐廳類型篩選
         if restaurant_type != "*" and restaurant_type is not None:
             sql += " AND r.type = %s"
             params.append(restaurant_type)
 
-        # 距離條件判斷
-        if distance_limit is not None:
-            sql += " HAVING distance <= %s"
-            params.append(distance_limit)
+        # 距離條件篩選或是否營業篩選
+        if distance_limit is not None or is_open is True:
+            sql += " HAVING "
+            conditions = []
+            if distance_limit is not None:
+                conditions.append("distance <= %s")
+                params.append(distance_limit)
+            if is_open is True:
+                conditions.append("is_open = TRUE")
+            sql += " AND ".join(conditions)
 
         # 排序和限制
         sql += " ORDER BY RAND() LIMIT 10;"
@@ -140,17 +156,6 @@ class CardModel:
                 img_urls = result[i]["urls"][::-1]     
             else:
                 img_urls = None
-
-            # 確認營業狀況
-            open = None;
-            if result[i]["opening_hours"] is not None:
-                open = False
-                result[i]["opening_hours"] = json.loads(result[i]["opening_hours"])
-                currentTime = taiwan_time.strftime("%H:%M:%S")
-                for opening_hour in result[i]["opening_hours"]:
-                    if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
-                        open = True
-                        break
             
             # 處裡距離格式
             distance = int(round(result[i]["distance"], -1))
@@ -161,7 +166,7 @@ class CardModel:
                     id=result[i]["id"], 
                     imgs=img_urls, 
                     name=result[i]["name"], 
-                    open=open, 
+                    open=result[i]["is_open"], 
                     restaurant_type=result[i]["type"], 
                     google_rating=result[i]["google_rating"], 
                     google_rating_count=result[i]["google_rating_count"],
@@ -177,7 +182,7 @@ class CardModel:
 
         return RestaurantOut(data=restaurant_group)
 
-    def get_restaurant_by_id(id, day_of_week = weekday):
+    def get_restaurant_by_id(id):
         sql = """
         SELECT 
             r.id,
@@ -271,7 +276,6 @@ class CardModel:
             user_lat, 
             user_lng,
             user_id,
-            day_of_week = weekday
             ):
         keyword = '%' + keyword + '%'
         offset = page * 10
@@ -387,7 +391,7 @@ class CardModel:
             )
 
         return RestaurantOut(data=restaurant_group, next_page=next_page)
-        
+    
 
 class CollaborativeFiltering:
     def user_base_suggest(user_id):
