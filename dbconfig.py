@@ -24,6 +24,7 @@ class Database:
     def read_all(sql, val=None):
         connect = Database.connection_pool.get_connection()
         mycursor = connect.cursor(dictionary=True)
+        mycursor.execute("SET time_zone = 'Asia/Taipei';")
         mycursor.execute(sql, val)
         result = mycursor.fetchall()
         mycursor.close()
@@ -33,6 +34,7 @@ class Database:
     def read_one(sql, val=None):
         connect = Database.connection_pool.get_connection()
         mycursor = connect.cursor(dictionary=True)
+        mycursor.execute("SET time_zone = 'Asia/Taipei';")
         mycursor.execute(sql, val)
         result = mycursor.fetchone()
         mycursor.close()
