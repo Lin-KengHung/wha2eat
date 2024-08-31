@@ -21,6 +21,7 @@ async def suggest_restaurant_card(
      lng:Optional[float] | None = None,
      restaurant_type:Optional[str] | None = None, 
      distance_limit:Optional[int] | None = None,
+     is_open:Optional[bool] | None = None
      ):
 
      min_google_rating = None 
@@ -39,6 +40,9 @@ async def suggest_restaurant_card(
           restaurant_type=restaurant_type, 
           distance_limit=distance_limit, 
           user_id=None,
+          have_seen=None,
+          is_open=is_open,
+          restaurant_id_list=None
           )
      return result
 

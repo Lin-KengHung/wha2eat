@@ -2,8 +2,6 @@ from dbconfig import Database
 from pydantic import BaseModel, Field
 from typing import Optional, List
 import json
-from datetime import datetime
-import pytz
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 pd.set_option('future.no_silent_downcasting', True)
@@ -53,7 +51,6 @@ class CardModel:
             SELECT DISTINCT
                 r.id, 
                 r.name, 
-                r.type,
                 r.google_rating, 
                 r.google_rating_count,
                 r.address,
@@ -65,6 +62,12 @@ class CardModel:
                 p.attitude,
                 ST_Distance_Sphere(r.coordinates, POINT(%s, %s)) AS distance,
                 CASE 
+                    WHEN NOT EXISTS (
+                        SELECT 1 
+                        FROM opening_hours AS o
+                        WHERE 
+                            o.place_id = r.place_id 
+                    ) THEN NULL
                     WHEN EXISTS (
                         SELECT 1 
                         FROM opening_hours AS o
@@ -75,7 +78,15 @@ class CardModel:
                             AND o.close_time > CURTIME()
                     ) THEN TRUE
                     ELSE FALSE
-                END AS is_open
+                END AS is_open,
+                CASE 
+                    WHEN r.type IN ('法式餐廳', '西班牙餐廳', '墨西哥餐廳','中東餐廳', '土耳其餐廳', '巴西餐廳','地中海餐廳', '印度餐廳') THEN '異國餐廳'
+                    WHEN r.type IN ('日式餐廳', '壽司', '拉麵') THEN '日式餐廳'
+                    WHEN r.type IN ('中式餐廳', '海鮮餐廳') THEN '中式餐廳'
+                    WHEN r.type IN ('美式餐廳', '披薩', '三明治店', '漢堡餐廳') THEN '美式餐廳'
+                    WHEN r.type IN ('泰式餐廳', '印尼餐廳', '越南餐廳') THEN '東南亞餐廳'
+                    ELSE r.type
+                END AS restaurant_type
             FROM 
                 restaurants AS r
             LEFT JOIN 
@@ -122,13 +133,8 @@ class CardModel:
             sql += " AND r.id IN (%s)" % ','.join(['%s'] * len(restaurant_id_list))
             params.extend(restaurant_id_list)
 
-        # 餐廳類型篩選
-        if restaurant_type != "*" and restaurant_type is not None:
-            sql += " AND r.type = %s"
-            params.append(restaurant_type)
-
-        # 距離條件篩選或是否營業篩選
-        if distance_limit is not None or is_open is True:
+        # 距離條件，是否營業，餐廳類型篩選
+        if distance_limit is not None or is_open is True or (restaurant_type != "*" and restaurant_type is not None):
             sql += " HAVING "
             conditions = []
             if distance_limit is not None:
@@ -136,7 +142,11 @@ class CardModel:
                 params.append(distance_limit)
             if is_open is True:
                 conditions.append("is_open = TRUE")
+            if restaurant_type != "*" and restaurant_type is not None:
+                conditions.append("restaurant_type = %s")
+                params.append(restaurant_type)
             sql += " AND ".join(conditions)
+
 
         # 排序和限制
         sql += " ORDER BY RAND() LIMIT 10;"
@@ -167,7 +177,7 @@ class CardModel:
                     imgs=img_urls, 
                     name=result[i]["name"], 
                     open=result[i]["is_open"], 
-                    restaurant_type=result[i]["type"], 
+                    restaurant_type=result[i]["restaurant_type"], 
                     google_rating=result[i]["google_rating"], 
                     google_rating_count=result[i]["google_rating_count"],
                     address=result[i]["address"],
@@ -196,25 +206,35 @@ class CardModel:
             r.dineIn,
             r.delivery,
             r.reservable,
-            o.opening_hours, 
-            i.urls 
+            i.urls,
+            CASE 
+                WHEN NOT EXISTS (
+                    SELECT 1 
+                    FROM opening_hours AS o
+                    WHERE 
+                        o.place_id = r.place_id 
+                ) THEN NULL
+                WHEN EXISTS (
+                    SELECT 1 
+                    FROM opening_hours AS o
+                    WHERE 
+                        o.place_id = r.place_id 
+                        AND o.day_of_week = MOD(DAYOFWEEK(NOW()), 7)
+                        AND o.open_time <= CURTIME()
+                        AND o.close_time > CURTIME()
+                ) THEN TRUE
+                ELSE FALSE
+            END AS is_open,
+            CASE 
+                WHEN r.type IN ('法式餐廳', '西班牙餐廳', '墨西哥餐廳','中東餐廳', '土耳其餐廳', '巴西餐廳','地中海餐廳', '印度餐廳') THEN '異國餐廳'
+                WHEN r.type IN ('日式餐廳', '壽司', '拉麵') THEN '日式餐廳'
+                WHEN r.type IN ('中式餐廳', '海鮮餐廳') THEN '中式餐廳'
+                WHEN r.type IN ('美式餐廳', '披薩', '三明治店', '漢堡餐廳') THEN '美式餐廳'
+                WHEN r.type IN ('泰式餐廳', '印尼餐廳', '越南餐廳') THEN '東南亞餐廳'
+                ELSE r.type
+            END AS restaurant_type
         FROM 
             (SELECT * FROM restaurants WHERE id = %s) AS r
-        LEFT JOIN 
-            (SELECT 
-                place_id, 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'day_of_week', day_of_week, 
-                        'open_time', TIME_FORMAT(open_time, '%H:%\i:%\s'), 
-                        'close_time', TIME_FORMAT(close_time, '%H:%\i:%\s')
-                    ) 
-                ) AS opening_hours 
-            FROM 
-                opening_hours 
-            GROUP BY 
-                place_id) AS o 
-        ON r.place_id = o.place_id 
         LEFT JOIN 
             (SELECT
                 place_id, 
@@ -239,25 +259,13 @@ class CardModel:
         else:
             img_urls = None
 
-        # 確認營業狀況
-        open = None;
-        if result["opening_hours"] is not None:
-            open = False
-            result["opening_hours"] = json.loads(result["opening_hours"])
-            for opening_hour in result["opening_hours"]:
-                if opening_hour["day_of_week"] == day_of_week:
-                    currentTime = taiwan_time.strftime("%H:%M:%S")
-                    if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
-                        open = True
-                        break
-
 
         restaurant = Restaurant(
             id=result["id"],
             place_id=result["place_id"],
             imgs=img_urls, 
             name=result["name"], 
-            open=open, 
+            open=result["is_open"], 
             restaurant_type=result["type"], 
             google_rating=result["google_rating"], 
             google_rating_count=result["google_rating_count"],
@@ -291,7 +299,6 @@ class CardModel:
             r.id,
             r.place_id, 
             r.name, 
-            r.type,
             r.google_rating, 
             r.google_rating_count,
             r.address,
@@ -299,28 +306,37 @@ class CardModel:
             r.dineIn,
             r.delivery,
             r.reservable,
-            o.opening_hours, 
             i.urls,
             p.attitude,
-            ST_Distance_Sphere(r.coordinates, POINT(%s, %s)) AS distance
+            ST_Distance_Sphere(r.coordinates, POINT(%s, %s)) AS distance,
+            CASE 
+                WHEN NOT EXISTS (
+                    SELECT 1 
+                    FROM opening_hours AS o
+                    WHERE 
+                        o.place_id = r.place_id 
+                ) THEN NULL
+                WHEN EXISTS (
+                    SELECT 1 
+                    FROM opening_hours AS o
+                    WHERE 
+                        o.place_id = r.place_id 
+                        AND o.day_of_week = MOD(DAYOFWEEK(NOW()), 7)
+                        AND o.open_time <= CURTIME()
+                        AND o.close_time > CURTIME()
+                ) THEN TRUE
+                ELSE FALSE
+            END AS is_open,
+            CASE 
+                WHEN r.type IN ('法式餐廳', '西班牙餐廳', '墨西哥餐廳','中東餐廳', '土耳其餐廳', '巴西餐廳','地中海餐廳', '印度餐廳') THEN '異國餐廳'
+                WHEN r.type IN ('日式餐廳', '壽司', '拉麵') THEN '日式餐廳'
+                WHEN r.type IN ('中式餐廳', '海鮮餐廳') THEN '中式餐廳'
+                WHEN r.type IN ('美式餐廳', '披薩', '三明治店', '漢堡餐廳') THEN '美式餐廳'
+                WHEN r.type IN ('泰式餐廳', '印尼餐廳', '越南餐廳') THEN '東南亞餐廳'
+                ELSE r.type
+            END AS restaurant_type
         FROM 
             (SELECT * FROM restaurants WHERE name LIKE %s LIMIT %s, 11) AS r
-        LEFT JOIN 
-            (SELECT 
-                place_id, 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'open_time', TIME_FORMAT(open_time, '%H:%\i:%\s'), 
-                        'close_time', TIME_FORMAT(close_time, '%H:%\i:%\s')
-                    ) 
-                ) AS opening_hours 
-            FROM 
-                opening_hours 
-            WHERE 
-                day_of_week = %s
-            GROUP BY 
-                place_id) AS o 
-        ON r.place_id = o.place_id 
         LEFT JOIN 
             (SELECT
                 place_id, 
@@ -335,7 +351,7 @@ class CardModel:
         LEFT JOIN pockets AS p 
         ON r.id = p.restaurant_id AND p.user_id = %s;
         """
-        val = (user_lng, user_lat,keyword, offset, day_of_week, user_id)
+        val = (user_lng, user_lat,keyword, offset, user_id)
         result = Database.read_all(sql, val)
         print(f'搜尋{keyword}回傳比數: {len(result)}')
         # 判斷 next_page
@@ -356,17 +372,6 @@ class CardModel:
                 img_urls = result[i]["urls"][::-1]     
             else:
                 img_urls = None
-
-            # 確認營業狀況
-            open = None;
-            if result[i]["opening_hours"] is not None:
-                open = False
-                result[i]["opening_hours"] = json.loads(result[i]["opening_hours"])
-                currentTime = taiwan_time.strftime("%H:%M:%S")
-                for opening_hour in result[i]["opening_hours"]:
-                    if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
-                        open = True
-                        break
             
             # 處裡距離格式
             distance = int(round(result[i]["distance"], -1))
@@ -376,8 +381,8 @@ class CardModel:
                     id=result[i]["id"], 
                     imgs=img_urls, 
                     name=result[i]["name"], 
-                    open=open, 
-                    restaurant_type=result[i]["type"], 
+                    open=result[i]["is_open"], 
+                    restaurant_type=result[i]["restaurant_type"], 
                     google_rating=result[i]["google_rating"], 
                     google_rating_count=result[i]["google_rating_count"],
                     address=result[i]["address"],
