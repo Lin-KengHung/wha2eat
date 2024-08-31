@@ -241,8 +241,19 @@ rightBtn.addEventListener("click", (e) => {
 
 // 上傳圖片
 let imgInput = document.querySelector(".img-upload-btn");
-imgInput.addEventListener("change", (e) => {
-  const url = window.URL.createObjectURL(imgInput.files[0]);
+const CompressOptions = {
+  maxSizeMB: 2,
+  maxWidthOrHeight: 800,
+  useWebWorker: true,
+};
+
+imgInput.addEventListener("change", async (e) => {
+  const compressedFile = await imageCompression(
+    imgInput.files[0],
+    CompressOptions
+  );
+  const url = window.URL.createObjectURL(compressedFile);
+  console.log(url);
   document.querySelector(".uploadIcon").style.display = "none";
   const previewImg = document.querySelector(".preview");
   previewImg.src = url;
@@ -277,7 +288,11 @@ document
           console.log("沒有上傳檔案");
         } else {
           console.log("有上傳檔案");
-          formData.append("image", inputFile.files[0]);
+          const compressedFile = await imageCompression(
+            imgInput.files[0],
+            CompressOptions
+          );
+          formData.append("image", compressedFile);
         }
 
         formData.append("user_id", userId);
