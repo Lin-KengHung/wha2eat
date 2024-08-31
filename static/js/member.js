@@ -278,5 +278,6 @@ document.querySelector(".title").addEventListener("click", (e) => {
 // 登出
 document.querySelector(".logout").addEventListener("click", (e) => {
   localStorage.removeItem("user_token");
+  localStorage.removeItem("restaurantFilter");
   location.href = "/";
 });

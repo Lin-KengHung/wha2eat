@@ -23,13 +23,18 @@ async function get_restaurant_card() {
   if (localStorage.getItem("restaurantFilter")) {
     let constrain = JSON.parse(localStorage.getItem("restaurantFilter"));
     url += "?distance_limit=" + constrain.distance.value;
-    if (constrain.algorithm.displayText === "高評價") {
-      url += "&min_google_rating=" + constrain.algorithm.value;
-    } else if (constrain.algorithm.displayText === "評論熱烈") {
-      url += "&min_rating_count=" + constrain.algorithm.value;
+
+    if (constrain.algorithm.displayText !== "random") {
+      url += "&algorithm=" + constrain.algorithm.value;
     }
     if (constrain.type.value !== "all") {
       url += "&restaurant_type=" + constrain.type.value;
+    }
+    if (constrain.seen.value !== "seen-all" && loginState) {
+      url += "&have_seen=" + constrain.seen.value;
+    }
+    if (constrain.mustOpen.value === "true") {
+      url += "&is_open=true";
     }
   }
 
@@ -551,6 +556,8 @@ async function applySelections() {
   const algorithmButton = document.getElementById("algorithm-btn");
   const typeButton = document.getElementById("type-btn");
   const distanceButton = document.getElementById("distance-btn");
+  const mustOpenButton = document.getElementById("open-btn");
+  const seenButton = document.getElementById("seen-btn");
 
   const algorithmDisplayText = algorithmButton.textContent;
   const algorithmValue = algorithmButton.getAttribute("data-selected-value");
@@ -561,6 +568,24 @@ async function applySelections() {
   const distanceDisplayText = distanceButton.textContent;
   const distanceValue = distanceButton.getAttribute("data-selected-value");
 
+  const mustOpenDisplayText = mustOpenButton.textContent;
+  const mustOpenValue = mustOpenButton.getAttribute("data-selected-value");
+
+  const seenDisplayText = seenButton.textContent;
+  const seenValue = seenButton.getAttribute("data-selected-value");
+
+  if (loginState == false) {
+    if (
+      seenValue == "true" ||
+      seenValue == "false" ||
+      algorithmValue == "IBCF" ||
+      algorithmValue == "UBCF"
+    ) {
+      document.querySelector(".signin").style.display = "block";
+      return;
+    }
+  }
+
   // 將顯示文字和值儲存到 localStorage
   localStorage.setItem(
     "restaurantFilter",
@@ -568,6 +593,8 @@ async function applySelections() {
       algorithm: { displayText: algorithmDisplayText, value: algorithmValue },
       type: { displayText: typeDisplayText, value: typeValue },
       distance: { displayText: distanceDisplayText, value: distanceValue },
+      mustOpen: { displayText: mustOpenDisplayText, value: mustOpenValue },
+      seen: { displayText: seenDisplayText, value: seenValue },
     })
   );
 
@@ -633,9 +660,11 @@ function loadRestaurantFilter() {
 
   // 預設初始值
   const defaultFilters = {
-    algorithm: { displayText: "隨機", value: "random" },
+    algorithm: { displayText: "隨機推薦", value: "random" },
     type: { displayText: "全部類型", value: "all" },
     distance: { displayText: "2公里以內", value: 2000 },
+    mustOpen: { displayText: "營業中", value: "true" },
+    seen: { displayText: "全都看看", value: "seen-all" },
   };
 
   const filters = savedFilters || defaultFilters;
@@ -651,9 +680,15 @@ function loadRestaurantFilter() {
     filters.distance.displayText,
     filters.distance.value
   );
+  updateButton(
+    "open-btn",
+    filters.mustOpen.displayText,
+    filters.mustOpen.value
+  );
+  updateButton("seen-btn", filters.seen.displayText, filters.seen.value);
 }
 
-// 重製餐廳類型
+// reset餐廳類型
 function resetTypeToDefault() {
   const defaultType = { displayText: "全部類型", value: "all" };
 

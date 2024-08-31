@@ -29,7 +29,7 @@
           <img src="/static/image/wha2eat.svg" alt="logo" class="logo_icon" />
           <h2>wha2eat</h2>
         </div>
-        <input type="text" placeholder="搜尋餐廳" class="search" />
+        <input type="text" placeholder="想找什麼餐廳?" class="search" />
         <button class="user_status">登入</button>
         <img src="/static/image/profile.svg" alt="" class="profile_icon" />
         <button class="logout">登出</button>
@@ -45,17 +45,34 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            隨機
+            隨機推薦
           </button>
           <ul class="dropdown-menu" id="algorithm-menu">
             <li>
-              <a class="dropdown-item" href="#" data-value="random">隨機</a>
+              <a class="dropdown-item" href="#" data-value="random">隨機推薦</a>
             </li>
             <li>
-              <a class="dropdown-item" href="#" data-value="4">高評價</a>
+              <a class="dropdown-item" href="#" data-value="high_google_rating"
+                >高分評價</a
+              >
             </li>
             <li>
-              <a class="dropdown-item" href="#" data-value="200">評論熱烈</a>
+              <a
+                class="dropdown-item"
+                href="#"
+                data-value="high_google_rating_count"
+                >評論熱烈</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="UBCF"
+                >相似的用戶收藏了</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="IBCF"
+                >類似你收藏的餐廳</a
+              >
             </li>
           </ul>
         </div>
@@ -74,132 +91,70 @@
             <li>
               <a class="dropdown-item" href="#" data-value="all">全部類型</a>
             </li>
-            <li><a class="dropdown-item" href="#" data-value="BBQ">BBQ</a></li>
+
             <li>
-              <a class="dropdown-item" href="#" data-value="法式餐廳"
-                >法式餐廳</a
+              <a class="dropdown-item" href="#" data-value="東南亞餐廳"
+                >東南亞料理</a
               >
             </li>
             <li>
-              <a class="dropdown-item" href="#" data-value="拉麵">拉麵</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="餐廳">餐廳</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="泰式餐廳"
-                >泰式餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="素食餐廳"
-                >素食餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="印度餐廳"
-                >印度餐廳</a
+              <a class="dropdown-item" href="#" data-value="日式餐廳"
+                >日式料理</a
               >
             </li>
             <li>
               <a class="dropdown-item" href="#" data-value="韓式餐廳"
-                >韓式餐廳</a
+                >韓式料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="中式餐廳"
+                >中式料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="美式餐廳"
+                >美式料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="義大利餐廳"
+                >義大利料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="異國餐廳"
+                >異國料理</a
               >
             </li>
             <li>
               <a class="dropdown-item" href="#" data-value="餐酒館">餐酒館</a>
             </li>
+
             <li>
-              <a class="dropdown-item" href="#" data-value="義大利餐廳"
-                >義大利餐廳</a
-              >
+              <a class="dropdown-item" href="#" data-value="BBQ">燒烤炸物</a>
             </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="壽司">壽司</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="印尼餐廳"
-                >印尼餐廳</a
-              >
-            </li>
+
             <li>
               <a class="dropdown-item" href="#" data-value="速食">速食</a>
             </li>
             <li>
               <a class="dropdown-item" href="#" data-value="牛排館">牛排館</a>
             </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="海鮮餐廳"
-                >海鮮餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="西班牙餐廳"
-                >西班牙餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="墨西哥餐廳"
-                >墨西哥餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="漢堡餐廳"
-                >漢堡餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="日式餐廳"
-                >日式餐廳</a
-              >
-            </li>
+
             <li>
               <a class="dropdown-item" href="#" data-value="早餐店">早餐店</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="越南餐廳"
-                >越南餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="中式餐廳"
-                >中式餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="美式餐廳"
-                >美式餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="外賣">外賣</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="中東餐廳"
-                >中東餐廳</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="地中海餐廳"
-                >地中海餐廳</a
-              >
             </li>
             <li>
               <a class="dropdown-item" href="#" data-value="早午餐">早午餐</a>
             </li>
             <li>
-              <a class="dropdown-item" href="#" data-value="土耳其餐廳"
-                >土耳其餐廳</a
-              >
+              <a class="dropdown-item" href="#" data-value="外賣">外賣</a>
             </li>
+
             <li>
-              <a class="dropdown-item" href="#" data-value="三明治店"
-                >三明治店</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="巴西餐廳"
-                >巴西餐廳</a
+              <a class="dropdown-item" href="#" data-value="素食餐廳"
+                >素食餐廳</a
               >
             </li>
           </ul>
@@ -228,6 +183,49 @@
               <a class="dropdown-item" href="#" data-value="800"
                 >走路15分鐘內</a
               >
+            </li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button
+            id="open-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            營業中
+          </button>
+          <ul class="dropdown-menu" id="open-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="false">不限營業</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="true">營業中</a>
+            </li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button
+            id="seen-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            全都看看
+          </button>
+          <ul class="dropdown-menu" id="seen-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="seen-all"
+                >全都看看</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="false">沒看過的</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="true">有看過的</a>
             </li>
           </ul>
         </div>
@@ -284,7 +282,7 @@
                   alt="地址"
                   class="address-icon"
                 />
-                <p class="address">台南市北區開元路90巷3號</p>
+                <p class="address"></p>
               </div>
               <div class="services-group">
                 <div class="service takeout">
