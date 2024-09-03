@@ -171,7 +171,6 @@ class CardModel:
             # 處裡距離格式
             distance = int(round(result[i]["distance"], -1))
 
-
             restaurant_group.append(
                 Restaurant(
                     id=result[i]["id"],
@@ -194,7 +193,12 @@ class CardModel:
 
         return RestaurantOut(data=restaurant_group)
 
-    def get_restaurant_by_id(id):
+    def get_restaurant_by_id(restaurant_id, user_id, user_lat=None, user_lng=None):
+        # 預設在小樹屋中
+        if user_lat is None:
+            user_lat = 25.062673934754084
+        if user_lng is None:
+            user_lng = 121.52174308176814
         sql = """
         SELECT 
             r.id,
@@ -209,6 +213,8 @@ class CardModel:
             r.delivery,
             r.reservable,
             i.urls,
+            p.attitude,
+            ST_Distance_Sphere(r.coordinates, POINT(%s, %s)) AS distance,
             CASE 
                 WHEN NOT EXISTS (
                     SELECT 1 
@@ -247,11 +253,17 @@ class CardModel:
                 upload_by_user = 0
             GROUP BY 
                 place_id) AS i 
-        ON r.place_id = i.place_id;
+            ON r.place_id = i.place_id
+        LEFT JOIN pockets AS p 
+        ON r.id = p.restaurant_id AND p.user_id = %s;
         """
-        val = (id,)
-        result = Database.read_one(sql, val)
-
+        val = [user_lng, user_lat, restaurant_id, user_id]
+        # if(user_id is not None):
+        #     sql += " LEFT JOIN pockets AS p ON r.id = p.restaurant_id AND p.user_id = %s"
+        #     val.append(user_id)
+        # sql += ";"
+        result = Database.read_one(sql, tuple(val))
+        print(result["distance"])
 
 
         # 處裡圖片格式
@@ -260,7 +272,8 @@ class CardModel:
             img_urls = result["urls"][::-1]     
         else:
             img_urls = None
-
+        # 處裡距離格式
+        distance = int(round(result["distance"], -1))
 
         restaurant = Restaurant(
             id=result["id"],
@@ -275,7 +288,9 @@ class CardModel:
             takeout=result["takeout"],
             dineIn=result["dineIn"],
             delivery=result["delivery"],
-            reservable=result["reservable"]
+            reservable=result["reservable"],
+            distance=distance,
+            attitude=result["attitude"]
         )  
 
         return restaurant

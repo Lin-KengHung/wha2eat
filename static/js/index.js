@@ -123,6 +123,38 @@ async function searchRestaurantCard() {
   return len;
 }
 
+// 根據網址的餐廳id獲得餐廳
+async function get_restaurant_card_by_id(restaurantId) {
+  let url = "/api/card/" + restaurantId;
+  let setting = { method: "GET" };
+  if (localStorage.getItem("user_token")) {
+    url += "/login";
+    setting = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("user_token"),
+      },
+    };
+  }
+  const response = await fetch(url, setting);
+  let data = await response.json();
+  console.log(data);
+  render_restaurant_card(recentData);
+  if (data.imgs !== null) {
+    let preloadImg = [];
+    for (let i = 0; i < data.imgs.length; i++) {
+      const img = new Image();
+      img.src = data.imgs[i];
+      preloadImg.push(img);
+    }
+    data.imgs = preloadImg;
+    console.log(data);
+    recentData[0] = data;
+    console.log(recentData);
+  }
+  return true;
+}
+
 // 獲得留言資訊
 async function getComment(restaurant_id) {
   const url = "/api/comment/restaurant?restaurant_id=" + restaurant_id;
@@ -388,6 +420,15 @@ async function init() {
   // 讀取local storage 的餐廳搜尋條件
   loadRestaurantFilter();
   // 餐廳
+  // 先判斷網址有無指定特定餐廳id
+  const pattern = /^http.+\/restaurant\/(\d+)$/;
+  const match = location.href.match(pattern);
+  if (match !== null) {
+    const restaurantId = match[1];
+    let result = await get_restaurant_card_by_id(restaurantId);
+    console.log(result);
+  }
+
   let getData = await get_restaurant_card();
 
   if (getData) {

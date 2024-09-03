@@ -36,4 +36,4 @@ async def index(request: Request):
 
 @app.get("/restaurant/{id}", include_in_schema=False)
 async def index(request: Request):
-	return FileResponse("./static/restaurants.html", media_type="text/html")
+	return FileResponse("./static/index.html", media_type="text/html")

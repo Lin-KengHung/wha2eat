@@ -114,9 +114,14 @@ async def suggest_restaurant_card(
           )
      return result
 
-@router.get("/card/{id}", summary="根據id取得餐廳卡片", tags=["Card"])
+@router.get("/card/{id}", summary="訪客根據id取得餐廳卡片", tags=["Card"])
 async def get_restaurant_by_id(id:int):
-     result = CardModel.get_restaurant_by_id(id)
+     result = CardModel.get_restaurant_by_id(restaurant_id=id, user_id=None)
+     return result
+
+@router.get("/card/{id}/login", summary="用戶根據id取得餐廳卡片", tags=["Card"])
+async def get_restaurant_by_id(id:int, payload = Depends(security) ):
+     result = CardModel.get_restaurant_by_id(restaurant_id=id, user_id=payload["id"])
      return result
 
 @router.get("/cards/search", summary="訪客搜尋餐廳卡片", tags=["Card"])
