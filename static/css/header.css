@@ -19,7 +19,7 @@ header {
   height: 60px;
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 10;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 }
 header nav {
@@ -114,18 +114,14 @@ header nav .logout {
 }
 .popup__form {
   width: 340px;
-  border-radius: 6px;
-  background-color: white;
+  border-radius: 30px;
+  background-color: whitesmoke;
   position: absolute;
   top: 80px;
   color: white;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 }
 .popup__form--decorateor-bar {
-  border-radius: 6px 6px 0 0;
-  width: 100%;
-  height: 10px;
-  background: linear-gradient(90deg, #f7988f, #f6776b);
   position: relative;
 }
 .popup__form--close {
@@ -133,8 +129,8 @@ header nav .logout {
   position: absolute;
   width: 30px;
   height: 30px;
-  top: 20px;
-  right: 10px;
+  top: 13px;
+  right: 15px;
 }
 .popup__form--close:hover {
   cursor: pointer;
@@ -147,14 +143,20 @@ header nav .logout {
   align-items: center;
 }
 .popup__form--content h3 {
+  font-size: larger;
   color: rgba(0, 0, 0, 0.6784313725);
-  margin-bottom: 15px;
+  text-shadow: 0 1px 5px rgba(128, 128, 128, 0.2);
+}
+.popup__form--content .form-icon {
+  width: 60%;
+  border-radius: 10px;
+  margin: 20px 0;
 }
 .popup__form--content input {
   width: 100%;
   margin-bottom: 10px;
   border: 1px solid #cccccc;
-  border-radius: 5px;
+  border-radius: 15px;
   line-height: 2rem;
   padding: 5px 5px 5px 15px;
 }
@@ -227,7 +229,7 @@ header nav .logout {
   width: 50%;
   margin-bottom: 10px;
   align-items: center;
-  border-radius: 10px;
+  border-radius: 15px;
   padding: 5px;
   text-align: center;
   color: white;
@@ -242,10 +244,10 @@ header nav .logout {
   display: none;
 }
 .popup__form--send {
-  width: 100%;
+  width: 50%;
   height: 47px;
   margin-bottom: 10px;
-  border-radius: 5px;
+  border-radius: 15px;
   background-color: #f7988f;
   color: #ffffff;
   font-size: 1rem;
@@ -257,6 +259,16 @@ header nav .logout {
   font-size: 1.1rem;
   font-weight: 500;
   transition: 0.3s ease;
+}
+.popup__form .tab-change-notice {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: #9e9e9e;
+}
+.popup__form--tab-change {
+  font-size: 16px;
 }
 .popup__form--tab-change:hover {
   cursor: pointer;

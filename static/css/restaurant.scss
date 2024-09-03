@@ -204,6 +204,12 @@ main {
         height: 150px;
         .note {
           font-weight: 500;
+          display: flex;
+          .loading {
+            margin-left: 10px;
+            color: red;
+            display: none;
+          }
         }
         .rating {
           display: flex;

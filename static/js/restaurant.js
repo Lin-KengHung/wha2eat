@@ -239,7 +239,7 @@ rightBtn.addEventListener("click", (e) => {
   render_photo("with url");
 });
 
-// 上傳圖片
+// 預覽圖片
 let imgInput = document.querySelector(".img-upload-btn");
 const CompressOptions = {
   maxSizeMB: 2,
@@ -282,6 +282,7 @@ document
         document.querySelector(".signin").style.display = "block";
       } else {
         // 提交評論
+        document.querySelector(".loading").style.display = "block";
         const formData = new FormData();
         let inputFile = document.querySelector(".fileInput");
         if (inputFile.files.length == 0) {

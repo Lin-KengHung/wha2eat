@@ -200,6 +200,12 @@ main .comments_group .add-comment .comment-container {
 }
 main .comments_group .add-comment .comment-container .note {
   font-weight: 500;
+  display: flex;
+}
+main .comments_group .add-comment .comment-container .note .loading {
+  margin-left: 10px;
+  color: red;
+  display: none;
 }
 main .comments_group .add-comment .comment-container .rating {
   display: flex;

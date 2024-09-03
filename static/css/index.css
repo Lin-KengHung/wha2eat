@@ -49,7 +49,7 @@ main .constraint .btn-group .dropdown-menu {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 1000;
+  z-index: 4;
   display: none;
   min-width: 160px;
   padding: 5px 0;
@@ -92,8 +92,20 @@ main .constraint .btn-group .dropdown-menu .dropdown-divider {
 main .constraint .btn-group:hover .dropdown-menu, main .constraint .btn-group:focus .dropdown-menu {
   display: block;
 }
+main .constraint .user-location {
+  margin-top: 10px;
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #f7988f;
+  background-color: white;
+  border: 2px solid #f7988f;
+  border-radius: 20px;
+  cursor: default;
+}
 main .constraint .constraint-apply {
   margin-top: 10px;
+  margin-left: 10px;
   padding: 5px 10px;
   font-size: 16px;
   font-weight: bold;
@@ -129,74 +141,102 @@ main .restaurant {
   padding: 0 10px 0 10px;
   width: 100%;
 }
-main .restaurant .restaurant-card {
+main .restaurant .card-container {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 600px;
   text-align: center;
+  position: relative;
 }
-main .restaurant .restaurant-card .restaurant-photo {
+main .restaurant .card-container .restaurant-card {
+  border-radius: 10px;
+  padding: 0 0 10px 0;
+  background-color: white;
+  transform: translate(0px, 0px);
+  transition: 0.5s ease;
+}
+main .restaurant .card-container .restaurant-card .restaurant-photo {
   display: flex;
   align-items: center;
   position: relative;
+  cursor: pointer;
+  overflow: hidden;
 }
-main .restaurant .restaurant-card .restaurant-photo .restaurant-img {
+main .restaurant .card-container .restaurant-card .restaurant-photo .restaurant-img {
   border-radius: 10px 10px 0 0;
   width: 100%;
-  height: 450px;
+  height: 500px;
   -o-object-fit: cover;
      object-fit: cover;
   background-color: rgba(255, 124, 9, 0.5);
+  transform: scale(1, 1);
+  transition: transform 0.5s;
 }
-main .restaurant .restaurant-card .restaurant-photo .arrow {
+main .restaurant .card-container .restaurant-card .restaurant-photo .restaurant-img:hover {
+  transform: scale(1.1, 1.1);
+  transition: 0.5s;
+}
+main .restaurant .card-container .restaurant-card .restaurant-photo .indicators-group {
   position: absolute;
-  border: none;
-  border-radius: 50%;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 3;
 }
-main .restaurant .restaurant-card .restaurant-photo .arrow:hover {
+main .restaurant .card-container .restaurant-card .restaurant-photo .indicators-group .indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ccc;
   cursor: pointer;
 }
-main .restaurant .restaurant-card .restaurant-photo .left-arrow {
-  display: none;
-  left: 5px;
+main .restaurant .card-container .restaurant-card .restaurant-photo .indicators-group .indicator.active {
+  background-color: white; /* 當前圖片的圓點顏色 */
 }
-main .restaurant .restaurant-card .restaurant-photo .right-arrow {
-  display: none;
-  right: 5px;
-}
-main .restaurant .restaurant-card .restaurant-title {
+main .restaurant .card-container .restaurant-card .restaurant-title {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
-  margin: 20px 0 10px 0;
+  margin: 30px 0 10px 0;
 }
-main .restaurant .restaurant-card .restaurant-title .restaurant-name {
+main .restaurant .card-container .restaurant-card .restaurant-title .heart {
+  display: none;
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+main .restaurant .card-container .restaurant-card .restaurant-title .heart:hover {
+  width: 35px;
+  height: 35px;
+  transition: 0.3s ease;
+}
+main .restaurant .card-container .restaurant-card .restaurant-title .regular-heart:active {
+  animation: shake 0.15s;
+}
+main .restaurant .card-container .restaurant-card .restaurant-title .restaurant-name {
   text-align: left;
   font-size: 2rem;
   padding: 0 10px 0 10px;
   cursor: pointer;
 }
-main .restaurant .restaurant-card .restaurant-title .restaurant-name:hover {
+main .restaurant .card-container .restaurant-card .restaurant-title .restaurant-name:hover {
   text-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
-main .restaurant .restaurant-card .restaurant-title .restaurant-detail_btn {
-  margin-right: 20px;
-  height: 30px;
-  width: 30px;
-  cursor: pointer;
-}
-main .restaurant .restaurant-card .restaurant-info {
+main .restaurant .card-container .restaurant-card .restaurant-info {
   margin: 10px 0 20px 0;
 }
-main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group {
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group {
   display: flex;
   align-items: center;
   justify-self: start;
   flex-wrap: wrap;
 }
-main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-tag {
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-tag {
   font-weight: 500;
   padding: 10px;
   margin-left: 0.5rem;
@@ -204,56 +244,89 @@ main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .resta
   border: 2px solid #080808;
   border-radius: 30px;
 }
-main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-open {
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-open {
   background-color: rgba(0, 128, 0, 0.8);
   color: white;
   display: none;
 }
-main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-close {
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-close {
   background-color: rgba(255, 0, 0, 0.8);
   color: white;
   display: none;
 }
-main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .attitude-new {
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .attitude-new {
   background-color: #ff8800;
   color: white;
   display: none;
 }
-main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .attitude-like {
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .attitude-like {
   background-color: #f2647c;
   color: white;
   display: none;
 }
-main .restaurant .restaurant-card .restaurant-info .restaurant-tags_group .attitude-consider {
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .attitude-consider {
   background-color: #10a4e8;
   color: white;
   display: none;
 }
-main .restaurant .restaurant-card .restaurant-detail_info {
+main .restaurant .card-container .restaurant-card .restaurant-detail_info {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-main .restaurant .restaurant-card .restaurant-detail_info .seperate {
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .seperate {
   margin: 20px 0 20px 0;
   width: 95%;
 }
-main .restaurant .restaurant-card .restaurant-detail_info .address-group {
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group {
   width: 100%;
   padding: 5px;
   display: flex;
   align-items: center;
 }
-main .restaurant .restaurant-card .restaurant-detail_info .address-group .address-icon {
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .address-icon {
   width: 30px;
   height: 30px;
   border-radius: 50%;
 }
-main .restaurant .restaurant-card .restaurant-detail_info .address-group .address {
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .address {
   margin-left: 10px;
   text-align: left;
 }
-main .restaurant .restaurant-card .restaurant-detail_info .services-group {
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  border: 2px solid #e8e8e8;
+  padding: 2px 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation .navigation-btn {
+  display: flex;
+  align-items: center;
+  margin-left: 2px;
+  background-color: white;
+  border: none;
+  font-size: 0.8rem;
+  color: gray;
+  cursor: pointer;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation .navigation-btn .navigation-icon {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation:hover {
+  transition: 0.3s ease;
+  border: 2px solid black;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation:hover .navigation-btn {
+  transition: 0.3s ease;
+  font-weight: 700;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .services-group {
   width: 100%;
   display: flex;
   align-items: center;
@@ -261,18 +334,47 @@ main .restaurant .restaurant-card .restaurant-detail_info .services-group {
   margin-top: 10px;
   flex-wrap: wrap;
 }
-main .restaurant .restaurant-card .restaurant-detail_info .services-group .service {
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .services-group .service {
   display: flex;
   align-items: center;
   padding: 0 10px 0 10px;
   margin-top: 0.5rem;
 }
-main .restaurant .restaurant-card .restaurant-detail_info .services-group .service img {
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .services-group .service img {
   width: 30px;
   height: 30px;
 }
-main .restaurant .restaurant-card .restaurant-detail_info .services-group .service .service-text {
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .services-group .service .service-text {
   margin-left: 5px;
+}
+main .restaurant .card-container .next-page {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  top: 467px;
+  right: 0;
+  width: 120px;
+  font-size: 1.5rem;
+  height: 70px;
+  border-radius: 25px 0 0 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: 0.5s ease;
+}
+main .restaurant .card-container .next-page:hover {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  background-color: #615050;
+  width: 150px;
+  transform: translate(7px, -7px);
+  transition: 0.5s ease;
+}
+main .restaurant .card-container .next-page:hover ~ .restaurant-card {
+  transform: translate(7px, -7px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  transition: 0.5s ease;
 }
 main .no-comment {
   width: 100%;
@@ -359,40 +461,43 @@ main .comments_group .comment:hover {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   transition: 0.5s ease;
 }
-main .action {
-  display: flex;
-  justify-content: space-around;
-  margin: 1.5rem 0 1.5rem 0;
-  position: fixed;
-  align-items: center;
-  width: 350px;
-  height: 100px;
-  bottom: 30px;
-  background-color: rgba(8, 8, 8, 0.8);
-  border-radius: 20px;
-  box-shadow: 0 1px 10px 0 gray;
-}
-main .action .action-btn {
-  box-shadow: 0 1px 10px 0 white;
-  background-color: white;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  cursor: pointer;
-  border-radius: 0.5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-main .action .action-btn img {
-  width: 60%;
-  height: 60%;
-}
-main .action .consider {
-  width: 75px;
-  height: 75px;
-}
 main .button-area {
   width: 100%;
   height: 170px;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
 }/*# sourceMappingURL=index.css.map */

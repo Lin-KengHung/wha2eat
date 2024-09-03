@@ -229,113 +229,129 @@
             </li>
           </ul>
         </div>
-
+        <div class="user-location">定位：小樹屋附近</div>
         <button class="constraint-apply" id="apply-btn">套用</button>
         <div class="data-length">有5筆資料！</div>
       </section>
 
       <section class="restaurant">
-        <div class="restaurant-card">
-          <div class="restaurant-photo">
+        <div class="card-container">
+          <div class="next-page">
             <img
-              src="/static/image/btn_leftArrow.png"
-              alt="左"
-              class="left-arrow arrow"
+              src="/static/image/next.svg"
+              alt="下一個"
+              class="next-page-icon"
             />
-
-            <img
-              src="/static/image/loading.gif"
-              alt="Restaurant Image"
-              class="restaurant-img"
-            />
-
-            <img
-              src="/static/image/btn_rightArrow.png"
-              alt="右"
-              class="right-arrow arrow"
-            />
+            NEXT
           </div>
-          <div class="restaurant-title">
-            <h2 class="restaurant-name">loading...</h2>
-            <!-- <img
-              src="/static/image/down_arrow.svg"
-              alt="詳細資訊"
-              class="restaurant-detail_btn"
-            /> -->
-          </div>
-          <div class="restaurant-info">
-            <div class="restaurant-tags_group">
-              <p class="restaurant-tag restaurant-open">營業中</p>
-              <p class="restaurant-tag restaurant-close">休息中</p>
-              <p class="restaurant-tag distance">500公尺</p>
-              <p class="restaurant-tag restaurant-rating">Google評分</p>
-              <p class="restaurant-tag restaurant-type">restaurant</p>
-              <p class="restaurant-tag attitude-new">新的發現！</p>
-              <p class="restaurant-tag attitude-like">你喜歡！</p>
-              <p class="restaurant-tag attitude-consider">你曾看過</p>
+          <div class="restaurant-card">
+            <div class="restaurant-photo">
+              <img
+                src="/static/image/loading.gif"
+                alt="Restaurant Image"
+                class="restaurant-img"
+              />
+
+              <div class="indicators-group"></div>
             </div>
-            <div class="restaurant-detail_info">
-              <hr class="seperate" />
-              <div class="address-group">
-                <img
-                  src="/static/image/address.svg"
-                  alt="地址"
-                  class="address-icon"
-                />
-                <p class="address"></p>
+            <div class="restaurant-title">
+              <img
+                src="/static/image/heart-regular.svg"
+                alt="空心愛心"
+                class="heart regular-heart"
+              />
+              <img
+                src="/static/image/heart-solid.svg"
+                alt="實心愛心"
+                class="heart solid-heart"
+              />
+
+              <h2 class="restaurant-name">loading...</h2>
+            </div>
+            <div class="restaurant-info">
+              <div class="restaurant-tags_group">
+                <p class="restaurant-tag restaurant-open">營業中</p>
+                <p class="restaurant-tag restaurant-close">休息中</p>
+                <p class="restaurant-tag distance">500公尺</p>
+                <p class="restaurant-tag restaurant-rating">Google評分</p>
+                <p class="restaurant-tag restaurant-type">restaurant</p>
+                <p class="restaurant-tag attitude-new">新的發現！</p>
+                <p class="restaurant-tag attitude-like">你喜歡！</p>
+                <p class="restaurant-tag attitude-consider">你曾看過</p>
               </div>
-              <div class="services-group">
-                <div class="service takeout">
+              <div class="restaurant-detail_info">
+                <hr class="seperate" />
+                <div class="address-group">
                   <img
-                    src="/static/image/tick.svg"
-                    alt=""
-                    class="takeout-tick"
+                    src="/static/image/address.svg"
+                    alt="地址"
+                    class="address-icon"
                   />
-                  <img
-                    src="/static/image/error.svg"
-                    alt=""
-                    class="takeout-error"
-                  />
-                  <p class="service-text">外帶</p>
+                  <p class="address"></p>
+                  <div class="navigation">
+                    <button class="navigation-btn">
+                      導航
+                      <img
+                        src="/static/image/navigation.svg"
+                        alt="導航icon"
+                        class="navigation-icon"
+                      />
+                    </button>
+                  </div>
                 </div>
-                <div class="service dineIn">
-                  <img
-                    src="/static/image/tick.svg"
-                    alt=""
-                    class="dineIn-tick"
-                  />
-                  <img
-                    src="/static/image/error.svg"
-                    alt=""
-                    class="dineIn-error"
-                  />
-                  <p class="service-text">內用</p>
-                </div>
-                <div class="service delivery">
-                  <img
-                    src="/static/image/tick.svg"
-                    alt=""
-                    class="delivery-tick"
-                  />
-                  <img
-                    src="/static/image/error.svg"
-                    alt=""
-                    class="delivery-error"
-                  />
-                  <p class="service-text">外送</p>
-                </div>
-                <div class="service reservable">
-                  <img
-                    src="/static/image/tick.svg"
-                    alt=""
-                    class="reservable-tick"
-                  />
-                  <img
-                    src="/static/image/error.svg"
-                    alt=""
-                    class="reservable-error"
-                  />
-                  <p class="service-text">預定</p>
+                <div class="services-group">
+                  <div class="service takeout">
+                    <img
+                      src="/static/image/tick.svg"
+                      alt=""
+                      class="takeout-tick"
+                    />
+                    <img
+                      src="/static/image/error.svg"
+                      alt=""
+                      class="takeout-error"
+                    />
+                    <p class="service-text">外帶</p>
+                  </div>
+                  <div class="service dineIn">
+                    <img
+                      src="/static/image/tick.svg"
+                      alt=""
+                      class="dineIn-tick"
+                    />
+                    <img
+                      src="/static/image/error.svg"
+                      alt=""
+                      class="dineIn-error"
+                    />
+                    <p class="service-text">內用</p>
+                  </div>
+                  <div class="service delivery">
+                    <img
+                      src="/static/image/tick.svg"
+                      alt=""
+                      class="delivery-tick"
+                    />
+                    <img
+                      src="/static/image/error.svg"
+                      alt=""
+                      class="delivery-error"
+                    />
+                    <p class="service-text">外送</p>
+                  </div>
+                  <div class="service reservable">
+                    <img
+                      src="/static/image/tick.svg"
+                      alt=""
+                      class="reservable-tick"
+                    />
+                    <img
+                      src="/static/image/error.svg"
+                      alt=""
+                      class="reservable-error"
+                    />
+                    <p class="service-text">預定</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -345,54 +361,8 @@
       <section class="no-comment">
         <div class="without-comment">-- 目前沒有評論 --</div>
       </section>
-      <section class="comments_group">
-        <!-- <div class="comment">
-          <div class="img-container">
-            <img
-              src="/static/image/logo.png"
-              alt="評論圖片"
-              class="comment-img"
-            />
-          </div>
-          <div class="comment-content">
-            <div class="comment-user_info">
-              <p class="comment-user">小明</p>
-              <p class="comment-user_score">（平均打分： 4.5 ）</p>
-            </div>
-            <div class="comment-star">
-              <img
-                src="/static/image/star-solid.svg"
-                alt="實星"
-                class="star star-solid"
-              />
-              <img
-                src="/static/image/star-solid.svg"
-                alt="實星"
-                class="star star-solid"
-              />
-              <img
-                src="/static/image/star-solid.svg"
-                alt="實星"
-                class="star star-solid"
-              />
-              <img
-                src="/static/image/star-solid.svg"
-                alt="實星"
-                class="star star-solid"
-              />
-              <img
-                src="/static/image/star-regular.svg"
-                alt="空星"
-                class="star star-regular"
-              />
-            </div>
-            <h3 class="comment-text">
-              這是一間很好吃的餐廳，我推到不行，因為是最後一位客人，老闆還多招待一份甜點，愛了愛了
-            </h3>
-          </div>
-        </div> -->
-      </section>
-      <section class="action">
+      <section class="comments_group"></section>
+      <!-- <section class="action">
         <div class="action-btn dislike">
           <img src="/static/image/heart-break.svg" alt="不喜歡" />
         </div>
@@ -404,7 +374,7 @@
           <img src="/static/image/thumbs-up.svg" alt="喜歡" />
         </div>
       </section>
-      <section class="button-area"></section>
+      <section class="button-area"></section> -->
     </main>
     <section class="signin">
       <div class="popup__background">
@@ -417,7 +387,12 @@
             />
           </div>
           <div class="popup__form--content">
-            <h3 class="popup__form--title bold">登入會員帳號</h3>
+            <h3 class="popup__form--title bold">登入尋找美食吧</h3>
+            <img
+              src="/static/image/login.svg"
+              alt="登入登出示意圖"
+              class="form-icon"
+            />
             <input
               type="text"
               name="email"
@@ -433,11 +408,11 @@
             <div class="error alert signin-error">錯誤訊息</div>
             <div class="success alert signin-success">成功訊息</div>
             <button class="popup__form--send signin-form">登入帳戶</button>
-            <div>
-              <span class="body-med popup__form--notice">還沒有帳戶？</span>
-              <span class="body-med popup__form--tab-change change2signup"
-                >點此註冊</span
-              >
+            <div class="tab-change-notice">
+              <div class="body-med popup__form--notice">沒有帳戶？</div>
+              <div class="body-med popup__form--tab-change change2signup">
+                點此註冊！
+              </div>
             </div>
           </div>
         </div>
@@ -454,8 +429,12 @@
             />
           </div>
           <div class="popup__form--content">
-            <h3 class="popup__form--title">註冊會員帳號</h3>
-
+            <h3 class="popup__form--title">開始美食之旅</h3>
+            <img
+              src="/static/image/signup.svg"
+              alt="登入註冊示意圖"
+              class="form-icon"
+            />
             <input
               type="text"
               name="name"
@@ -508,7 +487,7 @@
               <input
                 type="number"
                 name="age"
-                placeholder="年紀"
+                placeholder="年紀（選填）"
                 class="age"
                 min="0"
                 max="100"
@@ -518,11 +497,11 @@
             <div class="error alert signup-error">錯誤訊息</div>
             <div class="success alert signup-success">註冊成功！</div>
             <button class="popup__form--send signup-form">註冊帳戶</button>
-            <div>
-              <span class="body-med popup__form--notice">已經有帳戶？</span>
-              <span class="body-med popup__form--tab-change change2signin"
-                >點此登入</span
-              >
+            <div class="tab-change-notice">
+              <div class="body-med popup__form--notice">已經有帳戶？</div>
+              <div class="body-med popup__form--tab-change change2signin">
+                點此登入
+              </div>
             </div>
           </div>
         </div>

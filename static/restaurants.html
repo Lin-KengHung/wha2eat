@@ -149,7 +149,10 @@
             <input class="img-upload-btn fileInput" type="file" />
           </div>
           <div class="comment-container">
-            <p class="note">留下你的評論吧！</p>
+            <div class="note">
+              留下你的評論吧！
+              <p class="loading">loading...</p>
+            </div>
             <div class="rating">
               <input
                 type="range"
@@ -346,7 +349,7 @@
               <input
                 type="number"
                 name="age"
-                placeholder="年紀"
+                placeholder="年紀（選填）"
                 class="age"
                 min="0"
                 max="100"

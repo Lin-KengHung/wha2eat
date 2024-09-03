@@ -6,6 +6,8 @@ let showDetail = false;
 let loginState = false;
 let nextPage = null;
 let keyword;
+let lat;
+let lng;
 // 獲得推薦餐廳資訊
 async function get_restaurant_card() {
   let url = "/api/cards/suggest";
@@ -62,7 +64,7 @@ async function get_restaurant_card() {
     }
     recentData = recentData.concat(data_list.data);
     const len = recentData.length;
-    while (recentData.length < 4) {
+    while (recentData.length < 4 && recentData.length > 1) {
       recentData = recentData.concat(data_list.data);
     }
     return len;
@@ -151,13 +153,30 @@ function change_restaurant_card() {
   } else {
     render_photo("with url");
   }
-  render_arrow();
+
   if (nextPage !== null && cardN == recentData.length - 3) {
     searchRestaurantCard();
   } else if (cardN == recentData.length - 3) {
     get_restaurant_card();
   }
   getComment(recentData[cardN].id);
+}
+
+async function getUserLocation() {
+  try {
+    // 等待使用者允許或拒絕位置存取
+    const position = await new Promise((resolve, reject) => {
+      // 請求使用者位置
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+
+    // 提取經緯度
+    lat = position.coords.latitude;
+    lng = position.coords.longitude;
+  } catch (error) {
+    console.error("Error getting user location:", error);
+    throw error; // 如果失敗，丟出錯誤
+  }
 }
 
 function render_restaurant_card(data) {
@@ -197,21 +216,29 @@ function render_restaurant_card(data) {
 
   // 態度判斷
   if (localStorage.getItem("user_token")) {
-    newTag = document.querySelector(".attitude-new");
-    likeTag = document.querySelector(".attitude-like");
-    considerTag = document.querySelector(".attitude-consider");
+    const newTag = document.querySelector(".attitude-new");
+    const likeTag = document.querySelector(".attitude-like");
+    const considerTag = document.querySelector(".attitude-consider");
+    const solidHeart = document.querySelector(".solid-heart");
+    const regularHeart = document.querySelector(".regular-heart");
     if (data.attitude === "consider") {
       considerTag.style.display = "block";
       newTag.style.display = "none";
       likeTag.style.display = "none";
+      regularHeart.style.display = "block";
+      solidHeart.style.display = "none";
     } else if (data.attitude === "like") {
       considerTag.style.display = "none";
       newTag.style.display = "none";
       likeTag.style.display = "block";
+      regularHeart.style.display = "none";
+      solidHeart.style.display = "block";
     } else if (data.attitude === null) {
       considerTag.style.display = "none";
       newTag.style.display = "block";
       likeTag.style.display = "none";
+      regularHeart.style.display = "block";
+      solidHeart.style.display = "none";
     }
   }
 
@@ -244,9 +271,29 @@ function render_restaurant_card(data) {
 }
 
 function render_photo(url = null) {
+  let indicatorGroup = document.querySelector(".indicators-group");
+  indicatorGroup.innerHTML = "";
   if (url !== null) {
+    indicatorGroup.insertAdjacentHTML(
+      "beforeend",
+      '<div class="indicator active" id="0"></div>'
+    );
+    let indicator = '<div class="indicator" id="0"></div>';
+    for (let i = 1; i < recentData[cardN].imgs.length; i++) {
+      indicatorGroup.insertAdjacentHTML("beforeend", indicator);
+    }
+
+    let n = photoN % recentData[cardN].imgs.length;
     document.querySelector(".restaurant-img").src =
-      recentData[cardN].imgs[photoN].src;
+      recentData[cardN].imgs[n].src;
+    const indicators = document.querySelectorAll(".indicator");
+    for (let i = 0; i < recentData[cardN].imgs.length; i++) {
+      if (i == n) {
+        indicators[i].classList.add("active");
+      } else {
+        indicators[i].classList.remove("active");
+      }
+    }
   } else {
     document.querySelector(".restaurant-img").src = "/static/image/logo.png";
   }
@@ -310,27 +357,6 @@ function render_comment(comment) {
   }
 }
 
-const leftBtn = document.querySelector(".left-arrow");
-const rightBtn = document.querySelector(".right-arrow");
-function render_arrow() {
-  if (recentData[cardN].imgs == null) {
-    leftBtn.style.display = "none";
-    rightBtn.style.display = "none";
-  } else if (recentData[cardN].imgs.length == 1) {
-    leftBtn.style.display = "none";
-    rightBtn.style.display = "none";
-  } else if (photoN == 0) {
-    leftBtn.style.display = "none";
-    rightBtn.style.display = "block";
-  } else if (photoN == recentData[cardN].imgs.length - 1) {
-    leftBtn.style.display = "block";
-    rightBtn.style.display = "none";
-  } else {
-    leftBtn.style.display = "block";
-    rightBtn.style.display = "block";
-  }
-}
-
 // 初始化
 async function init() {
   // 取得登入狀態
@@ -355,6 +381,7 @@ async function init() {
     document.querySelector(".profile_icon").style.display = "block";
     document.querySelector(".user_status").style.display = "none";
     loginState = true;
+    document.querySelector(".regular-heart").style.display = "block";
   } else {
     document.querySelector(".profile_icon").style.display = "none";
     document.querySelector(".user_status").style.display = "block";
@@ -374,8 +401,8 @@ async function init() {
     } else {
       render_photo("with url");
     }
-    render_arrow();
   }
+  // getUserLocation();
 }
 
 // 事件
@@ -398,7 +425,6 @@ document.querySelector(".search").addEventListener("keydown", async (e) => {
       } else {
         render_photo("with url");
       }
-      render_arrow();
     } else {
       showDataLength(0);
     }
@@ -406,62 +432,33 @@ document.querySelector(".search").addEventListener("keydown", async (e) => {
 });
 
 // 換餐廳與加入口袋
-// 喜歡
-document.querySelector(".like").addEventListener("click", async (e) => {
-  if (loginState) {
-    const data = {
-      user_id: user_id,
-      restaurant_id: recentData[cardN].id,
-      attitude: "like",
-    };
-    const response = await fetch("/api/pocket", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("user_token"),
-      },
-      body: JSON.stringify(data),
-    });
-    const result = await response.json();
-    if (result.error) {
-      console.log("按讚過快");
-    }
-  }
-
-  change_restaurant_card();
+const solidHeart = document.querySelector(".solid-heart");
+const regularHeart = document.querySelector(".regular-heart");
+solidHeart.addEventListener("click", (e) => {
+  solidHeart.style.display = "none";
+  regularHeart.style.display = "block";
 });
-// 不喜歡
-document.querySelector(".dislike").addEventListener("click", async (e) => {
-  if (loginState) {
-    const data = {
-      user_id: user_id,
-      restaurant_id: recentData[cardN].id,
-      attitude: "dislike",
-    };
-    const response = await fetch("/api/pocket", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("user_token"),
-      },
-      body: JSON.stringify(data),
-    });
-    const result = await response.json();
-    if (result.error) {
-      console.log("按讚過快");
-    }
-  }
-
-  change_restaurant_card();
+regularHeart.addEventListener("click", (e) => {
+  solidHeart.style.display = "block";
+  regularHeart.style.display = "none";
 });
-// 考慮
-document.querySelector(".consider").addEventListener("click", async (e) => {
+
+document.querySelector(".next-page").addEventListener("click", async (e) => {
   if (loginState) {
-    const data = {
-      user_id: user_id,
-      restaurant_id: recentData[cardN].id,
-      attitude: "consider",
-    };
+    let data = {};
+    if (solidHeart.style.display == "block") {
+      data = {
+        user_id: user_id,
+        restaurant_id: recentData[cardN].id,
+        attitude: "like",
+      };
+    } else if (regularHeart.style.display == "block") {
+      data = {
+        user_id: user_id,
+        restaurant_id: recentData[cardN].id,
+        attitude: "consider",
+      };
+    }
     const response = await fetch("/api/pocket", {
       method: "PUT",
       headers: {
@@ -473,21 +470,18 @@ document.querySelector(".consider").addEventListener("click", async (e) => {
     const result = await response.json();
     if (result.error) {
       console.log("按讚過快");
+    } else {
+      change_restaurant_card();
     }
+  } else {
+    change_restaurant_card();
   }
-
-  change_restaurant_card();
 });
 
 // 換圖片
-leftBtn.addEventListener("click", (e) => {
-  photoN -= 1;
-  render_arrow();
-  render_photo("with url");
-});
-rightBtn.addEventListener("click", (e) => {
+let photoContainer = document.querySelector(".restaurant-photo");
+photoContainer.addEventListener("click", (e) => {
   photoN += 1;
-  render_arrow();
   render_photo("with url");
 });
 
@@ -585,6 +579,16 @@ async function applySelections() {
       return;
     }
   }
+  // if (distanceValue != 2000) {
+  //   try {
+  //     const location = await getUserLocation();
+  //     console.log("User's location:", location);
+  //   } catch (error) {
+  //     console.error("Failed to get user's location.");
+  //   }
+  // } else {
+  //   return;
+  // }
 
   // 將顯示文字和值儲存到 localStorage
   localStorage.setItem(
@@ -598,16 +602,14 @@ async function applySelections() {
     })
   );
 
-  // console.log(`Algorithm: ${algorithmDisplayText} (${algorithmValue})`);
-  // console.log(`Type: ${typeDisplayText} (${typeValue})`);
-  // console.log(`Distance: ${distanceDisplayText} (${distanceValue})`);
-
   // 在這裡可以發送 fetch 請求以獲取推薦餐廳
   recentData = [];
   photoN = 0;
   cardN = 0;
   document.querySelector(".restaurant-img").src = "static/image/loading.gif";
   let getData = await get_restaurant_card();
+  if (getData == 1) {
+  }
   if (getData) {
     console.log("套用的getData長度 " + getData);
     showDataLength(getData);
@@ -618,7 +620,17 @@ async function applySelections() {
     } else {
       render_photo("with url");
     }
-    render_arrow();
+    if (getData == 1) {
+      resetTypeToDefault();
+      let getData = await get_restaurant_card();
+      getComment(recentData[cardN].id);
+      render_restaurant_card(recentData[cardN]);
+      if (recentData[cardN].imgs == null) {
+        render_photo(null);
+      } else {
+        render_photo("with url");
+      }
+    }
   } else {
     console.log("按下套用後get card回傳false");
     showDataLength(0);
@@ -630,7 +642,6 @@ async function applySelections() {
     } else {
       render_photo("with url");
     }
-    render_arrow();
   }
 }
 
@@ -690,15 +701,23 @@ function loadRestaurantFilter() {
 
 // reset餐廳類型
 function resetTypeToDefault() {
+  console.log("套用reset");
   const defaultType = { displayText: "全部類型", value: "all" };
+  const defaultAlgorithm = { displayText: "隨機推薦", value: "random" };
 
   // 更新按鈕顯示為預設值
   updateButton("type-btn", defaultType.displayText, defaultType.value);
-
+  updateButton(
+    "algorithm-btn",
+    defaultAlgorithm.displayText,
+    defaultAlgorithm.value
+  );
   // 更新 localStorage 中的條件
   const savedFilters =
     JSON.parse(localStorage.getItem("restaurantFilter")) || {};
-  savedFilters.type = defaultType; // 設定 type 為預設值
+  savedFilters.type = defaultType;
+  savedFilters.algorithm = defaultAlgorithm;
+  // 設定 type 為預設值
   localStorage.setItem("restaurantFilter", JSON.stringify(savedFilters));
 
   console.log("Type reset to default: 全部類型 (all)");
@@ -733,3 +752,11 @@ function showDataLength(n, delay = 3000) {
     }, 50); // 每50毫秒更新一次透明度
   }, delay);
 }
+
+// 地址導航
+document.querySelector(".navigation-btn").addEventListener("click", (e) => {
+  const address = document.querySelector(".address").innerHTML;
+  encodedAddress = encodeURIComponent(address);
+  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+  window.location.href = googleMapsUrl;
+});
