@@ -21,6 +21,7 @@
     <link rel="icon" type="image/x-icon" href="/static/image/favicon.ico" />
     <script defer src="/static/js/index.js"></script>
     <script defer src="/static/js/userStatus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@latest/dist/browser-image-compression.min.js"></script>
   </head>
   <body>
     <header>
@@ -358,10 +359,73 @@
           </div>
         </div>
       </section>
-      <section class="no-comment">
+      <!-- <section class="no-comment">
         <div class="without-comment">-- 目前沒有評論 --</div>
+      </section> -->
+      <section class="comments_group">
+        <form class="add-comment" method="POST">
+          <div class="img-container">
+            <img
+              src="/static/image/image-upload.svg"
+              alt="上傳圖片icon"
+              class="uploadIcon"
+            />
+            <img src="/static/image/logo.png" alt="圖片預覽" class="preview" />
+            <input class="img-upload-btn fileInput" type="file" />
+          </div>
+          <div class="comment-container">
+            <div class="note">
+              留下你的評論吧！
+              <p class="loading">loading...</p>
+            </div>
+            <div class="rating">
+              <input
+                type="range"
+                min="1"
+                max="5"
+                step="1"
+                class="rating_range"
+              />
+              <div class="star-group">
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-regular.svg"
+                  alt="空星"
+                  class="star star-regular"
+                />
+                <img
+                  src="/static/image/star-regular.svg"
+                  alt="空星"
+                  class="star star-regular"
+                />
+              </div>
+            </div>
+            <textarea
+              name="comment"
+              class="comment-content"
+              placeholder="好吃！"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
+          <button class="comment-submit">送出</button>
+        </form>
       </section>
-      <section class="comments_group"></section>
       <!-- <section class="action">
         <div class="action-btn dislike">
           <img src="/static/image/heart-break.svg" alt="不喜歡" />

@@ -40,3 +40,10 @@ async def get_user(payload =  Depends(security)):
     user_profile = UserModel.get_user_profile(payload["id"])
     return user_profile
 
+@router.put("/user/profile",  summary="更新使用者大頭貼")
+async def get_user(image: UploadFile = File(...),payload =  Depends(security)):
+    result = UserModel.update_user_profile(image_file=image, id=payload["id"])
+    if(result):
+        return Success(ok=True)
+    else:
+        return Error(error=True, message="更新大頭貼失敗")

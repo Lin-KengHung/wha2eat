@@ -1,5 +1,6 @@
 from dbconfig import Database
 from model.share import Error
+from model.s3 import S3
 
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Request
@@ -107,6 +108,24 @@ class UserModel:
             return True
         else:
             return False
+
+    def update_user_profile(image_file, id):
+        # 刪除舊的
+        delete_sql = "SELECT profile_picture FROM users WHERE id = %s "
+        delete_val = (id,)
+        user = Database.read_one(delete_sql, delete_val)
+        if user["profile_picture"] is not None:
+            S3.delete(user["profile_picture"])
+        # 更新
+        img_url = S3.upload(image_file)
+        update_sql = "UPDATE users SET profile_picture = %s WHERE id = %s";
+        update_val = (img_url, id)
+        result = Database.update(update_sql,update_val)
+        if(result>0):
+            return True
+        else:
+            return False
+
 
 # ---------- JWT ----------
 SECRET_KEY = os.getenv("SECRET")

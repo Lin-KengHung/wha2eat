@@ -141,7 +141,7 @@ async function init() {
 // 渲染會員資訊
 function renderProfile(name, photoURL, avg_rating, pocketCount, commentCount) {
   document.querySelector(".user-name").innerHTML = name;
-  document.querySelector(".user-photo-url").src = "/static/image/profile.svg";
+  document.querySelector(".user-photo-url").src = photoURL;
   score = avg_rating ? avg_rating : "--";
   document.querySelector(".user-rating").innerHTML = score;
   document.querySelector(".user-pocket-count").innerHTML = pocketCount;
@@ -280,4 +280,35 @@ document.querySelector(".logout").addEventListener("click", (e) => {
   localStorage.removeItem("user_token");
   localStorage.removeItem("restaurantFilter");
   location.href = "/";
+});
+
+// 更新大頭貼
+let imgInput = document.querySelector(".img-upload-btn");
+const CompressOptions = {
+  maxSizeMB: 2,
+  maxWidthOrHeight: 150,
+  useWebWorker: true,
+};
+
+imgInput.addEventListener("change", async (e) => {
+  const compressedFile = await imageCompression(
+    imgInput.files[0],
+    CompressOptions
+  );
+  // 預覽
+  const url = window.URL.createObjectURL(compressedFile);
+  const profile = document.querySelector(".user-photo-url");
+  profile.src = url;
+  // 後端更新
+  const formData = new FormData();
+  formData.append("image", compressedFile);
+  const commentResponse = await fetch("/api/user/profile", {
+    method: "PUT",
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("user_token"),
+    },
+    body: formData,
+  });
+  const result = await commentResponse.json();
+  console.log(result);
 });

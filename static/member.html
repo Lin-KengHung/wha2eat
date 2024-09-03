@@ -21,6 +21,7 @@
     <link rel="icon" type="image/x-icon" href="/static/image/favicon.ico" />
 
     <script defer src="/static/js/member.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@latest/dist/browser-image-compression.min.js"></script>
   </head>
   <body>
     <header>
@@ -39,11 +40,12 @@
       <section class="user">
         <div class="user-photo">
           <img
-            src="/static/image/logo.png"
+            src="/static/image/profile.svg"
             alt="大頭貼"
             class="user-photo-url"
           />
-          <img src="/static/image/upload.svg" alt="上傳" />
+          <img src="/static/image/upload.svg" alt="上傳" class="upload" />
+          <input class="img-upload-btn fileInput" type="file" />
         </div>
         <div class="user-info">
           <div class="user-name"></div>
