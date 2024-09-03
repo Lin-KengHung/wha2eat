@@ -133,10 +133,8 @@ async function getComment(restaurant_id) {
   const comments = await response.json();
   document.querySelector(".comments_group").innerHTML = "";
   if (comments == false) {
-    document.querySelector(".no-comment").style.display = "block";
     render_comment(null);
   } else {
-    document.querySelector(".no-comment").style.display = "none";
     for (let i = 0; i < comments.length; i++) {
       render_comment(comments[i]);
     }
@@ -760,3 +758,113 @@ document.querySelector(".navigation-btn").addEventListener("click", (e) => {
   const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
   window.location.href = googleMapsUrl;
 });
+
+// 新增評論的圖片預覽
+let imgInput = document.querySelector(".img-upload-btn");
+const CompressOptions = {
+  maxSizeMB: 2,
+  maxWidthOrHeight: 800,
+  useWebWorker: true,
+};
+imgInput.addEventListener("change", async (e) => {
+  const compressedFile = await imageCompression(
+    imgInput.files[0],
+    CompressOptions
+  );
+  const url = window.URL.createObjectURL(compressedFile);
+  console.log(url);
+  document.querySelector(".uploadIcon").style.display = "none";
+  const previewImg = document.querySelector(".preview");
+  previewImg.src = url;
+  previewImg.style.display = "block";
+});
+// 提交評論
+document
+  .querySelector(".comment-submit")
+  .addEventListener("click", async (e) => {
+    const comment = document.querySelector(".comment-content");
+    if (loginState) {
+      console.log("有登入");
+      if (comment.value !== "") {
+        e.preventDefault();
+        if (loginState === false) {
+          document.querySelector(".signin").style.display = "block";
+        } else {
+          // 提交評論
+          document.querySelector(".loading").style.display = "block";
+          const formData = new FormData();
+          let inputFile = document.querySelector(".fileInput");
+          if (inputFile.files.length == 0) {
+            console.log("沒有上傳檔案");
+          } else {
+            console.log("有上傳檔案");
+            const compressedFile = await imageCompression(
+              imgInput.files[0],
+              CompressOptions
+            );
+            formData.append("image", compressedFile);
+          }
+
+          formData.append("user_id", user_id);
+          formData.append("restaurant_id", recentData[cardN].id);
+          formData.append("place_id", recentData[cardN].place_id);
+          formData.append("rating", ratingScore.value);
+          formData.append("context", comment.value);
+          formData.append("checkin", false);
+          console.log(formData);
+          const commentResponse = await fetch("/api/comment", {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("user_token"),
+            },
+            body: formData,
+          });
+          const commentResult = await commentResponse.json();
+
+          if (commentResult.ok) {
+            console.log("ok");
+            getComment(recentData[cardN].id);
+            document.querySelector(".loading").style.display = "none";
+            const previewImg = document.querySelector(".preview");
+            previewImg.src = "";
+            previewImg.style.display = "none";
+            document.querySelector(".uploadIcon").style.display = "block";
+            comment.value = "";
+          }
+        }
+      }
+    } else {
+      console.log("沒登入");
+      e.preventDefault();
+      document.querySelector(".signin").style.display = "block";
+    }
+  });
+
+// 評分星星改變
+let ratingScore = document.querySelector(".rating_range");
+ratingScore.addEventListener("change", (e) => {
+  randerStar(ratingScore.value);
+});
+function randerStar(n) {
+  const starGroup = document.querySelector(".star-group");
+  starGroup.innerHTML = "";
+  const solidStar = `
+    <img
+        src="/static/image/star-solid.svg"
+        alt="實星"
+        class="star star-solid"
+    />`;
+  const regularStar = `
+    <img
+        src="/static/image/star-regular.svg"
+        alt="空星"
+        class="star star-regular"
+    />`;
+  for (let i = 1; i < 6; i++) {
+    if (i <= n) {
+      starGroup.insertAdjacentHTML("beforeend", solidStar);
+    } else {
+      starGroup.insertAdjacentHTML("beforeend", regularStar);
+    }
+  }
+}

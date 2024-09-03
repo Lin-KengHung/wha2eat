@@ -39,7 +39,7 @@ async def add_comment(
           url = S3.upload(image)
           comment.image = url
 
-
+     print(comment)
      result = CommentModel.record_comment(comment)
      
      if result is True:

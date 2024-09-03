@@ -49,7 +49,8 @@ class CardModel:
 
         sql = """
             SELECT DISTINCT
-                r.id, 
+                r.id,
+                r.place_id, 
                 r.name, 
                 r.google_rating, 
                 r.google_rating_count,
@@ -173,7 +174,8 @@ class CardModel:
 
             restaurant_group.append(
                 Restaurant(
-                    id=result[i]["id"], 
+                    id=result[i]["id"],
+                    place_id=result[i]["place_id"],
                     imgs=img_urls, 
                     name=result[i]["name"], 
                     open=result[i]["is_open"], 
@@ -378,7 +380,8 @@ class CardModel:
 
             restaurant_group.append(
                 Restaurant(
-                    id=result[i]["id"], 
+                    id=result[i]["id"],
+                    place_id=result[i]["place_id"],  
                     imgs=img_urls, 
                     name=result[i]["name"], 
                     open=result[i]["is_open"], 
