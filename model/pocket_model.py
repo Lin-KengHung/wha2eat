@@ -2,11 +2,7 @@ from dbconfig import Database
 from pydantic import BaseModel, Field
 from typing import Optional, List
 import json
-from datetime import datetime
-import pytz
-taiwan_tz = pytz.timezone('Asia/Taipei')
-taiwan_time = datetime.now(taiwan_tz)
-weekday = 0 if taiwan_time.weekday() == 6 else taiwan_time.weekday() + 1
+
 class Match(BaseModel):
     user_id: int
     restaurant_id: int
@@ -42,7 +38,7 @@ class PocketModel:
         else:
             return False
 
-    def get_my_pocket(id, page, day_of_week=weekday):
+    def get_my_pocket(id, page):
 
         offset = page * 10
         sql = """
@@ -50,7 +46,24 @@ class PocketModel:
             p.restaurant_id, 
             r.name, 
             i.url, 
-            o.opening_hours
+            CASE 
+                WHEN NOT EXISTS (
+                    SELECT 1 
+                    FROM opening_hours AS o
+                    WHERE 
+                        o.place_id = r.place_id 
+                ) THEN NULL
+                WHEN EXISTS (
+                    SELECT 1 
+                    FROM opening_hours AS o
+                    WHERE 
+                        o.place_id = r.place_id 
+                        AND o.day_of_week = MOD(DAYOFWEEK(NOW()), 7)
+                        AND o.open_time <= CURTIME()
+                        AND o.close_time > CURTIME()
+                ) THEN TRUE
+                ELSE FALSE
+            END AS is_open
         FROM 
             (SELECT * FROM pockets WHERE user_id = %s AND attitude = "like" ORDER BY update_at DESC LIMIT %s, 11) AS p 
         
@@ -72,24 +85,9 @@ class PocketModel:
                         i2.place_id = i1.place_id
                 )
             ) AS i ON r.place_id = i.place_id
-        LEFT JOIN 
-            (SELECT 
-                place_id, 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'open_time', TIME_FORMAT(open_time, '%H:%\i:%\s'), 
-                        'close_time', TIME_FORMAT(close_time, '%H:%\i:%\s')
-                    )
-                ) AS opening_hours 
-            FROM 
-                opening_hours 
-            WHERE 
-                day_of_week = %s
-            GROUP BY 
-                place_id) AS o ON r.place_id = o.place_id
         ORDER BY p.update_at DESC;
         """
-        val = (id, offset, day_of_week)
+        val = (id, offset)
         result = Database.read_all(sql, val)
         # 判斷 next_page
         if len(result) < 11:
@@ -100,23 +98,13 @@ class PocketModel:
         length = len(result) -1 if next_page is not None else len(result)
         restaurant_group = []
         for i in range(length):
-            # 確認營業狀況
-            open = None;
-            if result[i]["opening_hours"] is not None:
-                open = False
-                result[i]["opening_hours"] = json.loads(result[i]["opening_hours"])
-                currentTime = taiwan_time.strftime("%H:%M:%S")
-                for opening_hour in result[i]["opening_hours"]:
-                    if opening_hour["open_time"] < currentTime and currentTime < opening_hour["close_time"]:
-                        open = True
-                        break
             
             restaurant_group.append(
                 FavorRestaurants(
                     id=result[i]["restaurant_id"], 
                     name=result[i]["name"],
                     img=result[i]["url"],
-                    open=open, 
+                    open=result[i]["is_open"], 
                 )
             )
         
