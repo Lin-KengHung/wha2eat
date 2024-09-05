@@ -258,10 +258,7 @@ class CardModel:
         ON r.id = p.restaurant_id AND p.user_id = %s;
         """
         val = [user_lng, user_lat, restaurant_id, user_id]
-        # if(user_id is not None):
-        #     sql += " LEFT JOIN pockets AS p ON r.id = p.restaurant_id AND p.user_id = %s"
-        #     val.append(user_id)
-        # sql += ";"
+
         result = Database.read_one(sql, tuple(val))
         print(result["distance"])
 
