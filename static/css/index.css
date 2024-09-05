@@ -19,7 +19,7 @@ main .constraint .btn-group {
   position: relative;
   display: inline-flex;
   align-items: center;
-  margin-right: 15px;
+  margin-right: 10px;
   margin-top: 10px;
 }
 main .constraint .btn-group .btn {
@@ -29,7 +29,7 @@ main .constraint .btn-group .btn {
   color: #fff;
   background-color: #f7988f;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -60,7 +60,7 @@ main .constraint .btn-group .dropdown-menu {
   list-style: none;
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 5px;
+  border-radius: 10px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
 main .constraint .btn-group .dropdown-menu.show {
@@ -92,8 +92,97 @@ main .constraint .btn-group .dropdown-menu .dropdown-divider {
 main .constraint .btn-group:hover .dropdown-menu, main .constraint .btn-group:focus .dropdown-menu {
   display: block;
 }
-main .constraint .user-location {
+main .constraint-apply {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+  max-width: 620px;
+  padding: 0 10px;
+  position: relative;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+main .constraint-apply .btn-group {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 10px;
   margin-top: 10px;
+}
+main .constraint-apply .btn-group .btn {
+  padding: 5px 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #ff6619;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+main .constraint-apply .btn-group .btn:hover {
+  background-color: #e54d00;
+}
+main .constraint-apply .btn-group .btn:active {
+  background-color: #cc4400;
+}
+main .constraint-apply .btn-group .btn.dropdown-toggle::after {
+  margin-left: 10px;
+  content: "▼";
+  font-size: 12px;
+  color: #fff;
+}
+main .constraint-apply .btn-group .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 4;
+  display: none;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+main .constraint-apply .btn-group .dropdown-menu.show {
+  display: block;
+}
+main .constraint-apply .btn-group .dropdown-menu .dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 20px;
+  clear: both;
+  font-weight: normal;
+  color: #333;
+  text-align: inherit;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+}
+main .constraint-apply .btn-group .dropdown-menu .dropdown-item:hover, main .constraint-apply .btn-group .dropdown-menu .dropdown-item:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: #ff6619;
+}
+main .constraint-apply .btn-group .dropdown-menu .dropdown-divider {
+  height: 1px;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  background-color: #e9ecef;
+}
+main .constraint-apply .btn-group:hover .dropdown-menu, main .constraint-apply .btn-group:focus .dropdown-menu {
+  display: block;
+}
+main .constraint-apply .user-location {
+  margin-top: 10px;
+  margin-left: 10px;
   padding: 5px 10px;
   font-size: 16px;
   font-weight: bold;
@@ -103,9 +192,10 @@ main .constraint .user-location {
   border-radius: 20px;
   cursor: default;
 }
-main .constraint .constraint-apply {
+main .constraint-apply .constraint-apply {
   margin-top: 10px;
   margin-left: 10px;
+  width: auto;
   padding: 5px 10px;
   font-size: 16px;
   font-weight: bold;
@@ -116,13 +206,13 @@ main .constraint .constraint-apply {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-main .constraint .constraint-apply:hover {
+main .constraint-apply .constraint-apply:hover {
   background-color: #f46c5f;
 }
-main .constraint .constraint-apply:active {
+main .constraint-apply .constraint-apply:active {
   background-color: #f25648;
 }
-main .constraint .data-length {
+main .constraint-apply .data-length {
   margin-top: 10px;
   margin-left: 10px;
   padding: 5px 10px;
@@ -142,9 +232,9 @@ main .restaurant {
   width: 100%;
 }
 main .restaurant .card-container {
-  background-color: #fff;
+  background-color: #c5c5c5;
   border-radius: 10px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0.1px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 600px;
   text-align: center;
@@ -222,10 +312,6 @@ main .restaurant .card-container .restaurant-card .restaurant-title .restaurant-
   text-align: left;
   font-size: 2rem;
   padding: 0 10px 0 10px;
-  cursor: pointer;
-}
-main .restaurant .card-container .restaurant-card .restaurant-title .restaurant-name:hover {
-  text-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 main .restaurant .card-container .restaurant-card .restaurant-info {
   margin: 10px 0 20px 0;
@@ -268,6 +354,25 @@ main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-t
   background-color: #10a4e8;
   color: white;
   display: none;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .block-group {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
+  display: none;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .block-group-deactivate {
+  color: #e8e8e8;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .block-group-activate {
+  color: red;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .block-group .block {
+  width: 20px;
+  height: 20px;
 }
 main .restaurant .card-container .restaurant-card .restaurant-detail_info {
   display: flex;
@@ -368,12 +473,12 @@ main .restaurant .card-container .next-page:hover {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
   background-color: #615050;
   width: 150px;
-  transform: translate(7px, -7px);
+  transform: translate(0, 5px);
   transition: 0.5s ease;
 }
 main .restaurant .card-container .next-page:hover ~ .restaurant-card {
-  transform: translate(7px, -7px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  transform: translate(0, 12px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   transition: 0.5s ease;
 }
 main .add-comment-container {

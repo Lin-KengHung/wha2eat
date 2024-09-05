@@ -40,46 +40,6 @@
       <section class="constraint">
         <div class="btn-group">
           <button
-            id="algorithm-btn"
-            type="button"
-            class="btn dropdown-toggle"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            隨機推薦
-          </button>
-          <ul class="dropdown-menu" id="algorithm-menu">
-            <li>
-              <a class="dropdown-item" href="#" data-value="random">隨機推薦</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="high_google_rating"
-                >高分評價</a
-              >
-            </li>
-            <li>
-              <a
-                class="dropdown-item"
-                href="#"
-                data-value="high_google_rating_count"
-                >評論熱烈</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="UBCF"
-                >相似的用戶收藏了</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-value="IBCF"
-                >類似你收藏的餐廳</a
-              >
-            </li>
-          </ul>
-        </div>
-
-        <div class="btn-group">
-          <button
             id="type-btn"
             type="button"
             class="btn dropdown-toggle"
@@ -230,11 +190,51 @@
             </li>
           </ul>
         </div>
-        <div class="user-location">定位：小樹屋附近</div>
+      </section>
+      <section class="constraint-apply">
+        <div class="btn-group">
+          <button
+            id="algorithm-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            隨機推薦
+          </button>
+          <ul class="dropdown-menu" id="algorithm-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="random">隨機推薦</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="high_google_rating"
+                >高分評價</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="#"
+                data-value="high_google_rating_count"
+                >評論熱烈</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="UBCF"
+                >相似的用戶收藏了</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="IBCF"
+                >類似你收藏的餐廳</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="user-location">定位：民權西路捷運站</div>
         <button class="constraint-apply" id="apply-btn">套用</button>
         <div class="data-length">有5筆資料！</div>
       </section>
-
       <section class="restaurant">
         <div class="card-container">
           <div class="next-page">
@@ -273,12 +273,29 @@
               <div class="restaurant-tags_group">
                 <p class="restaurant-tag restaurant-open">營業中</p>
                 <p class="restaurant-tag restaurant-close">休息中</p>
-                <p class="restaurant-tag distance">500公尺</p>
                 <p class="restaurant-tag restaurant-rating">Google評分</p>
-                <p class="restaurant-tag restaurant-type">restaurant</p>
+                <p class="restaurant-tag distance">500公尺</p>
+                <p class="restaurant-tag restaurant-type">餐廳</p>
                 <p class="restaurant-tag attitude-new">新的發現！</p>
                 <p class="restaurant-tag attitude-like">你喜歡！</p>
                 <p class="restaurant-tag attitude-consider">你曾看過</p>
+                <div class="block-group block-group-deactivate">
+                  <img
+                    src="/static/image/block_not_active.svg"
+                    alt="未啟動封鎖"
+                    class="block"
+                  />
+                  屏蔽此餐廳
+                </div>
+
+                <div class="block-group block-group-activate">
+                  <img
+                    src="/static/image/block_active.svg"
+                    alt="啟動封鎖"
+                    class="block"
+                  />
+                  屏蔽此餐廳
+                </div>
               </div>
               <div class="restaurant-detail_info">
                 <hr class="seperate" />

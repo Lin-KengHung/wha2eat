@@ -213,7 +213,14 @@ function render_restaurant_card(data) {
   const restaurantName = document.querySelector(".restaurant-name");
   restaurantName.innerHTML = data.name;
   restaurantName.id = data.id;
-  document.querySelector(".restaurant-type").innerHTML = data.restaurant_type;
+  const restaurantType = document.querySelector(".restaurant-type");
+  if (data.restaurant_type == "餐廳") {
+    restaurantType.style.display = "none";
+  } else {
+    restaurantType.style.display = "block";
+    restaurantType.innerHTML = data.restaurant_type;
+  }
+  // document.querySelector(".restaurant-type").innerHTML = data.restaurant_type;
   document.querySelector(".address").innerHTML = data.address;
 
   // google 評論
@@ -251,6 +258,10 @@ function render_restaurant_card(data) {
     const considerTag = document.querySelector(".attitude-consider");
     const solidHeart = document.querySelector(".solid-heart");
     const regularHeart = document.querySelector(".regular-heart");
+    const deactivateBlock = document.querySelector(".block-group-deactivate");
+    const activateBlock = document.querySelector(".block-group-activate");
+    deactivateBlock.style.display = "flex";
+    activateBlock.style.display = "none";
     if (data.attitude === "consider") {
       considerTag.style.display = "block";
       newTag.style.display = "none";
@@ -269,6 +280,14 @@ function render_restaurant_card(data) {
       likeTag.style.display = "none";
       regularHeart.style.display = "block";
       solidHeart.style.display = "none";
+    } else if (data.attitude === "dislike") {
+      considerTag.style.display = "none";
+      newTag.style.display = "none";
+      likeTag.style.display = "none";
+      regularHeart.style.display = "block";
+      solidHeart.style.display = "none";
+      deactivateBlock.style.display = "none";
+      activateBlock.style.display = "flex";
     }
   }
 
@@ -412,6 +431,7 @@ async function init() {
     document.querySelector(".user_status").style.display = "none";
     loginState = true;
     document.querySelector(".regular-heart").style.display = "block";
+    document.querySelector(".block-group-deactivate").style.display = "block";
   } else {
     document.querySelector(".profile_icon").style.display = "none";
     document.querySelector(".user_status").style.display = "block";
@@ -470,18 +490,37 @@ document.querySelector(".search").addEventListener("keydown", async (e) => {
   }
 });
 
-// 換餐廳與加入口袋
+// 按讚或封鎖
 const solidHeart = document.querySelector(".solid-heart");
 const regularHeart = document.querySelector(".regular-heart");
+const deactivateBlock = document.querySelector(".block-group-deactivate");
+const activateBlock = document.querySelector(".block-group-activate");
 solidHeart.addEventListener("click", (e) => {
   solidHeart.style.display = "none";
   regularHeart.style.display = "block";
+  deactivateBlock.style.display = "flex";
+  activateBlock.style.display = "none";
 });
 regularHeart.addEventListener("click", (e) => {
   solidHeart.style.display = "block";
   regularHeart.style.display = "none";
+  deactivateBlock.style.display = "flex";
+  activateBlock.style.display = "none";
 });
 
+deactivateBlock.addEventListener("click", (e) => {
+  solidHeart.style.display = "none";
+  regularHeart.style.display = "block";
+  deactivateBlock.style.display = "none";
+  activateBlock.style.display = "flex";
+});
+activateBlock.addEventListener("click", (e) => {
+  solidHeart.style.display = "none";
+  regularHeart.style.display = "block";
+  deactivateBlock.style.display = "flex";
+  activateBlock.style.display = "none";
+});
+// 換餐廳
 document.querySelector(".next-page").addEventListener("click", async (e) => {
   if (loginState) {
     let data = {};
@@ -490,6 +529,12 @@ document.querySelector(".next-page").addEventListener("click", async (e) => {
         user_id: user_id,
         restaurant_id: recentData[cardN].id,
         attitude: "like",
+      };
+    } else if (activateBlock.style.display !== "none") {
+      data = {
+        user_id: user_id,
+        restaurant_id: recentData[cardN].id,
+        attitude: "dislike",
       };
     } else if (regularHeart.style.display == "block") {
       data = {
@@ -523,14 +568,6 @@ photoContainer.addEventListener("click", (e) => {
   photoN += 1;
   render_photo("with url");
 });
-
-// 導向到餐廳頁面
-const restaurant = document.querySelector(".restaurant-name");
-document
-  .querySelector(".restaurant-name")
-  .addEventListener("click", async (e) => {
-    location.href = "/restaurant/" + restaurant.id;
-  });
 
 // -------------------------------------------------- //
 // 條件相關
@@ -618,16 +655,6 @@ async function applySelections() {
       return;
     }
   }
-  // if (distanceValue != 2000) {
-  //   try {
-  //     const location = await getUserLocation();
-  //     console.log("User's location:", location);
-  //   } catch (error) {
-  //     console.error("Failed to get user's location.");
-  //   }
-  // } else {
-  //   return;
-  // }
 
   // 將顯示文字和值儲存到 localStorage
   localStorage.setItem(
