@@ -7,4 +7,5 @@ PyJWT
 bcrypt
 pydantic
 python-multipart
-pytz
+pandas
+scikit-learn
