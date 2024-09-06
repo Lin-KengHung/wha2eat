@@ -112,6 +112,9 @@ async function init() {
         localStorage.removeItem("user_token");
         location.href = "/";
       } else {
+        if (!data.photo) {
+          data.photo = "/static/image/profile.svg";
+        }
         renderProfile(
           data.name,
           data.photo,

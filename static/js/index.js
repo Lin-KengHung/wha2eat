@@ -41,6 +41,10 @@ async function get_restaurant_card() {
   }
 
   const response = await fetch(url, setting);
+
+  if (response.status == 400) {
+    return false;
+  }
   const data_list = await response.json();
 
   if (data_list.data == false) {
@@ -74,6 +78,7 @@ async function get_restaurant_card() {
 // 搜尋餐廳
 async function searchRestaurantCard() {
   if (nextPage === null) {
+    console.log("沒有下一頁");
     nextPage = 0;
   }
   let url = "/api/cards/search";
@@ -484,6 +489,18 @@ document.querySelector(".search").addEventListener("keydown", async (e) => {
       } else {
         render_photo("with url");
       }
+
+      if (getData < 4) {
+        console.log("小於4筆所以額外多打一次推薦結果");
+        let newData = await get_restaurant_card();
+        getComment(recentData[cardN].id);
+        render_restaurant_card(recentData[cardN]);
+        if (recentData[cardN].imgs == null) {
+          render_photo(null);
+        } else {
+          render_photo("with url");
+        }
+      }
     } else {
       showDataLength(0);
     }
@@ -674,8 +691,7 @@ async function applySelections() {
   cardN = 0;
   document.querySelector(".restaurant-img").src = "static/image/loading.gif";
   let getData = await get_restaurant_card();
-  if (getData == 1) {
-  }
+
   if (getData) {
     console.log("套用的getData長度 " + getData);
     showDataLength(getData);
@@ -699,6 +715,7 @@ async function applySelections() {
     }
   } else {
     console.log("按下套用後get card回傳false");
+    resetTypeToDefault();
     showDataLength(0);
     let getData = await get_restaurant_card();
     getComment(recentData[cardN].id);
@@ -797,7 +814,7 @@ function showDataLength(n, delay = 3000) {
   if (n == 10) {
     element.textContent = "超過" + n + "筆資料！";
   } else if (n == 0) {
-    element.textContent = "沒有資料😭";
+    element.textContent = "沒有資料😭先隨便看看";
   } else {
     element.textContent = "有" + n + "筆資料！";
   }

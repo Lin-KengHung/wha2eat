@@ -24,7 +24,7 @@ class Restaurant(BaseModel):
     distance : Optional[int] = None
     attitude : Optional[str] = None
 class RestaurantOut(BaseModel):
-    data : List[Restaurant]
+    data : List
     next_page : Optional[int] = None
 class CardModel:
     def get_suggest_restaurants_info(
@@ -470,6 +470,7 @@ class CollaborativeFiltering:
         """
         val = (user_id,1)
         results = Database.read_all(sql,val)
+        print(results)
         recommendations= []
 
         for result in results:
@@ -478,6 +479,13 @@ class CollaborativeFiltering:
         return recommendations
 
     def item_base_suggest(user_id):
+        # 確認使用者有無按讚過
+        sql_4_check = "SELECT * FROM pockets WHERE user_id = %s LIMIT 1"
+        val_4_check = (user_id,)
+        check_result = Database.read_one(sql_4_check, val_4_check)
+        if (check_result is None):
+            return False
+
         # 計算使用者評分紀錄
         sql_4_user_rating = """
             SELECT
@@ -506,6 +514,8 @@ class CollaborativeFiltering:
             """
             
         ratings_result = Database.read_all(sql_4_user_rating)
+
+        
         restaurant_ids = [row['restaurant_id'] for row in ratings_result]
 
         # 獲得餐廳的google評分
@@ -520,20 +530,20 @@ class CollaborativeFiltering:
             """ % ','.join([str(id) for id in restaurant_ids])
 
         google_rating_result = Database.read_all(sql_4_google_rating)
+    
 
         # 建立google 評分字典，NaN用2.5取代(與consider分數相同)
         google_rating_dict = {
             row['restaurant_id']: float(row['google_rating']) if row['google_rating'] is not None else 2.5
             for row in google_rating_result
         }
-
+        
         # 構建使用者對餐廳評分 DataFrame
         df = pd.DataFrame(ratings_result)
         pivot_table = df.pivot_table(index='restaurant_id', columns='user_id', values='total_score')
-
+        
         # 紀錄特定使用者尚未評價或曾考慮過的餐廳
         unrated_or_considered_restaurants = pivot_table[user_id][(pivot_table[user_id].isna()) | (pivot_table[user_id] == 2.5)].index.tolist()
-
         # 紀錄特定使用者喜歡的(分數 >=5)的餐廳
         high_score_restaurants = pivot_table[user_id][pivot_table[user_id] >= 5].index.tolist()
 
