@@ -9,3 +9,4 @@ pydantic
 python-multipart
 pandas
 scikit-learn
+requests
