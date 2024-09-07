@@ -15,8 +15,9 @@ root_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
 sys.path.insert(0, root_dir)
 from dbconfig import Database
 
+print(f"更新時間{datetime.now()}")
 
-sql = "SELECT place_id, url FROM images;" 
+sql = "SELECT place_id, url FROM images LIMIT 3000, 500;" 
 image_data = Database.read_all(sql)
 
 
@@ -73,6 +74,7 @@ def get_valid_urls(data, invalid_place_ids, invalid_urls):
 invalid_place_ids, invalid_urls = check_urls_multithreaded(data=image_data, num_threads=10)
 valid_urls = get_valid_urls(data=image_data, invalid_place_ids=invalid_place_ids, invalid_urls=invalid_urls)
 
+print("完成挑出壞掉的url")
 # --------------------------------------------------------
 # 打API
 # --------------------------------------------------------
@@ -124,6 +126,7 @@ def update_problematic_restaurants(invalid_place_ids, valid_urls):
         return "pass"
     results = []
     for place_id in invalid_place_ids:
+        print(f"fetch {place_id} images")
         # 獲取餐廳詳細資料
         details = get_place_details(place_id)
         if details and 'photos' in details:
@@ -148,7 +151,7 @@ def update_problematic_restaurants(invalid_place_ids, valid_urls):
     return results
 
 new_image_result = update_problematic_restaurants(invalid_place_ids= invalid_place_ids, valid_urls=valid_urls)
-print(f"更新時間{datetime.now()}")
+
 if (new_image_result == "pass"):
     print("沒有資料需要更新")
 else:
