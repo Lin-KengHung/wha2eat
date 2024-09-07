@@ -1,0 +1,707 @@
+@charset "UTF-8";
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main .constraint {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+  max-width: 620px;
+  padding: 0 10px;
+  position: relative;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+main .constraint .btn-group {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+main .constraint .btn-group .btn {
+  padding: 5px 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #f7988f;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+main .constraint .btn-group .btn:hover {
+  background-color: #f46c5f;
+}
+main .constraint .btn-group .btn:active {
+  background-color: #f25648;
+}
+main .constraint .btn-group .btn.dropdown-toggle::after {
+  margin-left: 10px;
+  content: "▼";
+  font-size: 12px;
+  color: #fff;
+}
+main .constraint .btn-group .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 4;
+  display: none;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+main .constraint .btn-group .dropdown-menu.show {
+  display: block;
+}
+main .constraint .btn-group .dropdown-menu .dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 20px;
+  clear: both;
+  font-weight: normal;
+  color: #333;
+  text-align: inherit;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+}
+main .constraint .btn-group .dropdown-menu .dropdown-item:hover, main .constraint .btn-group .dropdown-menu .dropdown-item:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: #f7988f;
+}
+main .constraint .btn-group .dropdown-menu .dropdown-divider {
+  height: 1px;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  background-color: #e9ecef;
+}
+main .constraint .btn-group:hover .dropdown-menu, main .constraint .btn-group:focus .dropdown-menu {
+  display: block;
+}
+main .constraint-apply {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+  max-width: 620px;
+  padding: 0 10px;
+  position: relative;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+main .constraint-apply .btn-group {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+main .constraint-apply .btn-group .btn {
+  padding: 5px 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #ff6619;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+main .constraint-apply .btn-group .btn:hover {
+  background-color: #e54d00;
+}
+main .constraint-apply .btn-group .btn:active {
+  background-color: #cc4400;
+}
+main .constraint-apply .btn-group .btn.dropdown-toggle::after {
+  margin-left: 10px;
+  content: "▼";
+  font-size: 12px;
+  color: #fff;
+}
+main .constraint-apply .btn-group .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 4;
+  display: none;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+main .constraint-apply .btn-group .dropdown-menu.show {
+  display: block;
+}
+main .constraint-apply .btn-group .dropdown-menu .dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 20px;
+  clear: both;
+  font-weight: normal;
+  color: #333;
+  text-align: inherit;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+}
+main .constraint-apply .btn-group .dropdown-menu .dropdown-item:hover, main .constraint-apply .btn-group .dropdown-menu .dropdown-item:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: #ff6619;
+}
+main .constraint-apply .btn-group .dropdown-menu .dropdown-divider {
+  height: 1px;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  background-color: #e9ecef;
+}
+main .constraint-apply .btn-group:hover .dropdown-menu, main .constraint-apply .btn-group:focus .dropdown-menu {
+  display: block;
+}
+main .constraint-apply .user-location {
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #f7988f;
+  background-color: white;
+  border: 2px solid #f7988f;
+  border-radius: 20px;
+  cursor: default;
+}
+main .constraint-apply .constraint-apply {
+  margin-top: 10px;
+  margin-left: 10px;
+  width: auto;
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #f7988f;
+  background-color: white;
+  border: 2px solid #f7988f;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+main .constraint-apply .constraint-apply:hover {
+  background-color: #f46c5f;
+}
+main .constraint-apply .constraint-apply:active {
+  background-color: #f25648;
+}
+main .constraint-apply .data-length {
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-weight: 700;
+  border-radius: 20px;
+  color: rgb(255, 123, 0);
+  text-shadow: 0 2px 5px rgba(255, 123, 0, 0.3);
+  box-shadow: 0 1px 5px rgba(255, 123, 0, 0.5);
+  opacity: 0;
+}
+main .restaurant {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0 10px 0;
+  padding: 0 10px 0 10px;
+  width: 100%;
+}
+main .restaurant .card-container {
+  background-color: #c5c5c5;
+  border-radius: 10px;
+  box-shadow: 0.1px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  position: relative;
+}
+main .restaurant .card-container .restaurant-card {
+  border-radius: 10px;
+  padding: 0 0 10px 0;
+  background-color: white;
+  transform: translate(0px, 0px);
+  transition: 0.5s ease;
+}
+main .restaurant .card-container .restaurant-card .restaurant-photo {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+main .restaurant .card-container .restaurant-card .restaurant-photo .restaurant-img {
+  border-radius: 10px 10px 0 0;
+  width: 100%;
+  height: 500px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  background-color: rgba(255, 124, 9, 0.5);
+  transform: scale(1, 1);
+  transition: transform 0.5s;
+}
+main .restaurant .card-container .restaurant-card .restaurant-photo .restaurant-img:hover {
+  transform: scale(1.1, 1.1);
+  transition: 0.5s;
+}
+main .restaurant .card-container .restaurant-card .restaurant-photo .indicators-group {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+main .restaurant .card-container .restaurant-card .restaurant-photo .indicators-group .indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ccc;
+  cursor: pointer;
+}
+main .restaurant .card-container .restaurant-card .restaurant-photo .indicators-group .indicator.active {
+  background-color: white; /* 當前圖片的圓點顏色 */
+}
+main .restaurant .card-container .restaurant-card .restaurant-title {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 30px 0 10px 0;
+}
+main .restaurant .card-container .restaurant-card .restaurant-title .heart {
+  display: none;
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+main .restaurant .card-container .restaurant-card .restaurant-title .heart:hover {
+  width: 35px;
+  height: 35px;
+  transition: 0.3s ease;
+}
+main .restaurant .card-container .restaurant-card .restaurant-title .regular-heart:active {
+  animation: shake 0.15s;
+}
+main .restaurant .card-container .restaurant-card .restaurant-title .restaurant-name {
+  text-align: left;
+  font-size: 2rem;
+  padding: 0 10px 0 10px;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info {
+  margin: 10px 0 20px 0;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  flex-wrap: wrap;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-tag {
+  font-weight: 500;
+  padding: 10px;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
+  border: 2px solid #080808;
+  border-radius: 30px;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-open {
+  background-color: rgba(0, 128, 0, 0.8);
+  color: white;
+  display: none;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .restaurant-close {
+  background-color: rgba(255, 0, 0, 0.8);
+  color: white;
+  display: none;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .attitude-new {
+  background-color: #ff8800;
+  color: white;
+  display: none;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .attitude-like {
+  background-color: #f2647c;
+  color: white;
+  display: none;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .attitude-consider {
+  background-color: #10a4e8;
+  color: white;
+  display: none;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .block-group {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
+  display: none;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .block-group-deactivate {
+  color: #e8e8e8;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .block-group-activate {
+  color: red;
+}
+main .restaurant .card-container .restaurant-card .restaurant-info .restaurant-tags_group .block-group .block {
+  width: 20px;
+  height: 20px;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .seperate {
+  margin: 20px 0 20px 0;
+  width: 95%;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group {
+  width: 100%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .address-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .address {
+  margin-left: 10px;
+  text-align: left;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  border: 2px solid #e8e8e8;
+  padding: 2px 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation .navigation-btn {
+  display: flex;
+  align-items: center;
+  margin-left: 2px;
+  background-color: white;
+  border: none;
+  font-size: 0.8rem;
+  color: gray;
+  cursor: pointer;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation .navigation-btn .navigation-icon {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation:hover {
+  transition: 0.3s ease;
+  border: 2px solid black;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .address-group .navigation:hover .navigation-btn {
+  transition: 0.3s ease;
+  font-weight: 700;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .services-group {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .services-group .service {
+  display: flex;
+  align-items: center;
+  padding: 0 10px 0 10px;
+  margin-top: 0.5rem;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .services-group .service img {
+  width: 30px;
+  height: 30px;
+}
+main .restaurant .card-container .restaurant-card .restaurant-detail_info .services-group .service .service-text {
+  margin-left: 5px;
+}
+main .restaurant .card-container .next-page {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  top: 467px;
+  right: 0;
+  width: 120px;
+  font-size: 1.5rem;
+  height: 70px;
+  border-radius: 25px 0 0 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: 0.5s ease;
+}
+main .restaurant .card-container .next-page:hover {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  background-color: #615050;
+  width: 150px;
+  transform: translate(0, 5px);
+  transition: 0.5s ease;
+}
+main .restaurant .card-container .next-page:hover ~ .restaurant-card {
+  transform: translate(0, 12px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  transition: 0.5s ease;
+}
+main .add-comment-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0 0 0;
+  padding: 0 10px 0 10px;
+  width: 100%;
+}
+main .add-comment-container .add-comment {
+  background-color: white;
+  border-radius: 10px;
+  width: 100%;
+  height: 150px;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
+  margin-bottom: 25px;
+  position: relative;
+}
+main .add-comment-container .add-comment .img-container {
+  min-width: 150px;
+  height: 150px;
+  background-color: rgba(128, 128, 128, 0.333);
+  border-radius: 10px 0 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+main .add-comment-container .add-comment .img-container img.uploadIcon {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px 0 0 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+main .add-comment-container .add-comment .img-container img.preview {
+  width: 100%;
+  min-width: 150px;
+  max-width: 150px;
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: none;
+}
+main .add-comment-container .add-comment .img-container .img-upload-btn {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+main .add-comment-container .add-comment .comment-container {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  width: 100%;
+  height: 150px;
+}
+main .add-comment-container .add-comment .comment-container .note {
+  font-weight: 500;
+  display: flex;
+}
+main .add-comment-container .add-comment .comment-container .note .loading {
+  margin-left: 10px;
+  color: red;
+  display: none;
+}
+main .add-comment-container .add-comment .comment-container .rating {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-top: 5px;
+}
+main .add-comment-container .add-comment .comment-container .rating input.rating_range {
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+}
+main .add-comment-container .add-comment .comment-container .rating .star-group {
+  position: absolute;
+}
+main .add-comment-container .add-comment .comment-container .rating .star-group .star {
+  margin: 5px 5px 0 0;
+  width: 20px;
+  height: 20px;
+}
+main .add-comment-container .add-comment .comment-container .comment-content {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 5px;
+  resize: none;
+}
+main .add-comment-container .add-comment .comment-submit {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 50px;
+  line-height: 24px;
+  border-radius: 10px;
+  background-color: rgba(128, 128, 128, 0.5);
+  color: white;
+  border: none;
+  z-index: 5;
+  cursor: pointer;
+}
+main .add-comment-container .add-comment:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: 0.5s ease;
+}
+main .comments_group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0 10px 0;
+  padding: 0 10px 0 10px;
+  width: 100%;
+}
+main .comments_group .comment {
+  background-color: white;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
+}
+main .comments_group .comment .img-container {
+  width: 150px;
+  height: 150px;
+}
+main .comments_group .comment .img-container img {
+  width: 100%;
+  min-width: 150px;
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+main .comments_group .comment .comment-content {
+  padding: 15px;
+  width: 100%;
+  height: 150px;
+}
+main .comments_group .comment .comment-content .comment-user_info {
+  display: flex;
+  flex-wrap: wrap;
+}
+main .comments_group .comment .comment-content .comment-user_info .comment-user {
+  font-weight: 600;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+main .comments_group .comment .comment-content .comment-user_info .comment-user_score {
+  min-width: 146px;
+}
+main .comments_group .comment .comment-content .star {
+  margin-top: 5px;
+  width: 20px;
+  height: 20px;
+}
+main .comments_group .comment .comment-content .comment-text {
+  height: 50px;
+  line-height: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+main .comments_group .comment:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: 0.5s ease;
+}
+main .button-area {
+  width: 100%;
+  height: 170px;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}/*# sourceMappingURL=index.css.map */

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>今天吃什麼</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chewy&family=Noto+Sans+TC:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/header.css" />
+    <link rel="stylesheet" href="/static/css/member.css" />
+    <link rel="icon" type="image/x-icon" href="/static/image/favicon.ico" />
+
+    <script defer src="/static/js/member.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@latest/dist/browser-image-compression.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="title">
+          <img src="/static/image/wha2eat.svg" alt="logo" class="logo_icon" />
+          <h2>wha2eat</h2>
+        </div>
+        <!-- <input type="text" placeholder="搜尋餐廳" class="search" /> -->
+        <button class="user_status">登入</button>
+        <img src="/static/image/profile.svg" alt="" class="profile_icon" />
+        <button class="logout">登出</button>
+      </nav>
+    </header>
+    <main>
+      <section class="user">
+        <div class="user-photo">
+          <img
+            src="/static/image/profile.svg"
+            alt="大頭貼"
+            class="user-photo-url"
+          />
+          <img src="/static/image/upload.svg" alt="上傳" class="upload" />
+          <input class="img-upload-btn fileInput" type="file" />
+        </div>
+        <div class="user-info">
+          <div class="user-name"></div>
+          <div class="user-info-group">
+            <span>我的平均打分：</span>
+            <div class="user-rating"></div>
+          </div>
+
+          <div class="user-info-group">
+            <span>我的口袋餐廳：</span>
+            <div class="user-pocket-count"></div>
+          </div>
+
+          <div class="user-info-group">
+            <span>我的評論紀錄：</span>
+            <div class="user-checkIn-count"></div>
+          </div>
+        </div>
+      </section>
+      <section class="pocket">
+        <div class="pocket-title">
+          <img src="/static/image/pocket.svg" alt="口袋icon" />
+          <div class="title">我的口袋</div>
+        </div>
+        <div class="no-pocket">目前口袋裡空空如也</div>
+        <div class="pocket-restaurants">
+          <img
+            src="/static/image/btn_leftArrow.png"
+            alt="左"
+            class="pocket-left-arrow arrow"
+          />
+
+          <div class="restaurant-box-group">
+            <!-- <div class="restaurant-box">
+              <img
+                src="https://lh3.googleusercontent.com/places/ANXAkqEmPhzca7ejVQ6t82LIay25kxNrsEgbKR9ZT63J31N2DM6F9HJLuPFjIW_ScDcGVD0V-spl1qEB5raXdNmvp9neypA4A863uOY=s4800-w800-h600"
+                alt="餐廳圖片"
+                class="restaurant-img"
+              />
+              <div class="restaurant-info">
+                <div class="restaurant-name">七海魚皮</div>
+                <img
+                  src="/static/image/trash-solid.svg"
+                  alt="垃圾桶"
+                  class="pocket-delete"
+                />
+              </div>
+              <div class="restaurant-open">營業中</div>
+              <div class="restaurant-close">休息中</div>
+            </div> -->
+          </div>
+          <img
+            src="/static/image/btn_rightArrow.png"
+            alt="右"
+            class="pocket-right-arrow arrow"
+          />
+        </div>
+      </section>
+      <section class="record">
+        <div class="record-title">
+          <img src="/static/image/checkIn.svg" alt="打卡icon" />
+          <div class="title">我的評論</div>
+        </div>
+        <div class="no-comment">目前評論區裡空空如也</div>
+        <div class="comments-group">
+          <!-- 內容 -->
+          <!-- <div class="comment">
+            <div class="comment-img-container">
+              <img
+                src="/static/image/logo.png"
+                alt="評論圖片"
+                class="comment-img"
+              />
+            </div>
+
+            <div class="comment-content">
+              <div class="comment-restaurant">
+                <p class="comment-restaurant_name">七海魚皮七海魚皮七海魚皮</p>
+                <p class="comment-time">（2024/08/07）</p>
+              </div>
+              <div class="comment-star">
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-regular.svg"
+                  alt="空星"
+                  class="star star-regular"
+                />
+              </div>
+              <h3 class="comment-text">
+                這是一間很好吃的餐廳，我推到不行，因為是最後一位客人，老闆還多招待一份甜點，愛了愛了
+              </h3>
+            </div>
+
+            <img
+              src="/static/image/trash-solid.svg"
+              alt="刪除"
+              class="comment-delete"
+            />
+          </div> -->
+          <!-- 內容 -->
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

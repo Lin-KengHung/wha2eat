@@ -3,8 +3,7 @@ CREATE TABLE restaurants (
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
     district VARCHAR(255),  
-    lat DOUBLE NOT NULL,  
-    lng DOUBLE NOT NULL,  
+    coordinates POINT NOT NULL,  -- 使用 POINT 型態來儲存經緯度
     place_id VARCHAR(255) NOT NULL UNIQUE,  
     google_rating DECIMAL(2, 1), 
     google_rating_count INT,   
@@ -12,18 +11,20 @@ CREATE TABLE restaurants (
     dineIn BOOLEAN,  
     delivery BOOLEAN,  
     reservable BOOLEAN,  
-    type VARCHAR(255),  
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+    type VARCHAR(255),
+    businessStatus BOOLEAN,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    SPATIAL INDEX(coordinates)  -- 為 coordinates 欄位建立空間索引
 );
 
 CREATE TABLE opening_hours (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    place_id VARCHAR(255),
-    day_of_week VARCHAR(10),
-    time_slot INT,
-    open_time TIME,
-    close_time TIME,
-    FOREIGN KEY (place_id) REFERENCES Restaurants(place_id)
+    place_id VARCHAR(255) NOT NULL,
+    day_of_week TINYINT(1) NOT NULL,
+    open_time TIME NOT NULL,
+    close_time TIME NOT NULL,
+    FOREIGN KEY (place_id) REFERENCES Restaurants(place_id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );
 
 CREATE TABLE users (
@@ -32,6 +33,42 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     gender ENUM('male', 'female'), 
-    age TINYINT UNSIGNED, 
+    age TINYINT UNSIGNED,
+    avg_rating DECIMAL(2, 1),
+    profile_picture TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    place_id VARCHAR(255) NOT NULL,
+    url TEXT NOT NULL COMMENT "image url",
+    FOREIGN KEY (place_id) REFERENCES Restaurants(place_id) ON DELETE CASCADE,
+    upload_by_user BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+);
+
+CREATE TABLE pockets (
+    user_id INT NOT NULL,
+    restaurant_id INT NOT NULL,
+    attitude VARCHAR(255) NOT NULL,
+    PRIMARY KEY (user_id, restaurant_id),
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    restaurant_id INT NOT NULL,
+    image_id INT,
+    rating TINYINT(1) NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    context TEXT,
+    checkin BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (image_id) REFERENCES images(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );

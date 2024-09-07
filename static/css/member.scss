@@ -1,0 +1,298 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .user {
+    display: flex;
+    width: 100%;
+    max-width: 620px;
+    padding: 0 15px;
+    align-items: center;
+    margin-top: 20px;
+    .user-photo {
+      border-radius: 20px;
+      width: 150px;
+      height: 150px;
+      background-color: rgba(128, 128, 128, 0.3);
+      position: relative;
+      &:hover {
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+        transition: 0.2s ease;
+        .upload {
+          display: block;
+        }
+      }
+
+      .user-photo-url {
+        width: 100%;
+        height: 100%;
+        border-radius: 20px;
+        object-fit: cover;
+      }
+      .upload {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        display: none;
+      }
+
+      .img-upload-btn {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+      }
+    }
+    .user-info {
+      padding: 20px 20px 20px 40px;
+      &-group {
+        display: flex;
+        align-items: center;
+      }
+      .user-name {
+        font-size: 2rem;
+      }
+    }
+  }
+  .pocket {
+    width: 100%;
+    max-width: 620px;
+    padding: 10px;
+    align-items: center;
+    margin-top: 20px;
+    .pocket-title {
+      display: flex;
+      align-items: center;
+      img {
+        width: 50px;
+        height: 50px;
+        background-color: #ff6f61;
+        border-radius: 20px;
+      }
+      .title {
+        padding: 10px;
+        font-size: 1.5rem;
+      }
+    }
+    .no-pocket {
+      height: 50px;
+      margin-top: 10px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .pocket-restaurants {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      position: relative;
+
+      .arrow {
+        z-index: 2;
+        cursor: pointer;
+        border-radius: 50%;
+        position: absolute;
+        top: 70px;
+        &:hover {
+          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+          transition: 0.2s ease;
+        }
+      }
+      .pocket-left-arrow {
+        left: 5px;
+      }
+      .pocket-right-arrow {
+        right: 5px;
+      }
+      .restaurant-box-group {
+        display: flex;
+        align-items: center;
+        overflow-x: scroll;
+        scroll-behavior: smooth;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        .restaurant-box {
+          width: 220px;
+          margin-left: 10px;
+          padding: 10px;
+          border-radius: 10px;
+          position: relative;
+          .restaurant-img {
+            width: 200px;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+          }
+          .restaurant-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .restaurant-name {
+              font-size: 1.2rem;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              cursor: pointer;
+              &:hover {
+                font-weight: 500;
+                // text-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+              }
+            }
+            .pocket-delete {
+              width: 15px;
+              height: 15px;
+              margin-right: 5px;
+              display: none;
+            }
+          }
+          .restaurant-open {
+            position: absolute;
+            top: 20px;
+            margin-left: 5px;
+            padding: 0 5px;
+            border-radius: 10px;
+            background-color: rgba(green, 0.8);
+            color: white;
+            font-size: 0.8rem;
+          }
+          .restaurant-close {
+            position: absolute;
+            top: 20px;
+            margin-left: 5px;
+            padding: 0 5px;
+            border-radius: 10px;
+            background-color: rgba(red, 0.8);
+            color: white;
+            font-size: 0.8rem;
+          }
+          &:hover {
+            background-color: rgba(gray, 0.5);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+
+            .pocket-delete {
+              display: block;
+              cursor: pointer;
+              z-index: 2;
+            }
+            transition: 0.3s ease;
+          }
+        }
+      }
+    }
+  }
+  .record {
+    width: 100%;
+    max-width: 620px;
+    padding: 10px;
+    align-items: center;
+    margin-top: 20px;
+    .record-title {
+      display: flex;
+      align-items: center;
+      img {
+        width: 50px;
+        height: 50px;
+        background-color: #ff6f61;
+        border-radius: 20px;
+      }
+      .title {
+        padding: 10px;
+        font-size: 1.5rem;
+      }
+    }
+    .no-comment {
+      height: 50px;
+      margin-top: 10px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .comments-group {
+      .comment {
+        background-color: white;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 15px;
+        position: relative;
+        .comment-img-container {
+          width: 150px;
+          height: 150px;
+
+          img.comment-img {
+            border-radius: 10px 0 0 10px;
+            width: 100%;
+            min-width: 150px;
+            max-width: 150px;
+            height: 100%;
+            border-radius: 10px 0 0 10px;
+            object-fit: cover;
+          }
+        }
+
+        .comment-content {
+          padding: 15px;
+          width: 100%;
+          height: 150px;
+          .comment-restaurant {
+            display: flex;
+            flex-wrap: wrap;
+            .comment-restaurant_name {
+              font-weight: 500;
+              max-width: 180px;
+              // border: 2px solid black;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+            .comment-time {
+              min-width: 120px;
+            }
+          }
+          .star {
+            margin-top: 5px;
+            width: 20px;
+            height: 20px;
+          }
+          .comment-text {
+            height: 50px;
+            line-height: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2; /* 顯示的最大行數，根據需要設置 */
+            text-overflow: ellipsis;
+            overflow: hidden; /* 隱藏超出容器高度的內容 */
+          }
+        }
+        .comment-delete {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          width: 15px;
+          height: 15px;
+          margin-right: 5px;
+          display: none;
+          cursor: pointer;
+        }
+        &:hover {
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+          transition: 0.3s ease;
+          .comment-delete {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+}

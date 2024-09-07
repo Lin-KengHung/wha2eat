@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./loaderIO/loaderio-5595eeed5daeb5a43912e979d5f30ea0.txt:/usr/share/nginx/html/loaderio-5595eeed5daeb5a43912e979d5f30ea0.txt
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - app

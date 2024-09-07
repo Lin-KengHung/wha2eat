@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>今天吃什麼</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chewy&family=Noto+Sans+TC:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/header.css" />
+    <link rel="stylesheet" href="/static/css/index.css" />
+    <link rel="icon" type="image/x-icon" href="/static/image/favicon.ico" />
+    <script defer src="/static/js/index.js"></script>
+    <script defer src="/static/js/userStatus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@latest/dist/browser-image-compression.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="title">
+          <img src="/static/image/wha2eat.svg" alt="logo" class="logo_icon" />
+          <h2>wha2eat</h2>
+        </div>
+        <input type="text" placeholder="想找什麼餐廳?" class="search" />
+        <button class="user_status">登入</button>
+        <img src="/static/image/profile.svg" alt="" class="profile_icon" />
+        <button class="logout">登出</button>
+      </nav>
+    </header>
+    <main>
+      <section class="constraint">
+        <div class="btn-group">
+          <button
+            id="type-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            全部類型
+          </button>
+          <ul class="dropdown-menu" id="type-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="all">全部類型</a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#" data-value="東南亞餐廳"
+                >東南亞料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="日式餐廳"
+                >日式料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="韓式餐廳"
+                >韓式料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="中式餐廳"
+                >中式料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="美式餐廳"
+                >美式料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="義大利餐廳"
+                >義大利料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="異國餐廳"
+                >異國料理</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="餐酒館">餐酒館</a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#" data-value="BBQ">燒烤炸物</a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#" data-value="速食">速食</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="牛排館">牛排館</a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#" data-value="早餐店">早餐店</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="早午餐">早午餐</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="外賣">外賣</a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#" data-value="素食餐廳"
+                >素食餐廳</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="btn-group">
+          <button
+            id="distance-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            2公里以內
+          </button>
+          <ul class="dropdown-menu" id="distance-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="2000">2公里以內</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="500"
+                >走路10分鐘內</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="800"
+                >走路15分鐘內</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button
+            id="open-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            營業中
+          </button>
+          <ul class="dropdown-menu" id="open-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="false">不限營業</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="true">營業中</a>
+            </li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button
+            id="seen-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            全都看看
+          </button>
+          <ul class="dropdown-menu" id="seen-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="seen-all"
+                >全都看看</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="false">沒看過的</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="true">有看過的</a>
+            </li>
+          </ul>
+        </div>
+      </section>
+      <section class="constraint-apply">
+        <div class="btn-group">
+          <button
+            id="algorithm-btn"
+            type="button"
+            class="btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            隨機推薦
+          </button>
+          <ul class="dropdown-menu" id="algorithm-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-value="random">隨機推薦</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="high_google_rating"
+                >高分評價</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="#"
+                data-value="high_google_rating_count"
+                >評論熱烈</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="UBCF"
+                >相似的用戶收藏了</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-value="IBCF"
+                >類似你收藏的餐廳</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="user-location">定位：民權西路捷運站</div>
+        <button class="constraint-apply" id="apply-btn">套用</button>
+        <div class="data-length">有5筆資料！</div>
+      </section>
+      <section class="restaurant">
+        <div class="card-container">
+          <div class="next-page">
+            <img
+              src="/static/image/next.svg"
+              alt="下一個"
+              class="next-page-icon"
+            />
+            NEXT
+          </div>
+          <div class="restaurant-card">
+            <div class="restaurant-photo">
+              <img
+                src="/static/image/loading.gif"
+                alt="Restaurant Image"
+                class="restaurant-img"
+              />
+
+              <div class="indicators-group"></div>
+            </div>
+            <div class="restaurant-title">
+              <img
+                src="/static/image/heart-regular.svg"
+                alt="空心愛心"
+                class="heart regular-heart"
+              />
+              <img
+                src="/static/image/heart-solid.svg"
+                alt="實心愛心"
+                class="heart solid-heart"
+              />
+
+              <h2 class="restaurant-name">loading...</h2>
+            </div>
+            <div class="restaurant-info">
+              <div class="restaurant-tags_group">
+                <p class="restaurant-tag restaurant-open">營業中</p>
+                <p class="restaurant-tag restaurant-close">休息中</p>
+                <p class="restaurant-tag restaurant-rating">Google評分</p>
+                <p class="restaurant-tag distance">500公尺</p>
+                <p class="restaurant-tag restaurant-type">餐廳</p>
+                <p class="restaurant-tag attitude-new">新的發現！</p>
+                <p class="restaurant-tag attitude-like">你喜歡！</p>
+                <p class="restaurant-tag attitude-consider">你曾看過</p>
+                <div class="block-group block-group-deactivate">
+                  <img
+                    src="/static/image/block_not_active.svg"
+                    alt="未啟動封鎖"
+                    class="block"
+                  />
+                  屏蔽此餐廳
+                </div>
+
+                <div class="block-group block-group-activate">
+                  <img
+                    src="/static/image/block_active.svg"
+                    alt="啟動封鎖"
+                    class="block"
+                  />
+                  屏蔽此餐廳
+                </div>
+              </div>
+              <div class="restaurant-detail_info">
+                <hr class="seperate" />
+                <div class="address-group">
+                  <img
+                    src="/static/image/address.svg"
+                    alt="地址"
+                    class="address-icon"
+                  />
+                  <p class="address"></p>
+                  <div class="navigation">
+                    <button class="navigation-btn">
+                      導航
+                      <img
+                        src="/static/image/navigation.svg"
+                        alt="導航icon"
+                        class="navigation-icon"
+                      />
+                    </button>
+                  </div>
+                </div>
+                <div class="services-group">
+                  <div class="service takeout">
+                    <img
+                      src="/static/image/tick.svg"
+                      alt=""
+                      class="takeout-tick"
+                    />
+                    <img
+                      src="/static/image/error.svg"
+                      alt=""
+                      class="takeout-error"
+                    />
+                    <p class="service-text">外帶</p>
+                  </div>
+                  <div class="service dineIn">
+                    <img
+                      src="/static/image/tick.svg"
+                      alt=""
+                      class="dineIn-tick"
+                    />
+                    <img
+                      src="/static/image/error.svg"
+                      alt=""
+                      class="dineIn-error"
+                    />
+                    <p class="service-text">內用</p>
+                  </div>
+                  <div class="service delivery">
+                    <img
+                      src="/static/image/tick.svg"
+                      alt=""
+                      class="delivery-tick"
+                    />
+                    <img
+                      src="/static/image/error.svg"
+                      alt=""
+                      class="delivery-error"
+                    />
+                    <p class="service-text">外送</p>
+                  </div>
+                  <div class="service reservable">
+                    <img
+                      src="/static/image/tick.svg"
+                      alt=""
+                      class="reservable-tick"
+                    />
+                    <img
+                      src="/static/image/error.svg"
+                      alt=""
+                      class="reservable-error"
+                    />
+                    <p class="service-text">預定</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="add-comment-container">
+        <!-- <div class="without-comment">-- 目前沒有評論 --</div> -->
+        <form class="add-comment" method="POST">
+          <div class="img-container">
+            <img
+              src="/static/image/image-upload.svg"
+              alt="上傳圖片icon"
+              class="uploadIcon"
+            />
+            <img src="/static/image/logo.png" alt="圖片預覽" class="preview" />
+            <input class="img-upload-btn fileInput" type="file" />
+          </div>
+          <div class="comment-container">
+            <div class="note">
+              留下你的評論吧！
+              <p class="loading">loading...</p>
+            </div>
+            <div class="rating">
+              <input
+                type="range"
+                min="1"
+                max="5"
+                step="1"
+                class="rating_range"
+              />
+              <div class="star-group">
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-solid.svg"
+                  alt="實星"
+                  class="star star-solid"
+                />
+                <img
+                  src="/static/image/star-regular.svg"
+                  alt="空星"
+                  class="star star-regular"
+                />
+                <img
+                  src="/static/image/star-regular.svg"
+                  alt="空星"
+                  class="star star-regular"
+                />
+              </div>
+            </div>
+            <textarea
+              name="comment"
+              class="comment-content"
+              placeholder="好吃！"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
+          <button class="comment-submit">送出</button>
+        </form>
+      </section>
+      <section class="comments_group"></section>
+      <!-- <section class="action">
+        <div class="action-btn dislike">
+          <img src="/static/image/heart-break.svg" alt="不喜歡" />
+        </div>
+
+        <div class="action-btn consider">
+          <img src="/static/image/thinking-face.svg" alt="考慮" />
+        </div>
+        <div class="action-btn like">
+          <img src="/static/image/thumbs-up.svg" alt="喜歡" />
+        </div>
+      </section>
+      <section class="button-area"></section> -->
+    </main>
+    <section class="signin">
+      <div class="popup__background">
+        <div class="popup__form">
+          <div class="popup__form--decorateor-bar">
+            <img
+              class="popup__form--close signin-close"
+              src="/static/image/close.png"
+              alt="close"
+            />
+          </div>
+          <div class="popup__form--content">
+            <h3 class="popup__form--title bold">登入尋找美食吧</h3>
+            <img
+              src="/static/image/login.svg"
+              alt="登入登出示意圖"
+              class="form-icon"
+            />
+            <input
+              type="text"
+              name="email"
+              class="popup__form--email signin-email"
+              placeholder="輸入電子信箱"
+            />
+            <input
+              type="password"
+              name="password"
+              class="popup__form--password signin-password"
+              placeholder="輸入密碼"
+            />
+            <div class="error alert signin-error">錯誤訊息</div>
+            <div class="success alert signin-success">成功訊息</div>
+            <button class="popup__form--send signin-form">登入帳戶</button>
+            <div class="tab-change-notice">
+              <div class="body-med popup__form--notice">沒有帳戶？</div>
+              <div class="body-med popup__form--tab-change change2signup">
+                點此註冊！
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="signup">
+      <div class="popup__background">
+        <div class="popup__form">
+          <div class="popup__form--decorateor-bar">
+            <img
+              class="popup__form--close signup-close"
+              src="/static/image/close.png"
+              alt="close"
+            />
+          </div>
+          <div class="popup__form--content">
+            <h3 class="popup__form--title">開始美食之旅</h3>
+            <img
+              src="/static/image/signup.svg"
+              alt="登入註冊示意圖"
+              class="form-icon"
+            />
+            <input
+              type="text"
+              name="name"
+              class="popup__form--name signup-name"
+              placeholder="輸入姓名 *"
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              class="popup__form--email signup-email"
+              placeholder="輸入信箱 *"
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              class="popup__form--password signup-password"
+              placeholder="輸入密碼 *"
+              required
+            />
+            <div class="optional">
+              <div class="gender">
+                <div class="radio-outer">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="male"
+                    class="popup__form--gender"
+                  />
+                  <div class="radio-btn">
+                    <div class="radio-center"></div>
+                  </div>
+                </div>
+                <span>男</span>
+                <div class="radio-outer">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="female"
+                    class="popup__form--gender"
+                  />
+                  <div class="radio-btn">
+                    <div class="radio-center"></div>
+                  </div>
+                </div>
+                <span>女</span>
+              </div>
+
+              <input
+                type="number"
+                name="age"
+                placeholder="年紀（選填）"
+                class="age"
+                min="0"
+                max="100"
+              />
+            </div>
+
+            <div class="error alert signup-error">錯誤訊息</div>
+            <div class="success alert signup-success">註冊成功！</div>
+            <button class="popup__form--send signup-form">註冊帳戶</button>
+            <div class="tab-change-notice">
+              <div class="body-med popup__form--notice">已經有帳戶？</div>
+              <div class="body-med popup__form--tab-change change2signin">
+                點此登入
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
