@@ -17,7 +17,7 @@ from dbconfig import Database
 
 print(f"更新時間{datetime.now()}")
 
-sql = "SELECT place_id, url FROM images LIMIT 3000, 500;" 
+sql = "SELECT place_id, url FROM images;" 
 image_data = Database.read_all(sql)
 
 
