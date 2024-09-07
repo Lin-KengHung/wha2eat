@@ -144,7 +144,7 @@ def update_problematic_restaurants(invalid_place_ids, valid_urls):
         else:
             print(f"No photos found for place_id {place_id}")
 
-    return result
+    return results
 
 new_image_result = update_problematic_restaurants(invalid_place_ids= invalid_place_ids, valid_urls=valid_urls)
 
