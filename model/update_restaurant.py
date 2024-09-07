@@ -3,6 +3,7 @@ import sys
 import requests
 import threading
 import time
+from datetime import datetime
 
 from requests.exceptions import RequestException
 from dotenv import load_dotenv
@@ -15,7 +16,7 @@ sys.path.insert(0, root_dir)
 from dbconfig import Database
 
 
-sql = "SELECT place_id, url FROM images LIMIT 1000;" 
+sql = "SELECT place_id, url FROM images LIMIT 1000,1000;" 
 image_data = Database.read_all(sql)
 
 
@@ -147,7 +148,7 @@ def update_problematic_restaurants(invalid_place_ids, valid_urls):
     return results
 
 new_image_result = update_problematic_restaurants(invalid_place_ids= invalid_place_ids, valid_urls=valid_urls)
-
+print(f"更新時間{datetime.now()}")
 if (new_image_result == "pass"):
     print("沒有資料需要更新")
 else:
@@ -157,10 +158,9 @@ else:
         val = (url,)
         result = Database.delete(sql, val)
         if (result):
-            print("刪除成功")
+            print(f"刪除成功{url}")
         else:
-            print("刪除失敗")
-            print(url)
+            print(f"!!!刪除失敗{url}")
 
 
     ## 新增檔案
@@ -169,8 +169,8 @@ else:
         val = (image["place_id"], image["url"])
         result = Database.update(sql, val)
         if (result):
-            print("新增成功")
+            print(f"新增成功{image}")
         else:
-            print("新增失敗")
-            print(image)
+            print(f"!!!新增失敗{image}")
+    
 
