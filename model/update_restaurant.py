@@ -16,7 +16,7 @@ sys.path.insert(0, root_dir)
 from dbconfig import Database
 
 
-sql = "SELECT place_id, url FROM images LIMIT 1000,1000;" 
+sql = "SELECT place_id, url FROM images;" 
 image_data = Database.read_all(sql)
 
 
