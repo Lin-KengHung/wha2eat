@@ -46,7 +46,7 @@
 - **Let's Encrypt**：提供 SSL 證書，確保 HTTPS 安全連線。
 
 ## 系統架構
-![系統架構圖](https://github.com/user-attachments/assets/281b9a22-e894-41be-89a7-fb1310c726a0)
+![系統架構圖](https://github.com/user-attachments/assets/ebd89162-49d5-493f-acdf-7e6cab9f481d)
 1. 在本地開發後，使用Git與Github做版本控制，並用docker打包，部屬到AWS EC2上
 2. RDS在 AWS VPC(Virtual Private Cloud)的private subnet中，避免從internet直接訪問
 3. 使用AWS load balancer服務分配流量到不同EC2上(目前只有開一台)
