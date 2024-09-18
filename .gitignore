@@ -6,3 +6,4 @@ data/
 default.conf
 nginx/
 nohup.out
+unit_test/
