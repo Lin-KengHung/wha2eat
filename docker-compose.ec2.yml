@@ -17,5 +17,4 @@ services:
       - my_custom_network
 
 networks:
-  my_custom_network:
-    external: true
+  wha2eat_network:
