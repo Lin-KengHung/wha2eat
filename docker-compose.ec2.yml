@@ -13,9 +13,3 @@ services:
       - "443:443"
     depends_on:
       - app
-    networks:
-      - wha2eat_network
-
-networks:
-  wha2eat_network:
-    external: true

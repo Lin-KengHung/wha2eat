@@ -12,7 +12,7 @@ DATABASE_HOST = os.getenv('DATABASE_HOST')
 DATABASE_USER = os.getenv('DATABASE_USER')
 DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
 DATABASE_NAME = os.getenv('DATABASE_NAME')
-
+REDIS_HOST = os.getenv('REDISHOST')
 
 class Database:
     mydb = {
@@ -143,7 +143,7 @@ class Database:
                 connect.close()
 
 
-redis_client = redis.Redis(host= DATABASE_HOST, port=6379, db=0)
+redis_client = redis.Redis(host= REDIS_HOST, port=6379, db=0)
 class RedisCache:
     def record_pockets(user_id, restaurant_id, attitude):
     # 構造暫存資料
