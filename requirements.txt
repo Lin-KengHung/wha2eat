@@ -6,3 +6,8 @@ python-dotenv
 PyJWT
 bcrypt
 pydantic
+python-multipart
+pandas
+scikit-learn
+requests
+redis

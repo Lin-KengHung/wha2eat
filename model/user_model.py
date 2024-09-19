@@ -130,7 +130,6 @@ class UserModel:
 # ---------- JWT ----------
 SECRET_KEY = os.getenv("SECRET")
 ALGORITHM = "HS256"
-expire = datetime.datetime.now() + datetime.timedelta(days=7)
 
 class CustomizeRaise(Exception):
     def __init__(self, status_code, message):
@@ -170,6 +169,7 @@ def make_hash_password(password: str):
     return hashed_password
 
 def make_JWT(id, name) -> str:
+    expire = datetime.datetime.now() + datetime.timedelta(days=90)
     payload={"id" : id, "name": name, "exp": expire}
     token = jwt.encode(payload=payload, key= SECRET_KEY, algorithm = ALGORITHM)
     return token

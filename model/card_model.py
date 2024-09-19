@@ -1,4 +1,5 @@
-from dbconfig import Database
+from dbconfig import Database,RedisCache
+from model.utils import recommend_restaurants_for_user, calculate_cosine_similarity
 from pydantic import BaseModel, Field
 from typing import Optional, List
 import json
@@ -39,7 +40,9 @@ class CardModel:
             is_open,
             restaurant_id_list
         ):
-
+        
+        # 更新快取中使用者口袋清單
+        RedisCache.batch_write_pockets_to_db()
 
         # 預設在小樹屋中
         if user_lat is None:
@@ -194,6 +197,10 @@ class CardModel:
         return RestaurantOut(data=restaurant_group)
 
     def get_restaurant_by_id(restaurant_id, user_id, user_lat=None, user_lng=None):
+        
+        # 更新快取中使用者口袋清單
+        RedisCache.batch_write_pockets_to_db()
+
         # 預設在小樹屋中
         if user_lat is None:
             user_lat = 25.062673934754084
@@ -299,6 +306,10 @@ class CardModel:
             user_lng,
             user_id,
             ):
+        
+        # 更新快取中使用者口袋清單
+        RedisCache.batch_write_pockets_to_db()
+
         keyword = '%' + keyword + '%'
         offset = page * 10
 
@@ -547,30 +558,10 @@ class CollaborativeFiltering:
         # 紀錄特定使用者喜歡的(分數 >=5)的餐廳
         high_score_restaurants = pivot_table[user_id][pivot_table[user_id] >= 5].index.tolist()
 
-        # 使用 Google Rating 填充 NaN 值
-        pivot_table_filled = pivot_table.apply(lambda row: row.fillna(google_rating_dict.get(row.name)), axis=1)
-
-        # 計算餐廳之間的餘弦相似度
-        cosine_sim_matrix = cosine_similarity(pivot_table_filled)
-
-        # 將相似度矩陣轉換成 restaurant_id x restaurant_id 的 DataFrame
-        cosine_sim_df = pd.DataFrame(cosine_sim_matrix, index=pivot_table.index, columns=pivot_table.index)
+        # 計算相似度，用google評分填充NaN值
+        cosine_sim_df = calculate_cosine_similarity(pivot_table, google_rating_dict)
         
-        def recommend_restaurants_for_user(cosine_sim_df, high_score_restaurants, unrated_or_considered_restaurants, top_n=3):
-            recommended_restaurants = set()
-            
-            for restaurant_id in high_score_restaurants:
-                
-                # 找到與此餐廳相似的餐廳
-                similar_restaurants = cosine_sim_df[restaurant_id].sort_values(ascending=False).index.tolist()
-                
-                # 過濾出尚未評價的餐廳
-                similar_unrated_or_considered_restaurants = [r for r in similar_restaurants if r in unrated_or_considered_restaurants]
-                
-                # 添加到推薦列表
-                recommended_restaurants.update(similar_unrated_or_considered_restaurants[:top_n])
-            
-            return list(recommended_restaurants)
-    
+        # 推薦餐廳並用list儲存
         recommendations = recommend_restaurants_for_user(cosine_sim_df, high_score_restaurants, unrated_or_considered_restaurants)
         return recommendations
+

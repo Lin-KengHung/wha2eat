@@ -1,6 +1,15 @@
 version: "3.8"
 
 services:
+  app:
+    build:
+      context: .
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+
   nginx:
     image: nginx:latest
     container_name: nginx
