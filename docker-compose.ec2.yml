@@ -14,7 +14,7 @@ services:
     depends_on:
       - app
     networks:
-      - my_custom_network
+      - wha2eat_network
 
 networks:
   wha2eat_network:
