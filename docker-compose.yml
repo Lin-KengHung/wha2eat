@@ -13,6 +13,8 @@ services:
       - redis
     environment:
       REDIS_HOST: redis
+    networks:
+      - wha2eat_network
 
   redis:
     image: "redis:alpine"
@@ -21,6 +23,12 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/redis_data
+    networks:
+      - wha2eat_network
 
 volumes:
   redis_data:
+
+networks:
+  wha2eat_network:
+    driver: bridge
