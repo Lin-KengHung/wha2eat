@@ -18,3 +18,4 @@ services:
 
 networks:
   wha2eat_network:
+    external: true
