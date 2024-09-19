@@ -1,4 +1,4 @@
-from dbconfig import Database
+from dbconfig import Database,RedisCache
 from model.utils import recommend_restaurants_for_user, calculate_cosine_similarity
 from pydantic import BaseModel, Field
 from typing import Optional, List
@@ -40,7 +40,9 @@ class CardModel:
             is_open,
             restaurant_id_list
         ):
-
+        
+        # 更新快取中使用者口袋清單
+        RedisCache.batch_write_pockets_to_db()
 
         # 預設在小樹屋中
         if user_lat is None:
@@ -195,6 +197,10 @@ class CardModel:
         return RestaurantOut(data=restaurant_group)
 
     def get_restaurant_by_id(restaurant_id, user_id, user_lat=None, user_lng=None):
+        
+        # 更新快取中使用者口袋清單
+        RedisCache.batch_write_pockets_to_db()
+
         # 預設在小樹屋中
         if user_lat is None:
             user_lat = 25.062673934754084
@@ -300,6 +306,10 @@ class CardModel:
             user_lng,
             user_id,
             ):
+        
+        # 更新快取中使用者口袋清單
+        RedisCache.batch_write_pockets_to_db()
+
         keyword = '%' + keyword + '%'
         offset = page * 10
 

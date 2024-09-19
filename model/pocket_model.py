@@ -1,4 +1,4 @@
-from dbconfig import Database
+from dbconfig import Database, RedisCache
 from pydantic import BaseModel, Field
 from typing import Optional, List
 import json
@@ -23,22 +23,18 @@ class RestaurantsGroup(BaseModel):
 
 class PocketModel:
     def record_match(user_id, restaurant_id, attitude):
-        sql = """
-        INSERT INTO pockets (user_id, restaurant_id, attitude) 
-        VALUES (%s, %s, %s)
-        ON DUPLICATE KEY 
-        UPDATE 
-        attitude = %s, 
-        update_at = CURRENT_TIMESTAMP;
-        """
-        val = (user_id, restaurant_id, attitude, attitude)
-        result = Database.create(sql, val)
-        if (result > 0):
+
+        cache_result = RedisCache.record_pockets(user_id=user_id,restaurant_id=restaurant_id,attitude=attitude)
+
+        if (cache_result):
             return True
         else:
             return False
+    
+
 
     def get_my_pocket(id, page):
+        RedisCache.batch_write_pockets_to_db()
 
         offset = page * 10
         sql = """
