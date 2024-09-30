@@ -13,7 +13,7 @@ The idea is came from matching systems in dating apps, where users can match wit
 # Demo
 https://github.com/user-attachments/assets/eea0e75f-1289-494e-ae25-05a79c63e8a6
 
-# Function map
+# Function Map
 
 ![function map](https://github.com/user-attachments/assets/5332d119-1126-4499-bf72-f01f5b023442)
 
@@ -23,7 +23,7 @@ https://github.com/user-attachments/assets/eea0e75f-1289-494e-ae25-05a79c63e8a6
 - **Match System**: Restaurants are recommended based on users' historical behavior, input conditions, or by searching with keywords.
 - **Automatic Data Updates**: Automatically update the latest restaurant information from the Google Place API every Sunday.
 
-# Core technologies
+# Core Technologies
 
 ### Backend
 
