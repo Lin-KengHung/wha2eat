@@ -1,6 +1,8 @@
 // 點入登入按鈕
 document.querySelector(".user_status").addEventListener("click", (e) => {
   document.querySelector(".signin").style.display = "block";
+  document.querySelector(".signin-email").value = "test@test.com";
+  document.querySelector(".signin-password").value = "test";
   messageReset();
 });
 // 關掉登入表單
