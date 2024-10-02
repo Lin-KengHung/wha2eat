@@ -72,3 +72,14 @@ CREATE TABLE comments (
     FOREIGN KEY (image_id) REFERENCES images(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );
+
+-- add index
+CREATE INDEX idx_restaurants_place_id ON restaurants(place_id);
+CREATE INDEX idx_restaurants_type ON restaurants(type);
+CREATE INDEX idx_restaurants_businessStatus ON restaurants(businessStatus);
+CREATE INDEX idx_restaurants_google_rating ON restaurants(google_rating);
+CREATE INDEX idx_restaurants_google_rating_count ON restaurants(google_rating_count);
+CREATE INDEX idx_opening_hours_place_id ON opening_hours(place_id);
+CREATE INDEX idx_opening_hours_day_of_week ON opening_hours(day_of_week);
+CREATE INDEX idx_opening_hours_time ON opening_hours(open_time, close_time);
+CREATE INDEX idx_images_place_id ON images(place_id);
