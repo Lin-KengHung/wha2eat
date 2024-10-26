@@ -34,7 +34,7 @@ class PocketModel:
 
 
     def get_my_pocket(id, page):
-        RedisCache.batch_write_pockets_to_db()
+        RedisCache.batch_write_pockets_to_db(user_id=id)
 
         offset = page * 10
         sql = """
