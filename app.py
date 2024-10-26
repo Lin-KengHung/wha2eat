@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from model.user_model import CustomizeRaise
 from model.share import Error
+from dbconfig import RedisCache
 
 
 app = FastAPI()
@@ -15,6 +16,10 @@ app.include_router(user.router)
 app.include_router(pocket.router)
 app.include_router(comment.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.on_event("startup")
+def on_startup():
+    RedisCache.start_scheduler()
 
 @app.exception_handler(CustomizeRaise)
 async def error_raise(requset: Request, exc: CustomizeRaise):

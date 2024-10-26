@@ -11,3 +11,4 @@ pandas
 scikit-learn
 requests
 redis
+APScheduler
