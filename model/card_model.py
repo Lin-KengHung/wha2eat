@@ -42,7 +42,8 @@ class CardModel:
         ):
         
         # 更新快取中使用者口袋清單
-        RedisCache.batch_write_pockets_to_db()
+        if user_id:
+            RedisCache.batch_write_pockets_to_db(user_id=user_id)
 
         # 預設在小樹屋中
         if user_lat is None:
@@ -199,7 +200,8 @@ class CardModel:
     def get_restaurant_by_id(restaurant_id, user_id, user_lat=None, user_lng=None):
         
         # 更新快取中使用者口袋清單
-        RedisCache.batch_write_pockets_to_db()
+        if user_id:
+            RedisCache.batch_write_pockets_to_db(user_id=user_id)
 
         # 預設在小樹屋中
         if user_lat is None:
@@ -308,7 +310,8 @@ class CardModel:
             ):
         
         # 更新快取中使用者口袋清單
-        RedisCache.batch_write_pockets_to_db()
+        if user_id:
+            RedisCache.batch_write_pockets_to_db(user_id=user_id)
 
         keyword = '%' + keyword + '%'
         offset = page * 10

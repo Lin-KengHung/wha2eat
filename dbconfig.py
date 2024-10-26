@@ -3,6 +3,8 @@ import os
 import redis
 import json
 from dotenv import load_dotenv
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 
 load_dotenv()
@@ -145,27 +147,24 @@ class Database:
 
 redis_client = redis.Redis(host= REDIS_HOST, port=6379, db=0)
 class RedisCache:
-    def record_pockets(user_id, restaurant_id, attitude):
+    
+    @classmethod
+    def record_pockets(cls, user_id, restaurant_id, attitude):
     # 構造暫存資料
-        key = f"record:{user_id}:{restaurant_id}"
-        value = json.dumps({
-            "user_id": user_id,
-            "restaurant_id": restaurant_id,
-            "attitude": attitude
-        })
-        
-        # 暫存資料到 Redis
-        redis_client.set(key, value)
+        key = f"user:{user_id}:pockets"
+        field = f"{restaurant_id}"  
+        redis_client.hset(key, field, attitude)  
         return True
-
-    def batch_write_pockets_to_db():
-        keys = redis_client.keys("record:*")
+    
+    @classmethod
+    def batch_write_pockets_to_db(cls, user_id):
+        key = f"user:{user_id}:pockets"
+        fields = redis_client.hkeys(key)
         records = []
 
-        for key in keys:
-            record = redis_client.get(key)
-            record_data = json.loads(record)
-            records.append((record_data["user_id"], record_data["restaurant_id"], record_data["attitude"]))
+        for field in fields:
+            attitude = redis_client.hget(key, field).decode('utf-8') 
+            records.append((user_id, field, attitude)) # field == restaurant_id
 
         if records:
             sql = """
@@ -177,6 +176,26 @@ class RedisCache:
             """
             row = Database.update_many(sql, records)
             print(f"更新了{row}行")
-            redis_client.delete(*keys)
+            redis_client.delete(key)
 
         return True
+    
+    @classmethod
+    def batch_write_all_users_to_db(cls):
+        print("定時更新")
+        keys = redis_client.keys("user:*:pockets")
+        for key in keys:
+            key = key.decode('utf-8')
+            user_id = key.split(":")[1]
+            cls.batch_write_pockets_to_db(user_id)
+
+    @classmethod
+    def start_scheduler(cls):
+        # 初始化並啟動定時器
+        scheduler = BackgroundScheduler()
+        # 設置每隔10分鐘調用一次批量同步
+        scheduler.add_job(cls.batch_write_all_users_to_db, 'interval', days=1)
+        # 啟動調度器
+        scheduler.start()
+
+RedisCache.batch_write_all_users_to_db()
