@@ -175,14 +175,12 @@ class RedisCache:
                 update_at = CURRENT_TIMESTAMP;
             """
             row = Database.update_many(sql, records)
-            print(f"更新了{row}行")
             redis_client.delete(key)
 
         return True
     
     @classmethod
     def batch_write_all_users_to_db(cls):
-        print("定時更新")
         keys = redis_client.keys("user:*:pockets")
         for key in keys:
             key = key.decode('utf-8')

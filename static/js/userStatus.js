@@ -94,7 +94,6 @@ document
     const error = document.querySelector(".signup-error");
     const success = document.querySelector(".signup-success");
     const message = checkSignupData(name, email, password, age);
-    console.log(gender);
     if (message === "ok") {
       const user_data = {
         name: name,

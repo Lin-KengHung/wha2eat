@@ -9,7 +9,6 @@ async function get_restaurant_card() {
   const url = "/api/card/" + restaurantId;
   const response = await fetch(url, { method: "GET" });
   recentData = await response.json();
-  console.log(recentData);
   render_restaurant_card(recentData);
   render_arrow();
   if (recentData.imgs == null) {
@@ -169,7 +168,6 @@ function render_comment(comment) {
 }
 
 async function init() {
-  console.log("初始化");
   // 取得登入狀態
   if (localStorage.getItem("user_token")) {
     try {
@@ -253,7 +251,6 @@ imgInput.addEventListener("change", async (e) => {
     CompressOptions
   );
   const url = window.URL.createObjectURL(compressedFile);
-  console.log(url);
   document.querySelector(".uploadIcon").style.display = "none";
   const previewImg = document.querySelector(".preview");
   previewImg.src = url;
@@ -286,9 +283,7 @@ document
         const formData = new FormData();
         let inputFile = document.querySelector(".fileInput");
         if (inputFile.files.length == 0) {
-          console.log("沒有上傳檔案");
         } else {
-          console.log("有上傳檔案");
           const compressedFile = await imageCompression(
             imgInput.files[0],
             CompressOptions

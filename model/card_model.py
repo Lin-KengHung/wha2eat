@@ -161,7 +161,6 @@ class CardModel:
         
         # 資料格式處裡
         restaurant_group = []
-        print(f'推薦回傳比數: {len(result)}')
 
         for i in range(len(result)):
 
@@ -269,7 +268,6 @@ class CardModel:
         val = [user_lng, user_lat, restaurant_id, user_id]
 
         result = Database.read_one(sql, tuple(val))
-        print(result["distance"])
 
 
         # 處裡圖片格式
@@ -381,7 +379,6 @@ class CardModel:
         """
         val = (user_lng, user_lat,keyword, offset, user_id)
         result = Database.read_all(sql, val)
-        print(f'搜尋{keyword}回傳比數: {len(result)}')
         # 判斷 next_page
         if len(result) < 11:
             next_page = None
@@ -484,12 +481,10 @@ class CollaborativeFiltering:
         """
         val = (user_id,1)
         results = Database.read_all(sql,val)
-        print(results)
         recommendations= []
 
         for result in results:
             recommendations.append(result["recommended_restaurant_id"])
-            # print(result["recommended_restaurant_id"])
         return recommendations
 
     def item_base_suggest(user_id):

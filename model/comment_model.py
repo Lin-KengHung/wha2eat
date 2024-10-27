@@ -44,10 +44,8 @@ class CommentModel:
             comment_table_val = (comment.user_id, comment.restaurant_id, image_id, comment.rating, comment.context, comment.checkin)
             result = Database.create(comment_table_sql, comment_table_val)
             if result>0:
-                print("評論新增成功")
                 return True
             else:
-                print("有錯")
                 return False
 
         else:
@@ -58,10 +56,8 @@ class CommentModel:
             comment_table_val = (comment.user_id, comment.restaurant_id, comment.rating, comment.context, comment.checkin)
             result = Database.create(comment_table_sql, comment_table_val)
             if result>0:
-                print("沒圖片評論新增成功")
                 return True
             else:
-                print("有錯")
                 return False
             
     def get_restaurant_comment(restaurant_id):

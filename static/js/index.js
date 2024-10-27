@@ -48,7 +48,6 @@ async function get_restaurant_card() {
   const data_list = await response.json();
 
   if (data_list.data == false) {
-    console.log(data_list);
     showDataLength(0);
 
     resetTypeToDefault();
@@ -78,7 +77,6 @@ async function get_restaurant_card() {
 // 搜尋餐廳
 async function searchRestaurantCard() {
   if (nextPage === null) {
-    console.log("沒有下一頁");
     nextPage = 0;
   }
   let url = "/api/cards/search";
@@ -143,7 +141,6 @@ async function get_restaurant_card_by_id(restaurantId) {
   }
   const response = await fetch(url, setting);
   let data = await response.json();
-  console.log(data);
   render_restaurant_card(recentData);
   if (data.imgs !== null) {
     let preloadImg = [];
@@ -153,9 +150,7 @@ async function get_restaurant_card_by_id(restaurantId) {
       preloadImg.push(img);
     }
     data.imgs = preloadImg;
-    console.log(data);
     recentData[0] = data;
-    console.log(recentData);
   }
   return true;
 }
@@ -451,13 +446,11 @@ async function init() {
   if (match !== null) {
     const restaurantId = match[1];
     let result = await get_restaurant_card_by_id(restaurantId);
-    console.log(result);
   }
 
   let getData = await get_restaurant_card();
 
   if (getData) {
-    console.log("初始化的getData長度 " + getData);
     getComment(recentData[cardN].id);
     render_restaurant_card(recentData[cardN]);
     if (recentData[cardN].imgs == null) {
@@ -478,7 +471,6 @@ document.querySelector(".search").addEventListener("keydown", async (e) => {
     nextPage = null;
     let getData = await searchRestaurantCard();
     if (getData) {
-      console.log("搜尋後的長度" + getData);
       showDataLength(getData);
       document.querySelector(".restaurant-img").src =
         "static/image/loading.gif";
@@ -491,7 +483,6 @@ document.querySelector(".search").addEventListener("keydown", async (e) => {
       }
 
       if (getData < 4) {
-        console.log("小於4筆所以額外多打一次推薦結果");
         let newData = await get_restaurant_card();
         getComment(recentData[cardN].id);
         render_restaurant_card(recentData[cardN]);
@@ -570,7 +561,6 @@ document.querySelector(".next-page").addEventListener("click", async (e) => {
     });
     const result = await response.json();
     if (result.error) {
-      console.log("按讚過快");
     } else {
       change_restaurant_card();
     }
@@ -693,7 +683,6 @@ async function applySelections() {
   let getData = await get_restaurant_card();
 
   if (getData) {
-    console.log("套用的getData長度 " + getData);
     showDataLength(getData);
     getComment(recentData[cardN].id);
     render_restaurant_card(recentData[cardN]);
@@ -714,7 +703,6 @@ async function applySelections() {
       }
     }
   } else {
-    console.log("按下套用後get card回傳false");
     resetTypeToDefault();
     showDataLength(0);
     let getData = await get_restaurant_card();
@@ -784,7 +772,6 @@ function loadRestaurantFilter() {
 
 // reset餐廳類型
 function resetTypeToDefault() {
-  console.log("套用reset");
   const defaultType = { displayText: "全部類型", value: "all" };
   const defaultAlgorithm = { displayText: "隨機推薦", value: "random" };
 
@@ -802,8 +789,6 @@ function resetTypeToDefault() {
   savedFilters.algorithm = defaultAlgorithm;
   // 設定 type 為預設值
   localStorage.setItem("restaurantFilter", JSON.stringify(savedFilters));
-
-  console.log("Type reset to default: 全部類型 (all)");
 }
 
 // data比數動畫
@@ -857,7 +842,6 @@ imgInput.addEventListener("change", async (e) => {
     CompressOptions
   );
   const url = window.URL.createObjectURL(compressedFile);
-  console.log(url);
   document.querySelector(".uploadIcon").style.display = "none";
   const previewImg = document.querySelector(".preview");
   previewImg.src = url;
@@ -869,7 +853,6 @@ document
   .addEventListener("click", async (e) => {
     const comment = document.querySelector(".comment-content");
     if (loginState) {
-      console.log("有登入");
       if (comment.value !== "") {
         e.preventDefault();
         if (loginState === false) {
@@ -880,9 +863,7 @@ document
           const formData = new FormData();
           let inputFile = document.querySelector(".fileInput");
           if (inputFile.files.length == 0) {
-            console.log("沒有上傳檔案");
           } else {
-            console.log("有上傳檔案");
             const compressedFile = await imageCompression(
               imgInput.files[0],
               CompressOptions
@@ -896,7 +877,6 @@ document
           formData.append("rating", ratingScore.value);
           formData.append("context", comment.value);
           formData.append("checkin", false);
-          console.log(formData);
           const commentResponse = await fetch("/api/comment", {
             method: "POST",
             headers: {
@@ -907,7 +887,6 @@ document
           const commentResult = await commentResponse.json();
 
           if (commentResult.ok) {
-            console.log("ok");
             getComment(recentData[cardN].id);
             document.querySelector(".loading").style.display = "none";
             const previewImg = document.querySelector(".preview");
@@ -919,7 +898,6 @@ document
         }
       }
     } else {
-      console.log("沒登入");
       e.preventDefault();
       document.querySelector(".signin").style.display = "block";
     }
