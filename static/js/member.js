@@ -14,7 +14,6 @@ async function getMyPocket(page) {
   if (data.data == false) {
     document.querySelector(".no-pocket").style.display = "flex";
     document.querySelector(".pocket-restaurants").style.display = "none";
-    console.log("沒東西");
   } else {
     for (let i = 0; i < data.data.length; i++) {
       renderPocket(data.data[i]);
@@ -313,5 +312,4 @@ imgInput.addEventListener("change", async (e) => {
     body: formData,
   });
   const result = await commentResponse.json();
-  console.log(result);
 });
