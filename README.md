@@ -77,3 +77,19 @@ https://github.com/user-attachments/assets/eea0e75f-1289-494e-ae25-05a79c63e8a6
 5. **pockets**: Stores users' browsing history and preferences for restaurants (liked, viewed without preference, or disliked).
 6. **comments**: Stores users' restaurant comments records.
 7. The user's average rating (**user.avg_rating**) is recalculated from the comments when a user adds or deletes a comment and is stored in the user.avg_rating field. Since this data is frequently used, this field is designed in a way that does not conform to normalization principles to avoid excessive redundant calculations.
+
+# Cache
+
+![螢幕擷取畫面 2024-11-01 125154](https://github.com/user-attachments/assets/a87b1368-2882-4edf-b600-1b4bc8666e57)
+
++ **Redis** serves as a caching layer to store user preferences for restaurants, reducing frequent database writes, enhancing system performance, and supporting high-concurrency situations.
+
++ **Structure of Redis**
+  + **Hash Key**: user:{user_id}:pockets, each user has a dedicated key.
+  + **Field**: restaurant_id, representing a specific restaurant.
+  + **Value**: Preference status, e.g., "like", "consider" or "dislike".
+
++ **Redis Update Strategy**
+  1. **On-Demand Updates**: Syncs current Redis data to MySQL when users re-request data.
+  2. **Scheduled Updates**: Periodic tasks batch sync Redis data to MySQL.
+
